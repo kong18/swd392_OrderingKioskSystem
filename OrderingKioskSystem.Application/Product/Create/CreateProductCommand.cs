@@ -17,7 +17,6 @@ namespace OrderingKioskSystem.Application.Product.Create
             Name = name;
             Description = description;
             Price = price;
-            IsAvailable = isAvailable;
             Status = status;
             CategoryID = categoryID;
             BusinessID = businessID;

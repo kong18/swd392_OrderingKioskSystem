@@ -12,7 +12,7 @@ using OrderingKioskSystem.Infrastructure.Persistence;
 namespace OrderingKioskSystem.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240521042124_v1")]
+    [Migration("20240521145523_v1")]
     partial class v1
     {
         /// <inheritdoc />
@@ -152,6 +152,10 @@ namespace OrderingKioskSystem.Infrastructure.Migrations
                     b.Property<string>("ID")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("BusinessID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -177,29 +181,39 @@ namespace OrderingKioskSystem.Infrastructure.Migrations
                     b.Property<bool>("Status")
                         .HasColumnType("bit");
 
-                    b.Property<int>("Type")
-                        .HasColumnType("int");
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("BusinessID");
 
                     b.ToTable("Menu");
                 });
 
             modelBuilder.Entity("OrderingKioskSystem.Domain.Entities.OrderDetailEntity", b =>
                 {
-                    b.Property<string>("OrderID")
-                        .HasColumnType("nvarchar(450)")
-                        .HasColumnOrder(0);
-
-                    b.Property<string>("ProductID")
-                        .HasColumnType("nvarchar(450)")
-                        .HasColumnOrder(1);
+                    b.Property<string>("ID")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("OrderID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("ProductID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
@@ -213,7 +227,9 @@ namespace OrderingKioskSystem.Infrastructure.Migrations
                     b.Property<decimal>("UnitPrice")
                         .HasColumnType("decimal(18,2)");
 
-                    b.HasKey("OrderID", "ProductID");
+                    b.HasKey("ID");
+
+                    b.HasIndex("OrderID");
 
                     b.HasIndex("ProductID");
 
@@ -371,9 +387,6 @@ namespace OrderingKioskSystem.Infrastructure.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
-                    b.Property<bool>("IsAvailable")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -418,23 +431,28 @@ namespace OrderingKioskSystem.Infrastructure.Migrations
 
             modelBuilder.Entity("OrderingKioskSystem.Domain.Entities.ProductMenuEntity", b =>
                 {
-                    b.Property<string>("ProductID")
-                        .HasColumnType("nvarchar(450)")
-                        .HasColumnOrder(1);
-
-                    b.Property<string>("MenuID")
-                        .HasColumnType("nvarchar(450)")
-                        .HasColumnOrder(0);
+                    b.Property<string>("ID")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("MenuID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,4)");
 
-                    b.HasKey("ProductID", "MenuID");
+                    b.Property<string>("ProductID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("ID");
 
                     b.HasIndex("MenuID");
+
+                    b.HasIndex("ProductID");
 
                     b.ToTable("ProductMenu");
                 });
@@ -478,6 +496,17 @@ namespace OrderingKioskSystem.Infrastructure.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("Shipper");
+                });
+
+            modelBuilder.Entity("OrderingKioskSystem.Domain.Entities.MenuEntity", b =>
+                {
+                    b.HasOne("OrderingKioskSystem.Domain.Entities.BusinessEntity", "Business")
+                        .WithMany("Menus")
+                        .HasForeignKey("BusinessID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Business");
                 });
 
             modelBuilder.Entity("OrderingKioskSystem.Domain.Entities.OrderDetailEntity", b =>
@@ -575,6 +604,8 @@ namespace OrderingKioskSystem.Infrastructure.Migrations
 
             modelBuilder.Entity("OrderingKioskSystem.Domain.Entities.BusinessEntity", b =>
                 {
+                    b.Navigation("Menus");
+
                     b.Navigation("Products");
                 });
 

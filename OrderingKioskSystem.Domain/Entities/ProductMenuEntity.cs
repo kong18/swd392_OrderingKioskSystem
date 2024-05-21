@@ -5,16 +5,21 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OrderingKioskSystem.Domain.Entities.Base;
 
 namespace OrderingKioskSystem.Domain.Entities
 {
     [Table("ProductMenu")]
-    public class ProductMenuEntity
+    public class ProductMenuEntity 
     {
-        [Key, Column(Order = 0)]
-        public required string MenuID { get; set; }
+        protected ProductMenuEntity()
+        {
+            ID = Guid.NewGuid().ToString("N");
+        }
 
-        [Key, Column(Order = 1)]
+        [Key]
+        public string ID { get; set; }
+        public required string MenuID { get; set; }
         public required string ProductID { get; set; }
         [Column(TypeName = "decimal(18,4)")]
         public required decimal Price { get; set; }

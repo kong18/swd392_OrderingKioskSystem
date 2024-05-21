@@ -12,15 +12,13 @@ namespace OrderingKioskSystem.Domain.Entities
     public class MenuEntity : Entity
     {
         public required string Name { get; set; }
-        public required MenuType Type { get; set; }
+        public required string Title { get; set; }
+        public required string Type { get; set; }
         public required bool Status { get; set; }
+        public required string BusinessID { get; set; }
+        [ForeignKey(nameof(BusinessID))]
+        public virtual BusinessEntity Business { get; set; }
         public virtual ICollection<ProductMenuEntity> ProductMenus { get; set; }
-    }
 
-    public enum MenuType
-    {
-        Morning,
-        Afternoon,
-        Evening
     }
 }

@@ -13,7 +13,7 @@ namespace OrderingKioskSystem.Application.Product
     {
         public ProductDTO() { }
 
-        public static ProductDTO Create(string id, string name, string code, string url, string description, bool isAvailable, bool status, int categoryID, string businessID)
+        public static ProductDTO Create(string id, string name, string code, string url, string description, bool status, int categoryID, string businessID)
         {
             return new ProductDTO
             {
@@ -22,7 +22,6 @@ namespace OrderingKioskSystem.Application.Product
                 Code = code,
                 Url = url,
                 Description = description,
-                IsAvailable = isAvailable,
                 Status = status,
                 CategoryID = categoryID,
                 BusinessID = businessID
@@ -35,7 +34,6 @@ namespace OrderingKioskSystem.Application.Product
         public string Url { get; set; }
         public string Description { get; set; }
         public decimal Price { get; set; }
-        public bool IsAvailable { get; set; }
         public bool Status { get; set; }
         public int CategoryID {  get; set; }
         public string BusinessID { get; set; }

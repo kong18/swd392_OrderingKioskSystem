@@ -55,7 +55,6 @@ namespace OrderingKioskSystem.Application.Product.Update
             productExist.Url = request.Url;
             productExist.Description = request.Description;
             productExist.Price = request.Price;
-            productExist.IsAvailable = request.IsAvailable;
             productExist.Status = request.Status;
             productExist.CategoryID = request.CategoryID;
             productExist.BusinessID = request.BusinessID;

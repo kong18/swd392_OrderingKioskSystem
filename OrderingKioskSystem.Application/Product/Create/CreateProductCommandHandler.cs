@@ -45,7 +45,6 @@ namespace OrderingKioskSystem.Application.Product.Create
                 Description = request.Description,
                 Code = request.Code,
                 Price = request.Price,
-                IsAvailable = request.IsAvailable,
                 Status = request.Status,
                 CategoryID = request.CategoryID,
                 BusinessID = request.BusinessID,

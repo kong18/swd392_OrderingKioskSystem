@@ -72,26 +72,6 @@ namespace OrderingKioskSystem.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Menu",
-                columns: table => new
-                {
-                    ID = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Type = table.Column<int>(type: "int", nullable: false),
-                    Status = table.Column<bool>(type: "bit", nullable: false),
-                    NguoiTaoID = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    NgayTao = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    NguoiCapNhatID = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    NgayCapNhatCuoi = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    NguoiXoaID = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    NgayXoa = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Menu", x => x.ID);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "PaymentGateway",
                 columns: table => new
                 {
@@ -131,6 +111,34 @@ namespace OrderingKioskSystem.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Menu",
+                columns: table => new
+                {
+                    ID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Status = table.Column<bool>(type: "bit", nullable: false),
+                    BusinessID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    NguoiTaoID = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NgayTao = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    NguoiCapNhatID = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NgayCapNhatCuoi = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    NguoiXoaID = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NgayXoa = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Menu", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Menu_Business_BusinessID",
+                        column: x => x.BusinessID,
+                        principalTable: "Business",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Product",
                 columns: table => new
                 {
@@ -140,7 +148,6 @@ namespace OrderingKioskSystem.Infrastructure.Migrations
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,4)", nullable: false),
-                    IsAvailable = table.Column<bool>(type: "bit", nullable: false),
                     Status = table.Column<bool>(type: "bit", nullable: false),
                     CategoryID = table.Column<int>(type: "int", nullable: false),
                     BusinessID = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -205,6 +212,7 @@ namespace OrderingKioskSystem.Infrastructure.Migrations
                 name: "ProductMenu",
                 columns: table => new
                 {
+                    ID = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     MenuID = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ProductID = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,4)", nullable: false),
@@ -212,7 +220,7 @@ namespace OrderingKioskSystem.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProductMenu", x => new { x.ProductID, x.MenuID });
+                    table.PrimaryKey("PK_ProductMenu", x => x.ID);
                     table.ForeignKey(
                         name: "FK_ProductMenu_Menu_MenuID",
                         column: x => x.MenuID,
@@ -231,6 +239,7 @@ namespace OrderingKioskSystem.Infrastructure.Migrations
                 name: "OrderDetail",
                 columns: table => new
                 {
+                    ID = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     OrderID = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ProductID = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
@@ -242,7 +251,7 @@ namespace OrderingKioskSystem.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OrderDetail", x => new { x.OrderID, x.ProductID });
+                    table.PrimaryKey("PK_OrderDetail", x => x.ID);
                     table.ForeignKey(
                         name: "FK_OrderDetail_Order_OrderID",
                         column: x => x.OrderID,
@@ -291,6 +300,11 @@ namespace OrderingKioskSystem.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Menu_BusinessID",
+                table: "Menu",
+                column: "BusinessID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Order_KioskID",
                 table: "Order",
                 column: "KioskID");
@@ -299,6 +313,11 @@ namespace OrderingKioskSystem.Infrastructure.Migrations
                 name: "IX_Order_ShipperID",
                 table: "Order",
                 column: "ShipperID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderDetail_OrderID",
+                table: "OrderDetail",
+                column: "OrderID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrderDetail_ProductID",
@@ -329,6 +348,11 @@ namespace OrderingKioskSystem.Infrastructure.Migrations
                 name: "IX_ProductMenu_MenuID",
                 table: "ProductMenu",
                 column: "MenuID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductMenu_ProductID",
+                table: "ProductMenu",
+                column: "ProductID");
         }
 
         /// <inheritdoc />

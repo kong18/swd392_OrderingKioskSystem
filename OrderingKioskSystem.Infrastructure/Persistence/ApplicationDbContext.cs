@@ -28,36 +28,22 @@ public class ApplicationDbContext : DbContext, IUnitOfWork
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<OrderDetailEntity>()
-            .HasKey(od => new { od.OrderID, od.ProductID });
-
-        modelBuilder.Entity<OrderDetailEntity>()
-            .HasOne(od => od.Order)
-            .WithMany(o => o.OrderDetails)
-            .HasForeignKey(od => od.OrderID);
-
-        modelBuilder.Entity<OrderDetailEntity>()
-            .HasOne(od => od.Product)
-            .WithMany(p => p.OrderDetails)
-            .HasForeignKey(od => od.ProductID);
-
-        modelBuilder.Entity<ProductMenuEntity>()
-            .HasKey(pm => new { pm.ProductID, pm.MenuID });
-
-        modelBuilder.Entity<ProductMenuEntity>()
-            .HasOne(pm => pm.Product)
-            .WithMany(p => p.ProductMenus)
-            .HasForeignKey(pm => pm.ProductID);
-
-        modelBuilder.Entity<ProductMenuEntity>()
-            .HasOne(pm => pm.Menu)
-            .WithMany(m => m.ProductMenus)
-            .HasForeignKey(pm => pm.MenuID);
-
         modelBuilder.Entity<PaymentEntity>()
             .HasOne(p => p.PaymentGateway)
             .WithMany(pg => pg.Payments)
             .HasForeignKey(p => p.PaymentGatewayID);
+
+        modelBuilder.Entity<BusinessEntity>()
+        .HasKey(b => b.ID);
+
+        modelBuilder.Entity<MenuEntity>()
+            .HasKey(m => m.ID);
+
+        modelBuilder.Entity<MenuEntity>()
+            .HasOne(m => m.Business)
+            .WithMany(b => b.Menus)
+            .HasForeignKey(m => m.BusinessID)
+            .OnDelete(DeleteBehavior.Restrict);
 
         base.OnModelCreating(modelBuilder);
        // modelBuilder.ApplyConfiguration(new ChinhSachNhanSuConfiguration());

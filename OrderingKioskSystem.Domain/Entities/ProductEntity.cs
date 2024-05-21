@@ -20,7 +20,6 @@ namespace OrderingKioskSystem.Domain.Entities
         public required string Description { get; set; }
         [Column(TypeName = "decimal(18,4)")]
         public required decimal Price { get; set; }
-        public required bool IsAvailable { get; set; }
         public required bool Status { get; set; }
         public required int CategoryID { get; set; }
         [ForeignKey(nameof(CategoryID))]

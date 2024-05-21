@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OrderingKioskSystem.Domain.Entities.Base;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -9,12 +10,16 @@ using System.Threading.Tasks;
 namespace OrderingKioskSystem.Domain.Entities
 {
     [Table("OrderDetail")]
-    public class OrderDetailEntity
+    public class OrderDetailEntity 
     {
-        [Key, Column(Order = 0)]
-        public required string OrderID { get; set; }
+        public OrderDetailEntity()
+        {
+            ID = Guid.NewGuid().ToString("N");
+        }
 
-        [Key, Column(Order = 1)]
+        [Key]
+        public string ID { get; set; }
+        public required string OrderID { get; set; }
         public required string ProductID { get; set; }
         public required int Quantity { get; set; }
         public required decimal UnitPrice { get; set;}

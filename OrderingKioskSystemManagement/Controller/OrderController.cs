@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using OrderingKioskSystem.Application.Category.Create;
 using OrderingKioskSystem.Application.Order.Create;
 using OrderingKioskSystem.Application.Product.GetById;
 using OrderingKioskSystem.Application.Product;
