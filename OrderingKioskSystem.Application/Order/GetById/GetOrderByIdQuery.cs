@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace OrderingKioskSystem.Application.Order.GetById
 {
-    internal class GetOrderByIdQuery
+    public class GetOrderByIdQuery
     {
     }
 }
