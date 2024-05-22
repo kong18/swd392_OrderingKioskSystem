@@ -29,9 +29,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Kiosk\Delete\" />
+    <Folder Include="Kiosk\GetById\" />
+    <Folder Include="Kiosk\GetAll\" />
+    <Folder Include="Kiosk\Update\" />
     <Folder Include="Menu\" />
     <Folder Include="Business\" />
-    <Folder Include="Kiosk\" />
     <Folder Include="PaymentGateway\" />
     <Folder Include="Payment\" />
     <Folder Include="Shipper\" />
