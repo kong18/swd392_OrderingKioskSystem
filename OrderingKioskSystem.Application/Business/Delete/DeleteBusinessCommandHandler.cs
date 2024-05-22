@@ -16,11 +16,15 @@ namespace OrderingKioskSystem.Application.Business.Delete
         private readonly IBusinessRepository _businessRepository;
         private readonly IMapper _mapper;
         private ICurrentUserService _currentUserService;
-        public DeleteBusinessCommandHandler(IBusinessRepository businessRepository, IMapper mapper, ICurrentUserService currentUserService)
+        private readonly IMenuRepository _menuRepository;
+        private readonly IProductRepository _productRepository;
+        public DeleteBusinessCommandHandler(IBusinessRepository businessRepository, IMapper mapper, ICurrentUserService currentUserService, IMenuRepository menuRepository, IProductRepository productRepository)
         {
             _businessRepository = businessRepository;
             _mapper = mapper;
             _currentUserService = currentUserService;
+            _menuRepository = menuRepository;
+            _productRepository = productRepository;
         }
 
         public async Task<string> Handle(DeleteBusinessCommand request, CancellationToken cancellationToken)
@@ -40,6 +44,23 @@ namespace OrderingKioskSystem.Application.Business.Delete
             {
                 return "Business has been deleted.";
             }
+
+            var relatedMenus = await _menuRepository.FindAllAsync(m => m.BusinessID == request.Id, cancellationToken);
+            foreach (var menu in relatedMenus)
+            {
+                menu.NguoiXoaID = userId;
+                menu.NgayXoa = DateTime.Now;
+                _menuRepository.Update(menu);
+            }
+            var relatedProducts = await _productRepository.FindAllAsync(p => p.BusinessID == request.Id, cancellationToken);
+            foreach (var product in relatedProducts)
+            {
+                product.NguoiXoaID = userId;
+                product.NgayXoa = DateTime.Now;
+                _productRepository.Update(product);
+            }
+
+
             existbusiness.NguoiXoaID = userId;
             existbusiness.NgayXoa = DateTime.Now;
             _businessRepository.Update(existbusiness);
