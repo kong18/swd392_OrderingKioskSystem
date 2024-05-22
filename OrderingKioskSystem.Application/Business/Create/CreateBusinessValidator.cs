@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OrderingKioskSystem.Application.Business
+namespace OrderingKioskSystem.Application.Business.CreateBusinessCommand
 {
-    internal class BuisinessMappingExtension
+    internal class CreateBusinessValidator
     {
     }
 }
