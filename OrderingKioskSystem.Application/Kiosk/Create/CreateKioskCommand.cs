@@ -11,5 +11,7 @@ namespace OrderingKioskSystem.Application.Kiosk.Create
     public class CreateKioskCommand : IRequest<string>, ICommand
     {
         public string location;
+
+
     }
 }

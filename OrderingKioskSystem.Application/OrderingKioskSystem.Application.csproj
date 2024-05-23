@@ -29,16 +29,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Kiosk\Delete\" />
-    <Folder Include="Kiosk\GetById\" />
-    <Folder Include="Kiosk\GetAll\" />
-    <Folder Include="Kiosk\Update\" />
-    <Folder Include="Menu\" />
-    <Folder Include="Business\" />
+    <Folder Include="Menu\NewFolder\" />
     <Folder Include="PaymentGateway\" />
     <Folder Include="Payment\" />
+    <Folder Include="ProductMenu\NewFolder\" />
     <Folder Include="Shipper\" />
-    <Folder Include="ProductMenu\" />
     <Folder Include="OrderDetail\" />
   </ItemGroup>
 

@@ -1,110 +1,98 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using OrderingKioskSystem.Application.Common.Pagination;
-using OrderingKioskSystem.Application.Product;
-using OrderingKioskSystem.Application.Product.Create;
-using OrderingKioskSystem.Application.Product.Delete;
-using OrderingKioskSystem.Application.Product.GetAll;
-using OrderingKioskSystem.Application.Product.GetById;
-using OrderingKioskSystem.Application.Product.GetByPagination;
-using OrderingKioskSystem.Application.Product.Update;
+using OrderingKioskSystem.Application.Category.Create;
+using OrderingKioskSystem.Application.Category.Delete;
+using OrderingKioskSystem.Application.Category.GetAll;
+using OrderingKioskSystem.Application.Category.GetById;
+using OrderingKioskSystem.Application.Category.Update;
+using OrderingKioskSystem.Application.Category;
 using System.Net.Mime;
+using OrderingKioskSystem.Application.Kiosk.Create;
+using OrderingKioskSystem.Application.Kiosk.Update;
+using OrderingKioskSystem.Application.Kiosk.Delete;
+using OrderingKioskSystem.Application.Kiosk;
+using OrderingKioskSystem.Application.Kiosk.GetAll;
+using OrderingKioskSystem.Application.Kiosk.GetById;
 
 namespace OrderingKioskSystemManagement.Api.Controller
 {
     [ApiController]
-    public class ProductController : ControllerBase
+    public class KioskController : ControllerBase
     {
-
         private readonly ISender _mediator;
 
-        public ProductController(ISender mediator)
+        public KioskController(ISender mediator)
         {
             _mediator = mediator;
         }
 
-        [HttpPost("product")]
+        [HttpPost("kiosk")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> CreateProduct(
-           [FromBody] CreateProductCommand command,
+        public async Task<ActionResult> CreateKiosk(
+           [FromBody] CreateKioskCommand command,
            CancellationToken cancellationToken = default)
         {
             var result = await _mediator.Send(command, cancellationToken);
             return Ok(new JsonResponse<string>(result));
         }
 
-        [HttpPut("product")]
+        [HttpPut("kiosk")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> UpdateProduct(
-            [FromBody] UpdateProductCommand command,
+        public async Task<ActionResult> UpdateKiosk(
+            [FromBody] UpdateKioskCommand command,
             CancellationToken cancellationToken = default)
         {
             var result = await _mediator.Send(command, cancellationToken);
             return Ok(new JsonResponse<string>(result));
         }
 
-        [HttpDelete("product/{id}")]
+        [HttpDelete("kiosk/{id}")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> DeleteProduct(
+        public async Task<ActionResult> DeleteKiosk(
             [FromRoute] string id,
             CancellationToken cancellationToken = default)
         {
-            var result = await _mediator.Send(new DeleteProductCommand(id), cancellationToken);
+            var result = await _mediator.Send(new DeleteKioskCommand(id), cancellationToken);
             return Ok(new JsonResponse<string>(result));
         }
 
-        [HttpGet("product")]
+        [HttpGet("kiosk")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<List<ProductDTO>>> GetAllThongTinLuongNhanVien(
+        public async Task<ActionResult<List<KioskDTO>>> GetAllKiosk(
            CancellationToken cancellationToken = default)
         {
-            var result = await _mediator.Send(new GetAllProductQuery(), cancellationToken);
-            return Ok(new JsonResponse<List<ProductDTO>>(result));
+            var result = await _mediator.Send(new GetAllKioskQuery(), cancellationToken);
+            return Ok(new JsonResponse<List<KioskDTO>>(result));
         }
 
-        [HttpGet("product/{id}")]
+        [HttpGet("kiosk/{id}")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<ProductDTO>> GetThongTinLuongNhanVien(
+        public async Task<ActionResult<KioskDTO>> GetAllKiosk(
             [FromRoute] string id,
             CancellationToken cancellationToken = default)
         {
-            var result = await _mediator.Send(new GetProductByIdQuery(id), cancellationToken);
-            return Ok(new JsonResponse<ProductDTO>(result));
+            var result = await _mediator.Send(new GetKioskByIdQuery(id), cancellationToken);
+            return Ok(new JsonResponse<KioskDTO>(result));
         }
-
-        [HttpGet("product/phan-trang")]
-        [Produces(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(typeof(JsonResponse<PagedResult<ProductDTO>>), StatusCodes.Status201Created)]
-        [ProducesResponseType(typeof(JsonResponse<PagedResult<ProductDTO>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<JsonResponse<PagedResult<ProductDTO>>>> GetPagination([FromQuery] GetProductByPaginationQuery query, CancellationToken cancellationToken = default)
-        {
-            var result = await _mediator.Send(query, cancellationToken);
-            return Ok(result);
-        }
-
     }
 }

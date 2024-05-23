@@ -1,110 +1,99 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using OrderingKioskSystem.Application.Common.Pagination;
-using OrderingKioskSystem.Application.Product;
-using OrderingKioskSystem.Application.Product.Create;
-using OrderingKioskSystem.Application.Product.Delete;
-using OrderingKioskSystem.Application.Product.GetAll;
-using OrderingKioskSystem.Application.Product.GetById;
-using OrderingKioskSystem.Application.Product.GetByPagination;
-using OrderingKioskSystem.Application.Product.Update;
+using OrderingKioskSystem.Application.Business;
+using OrderingKioskSystem.Application.Business.CreateBusinessCommand;
+using OrderingKioskSystem.Application.Business.Delete;
+using OrderingKioskSystem.Application.Business.GetAllBusiness;
+using OrderingKioskSystem.Application.Business.GetBusinessById;
+using OrderingKioskSystem.Application.Business.Update;
+using OrderingKioskSystem.Application.Category;
+using OrderingKioskSystem.Application.Category.Create;
+using OrderingKioskSystem.Application.Category.Delete;
+using OrderingKioskSystem.Application.Category.GetAll;
+using OrderingKioskSystem.Application.Category.GetById;
+using OrderingKioskSystem.Application.Category.Update;
 using System.Net.Mime;
 
 namespace OrderingKioskSystemManagement.Api.Controller
 {
     [ApiController]
-    public class ProductController : ControllerBase
+    public class BusinessController : ControllerBase
     {
-
         private readonly ISender _mediator;
 
-        public ProductController(ISender mediator)
+        public BusinessController(ISender mediator)
         {
             _mediator = mediator;
         }
 
-        [HttpPost("product")]
+        [HttpPost("business")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> CreateProduct(
-           [FromBody] CreateProductCommand command,
-           CancellationToken cancellationToken = default)
+        public async Task<ActionResult> CreateBusiness(
+          [FromBody] CreateBusinessCommand command,
+          CancellationToken cancellationToken = default)
         {
             var result = await _mediator.Send(command, cancellationToken);
             return Ok(new JsonResponse<string>(result));
         }
 
-        [HttpPut("product")]
+
+        [HttpPut("business")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> UpdateProduct(
-            [FromBody] UpdateProductCommand command,
+        public async Task<ActionResult> UpdateBusiness(
+            [FromBody] UpdateBusinessCommand command,
             CancellationToken cancellationToken = default)
         {
             var result = await _mediator.Send(command, cancellationToken);
             return Ok(new JsonResponse<string>(result));
         }
 
-        [HttpDelete("product/{id}")]
+        [HttpDelete("business/{id}")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> DeleteProduct(
+        public async Task<ActionResult> DeleteBusiness(
             [FromRoute] string id,
             CancellationToken cancellationToken = default)
         {
-            var result = await _mediator.Send(new DeleteProductCommand(id), cancellationToken);
+            var result = await _mediator.Send(new DeleteBusinessCommand(id), cancellationToken);
             return Ok(new JsonResponse<string>(result));
         }
 
-        [HttpGet("product")]
+        [HttpGet("business")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<List<ProductDTO>>> GetAllThongTinLuongNhanVien(
+        public async Task<ActionResult<List<BusinessDTO>>> GetAllBusiness(
            CancellationToken cancellationToken = default)
         {
-            var result = await _mediator.Send(new GetAllProductQuery(), cancellationToken);
-            return Ok(new JsonResponse<List<ProductDTO>>(result));
+            var result = await _mediator.Send(new GetAllBusinessQuery(), cancellationToken);
+            return Ok(new JsonResponse<List<BusinessDTO>>(result));
         }
 
-        [HttpGet("product/{id}")]
+        [HttpGet("business/{id}")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<ProductDTO>> GetThongTinLuongNhanVien(
+        public async Task<ActionResult<BusinessDTO>> GetBusinessById(
             [FromRoute] string id,
             CancellationToken cancellationToken = default)
         {
-            var result = await _mediator.Send(new GetProductByIdQuery(id), cancellationToken);
-            return Ok(new JsonResponse<ProductDTO>(result));
+            var result = await _mediator.Send(new GetBusinessByIdQuery(id), cancellationToken);
+            return Ok(new JsonResponse<BusinessDTO>(result));
         }
-
-        [HttpGet("product/phan-trang")]
-        [Produces(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(typeof(JsonResponse<PagedResult<ProductDTO>>), StatusCodes.Status201Created)]
-        [ProducesResponseType(typeof(JsonResponse<PagedResult<ProductDTO>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<JsonResponse<PagedResult<ProductDTO>>>> GetPagination([FromQuery] GetProductByPaginationQuery query, CancellationToken cancellationToken = default)
-        {
-            var result = await _mediator.Send(query, cancellationToken);
-            return Ok(result);
-        }
-
     }
 }
