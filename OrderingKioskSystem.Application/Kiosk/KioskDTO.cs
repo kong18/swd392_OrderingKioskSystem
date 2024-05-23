@@ -12,6 +12,7 @@ namespace OrderingKioskSystem.Application.Kiosk
 {
     public class KioskDTO : IMapFrom<KioskEntity>
     {
+        public string id;
         public required string location { get; set;}
         public void Mapping(Profile profile)
         {
