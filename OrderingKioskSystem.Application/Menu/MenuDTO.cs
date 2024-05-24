@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using OrderingKioskSystem.Application.Business;
 using OrderingKioskSystem.Application.Common.Mappings;
-using OrderingKioskSystem.Application.ProductMenu;
 using OrderingKioskSystem.Domain.Entities;
 using System;
 using System.Collections.Generic;
