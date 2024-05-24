@@ -17,5 +17,9 @@ namespace OrderingKioskSystem.Domain.Entities
         [MaxLength(11)]
         public required string Phone { get; set; }
         public virtual ICollection<OrderEntity> Orders { get; set; }
+        public required string Email { get; set; }
+        [ForeignKey(nameof(Email))]
+        public virtual UserEntity User { get; set; }
+        public bool Status { get; set; }
     }
 }

@@ -29,6 +29,7 @@ namespace OrderingKioskSystem.Application.Business.CreateBusinessCommand
         {
             var business = new BusinessEntity
             {
+                Email = request.Email,
                 NguoiTaoID = _currentUserService.UserId,
                 Url = request.Url,
                 Name = request.Name,

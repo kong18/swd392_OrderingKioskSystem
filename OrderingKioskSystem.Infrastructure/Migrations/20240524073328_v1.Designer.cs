@@ -12,7 +12,7 @@ using OrderingKioskSystem.Infrastructure.Persistence;
 namespace OrderingKioskSystem.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240521145523_v1")]
+    [Migration("20240524073328_v1")]
     partial class v1
     {
         /// <inheritdoc />
@@ -45,6 +45,10 @@ namespace OrderingKioskSystem.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -67,11 +71,17 @@ namespace OrderingKioskSystem.Infrastructure.Migrations
                     b.Property<string>("NguoiXoaID")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("Status")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Url")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
 
                     b.ToTable("Business");
                 });
@@ -145,6 +155,23 @@ namespace OrderingKioskSystem.Infrastructure.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("Kiosk");
+                });
+
+            modelBuilder.Entity("OrderingKioskSystem.Domain.Entities.ManagerEntity", b =>
+                {
+                    b.Property<string>("ID")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.ToTable("Manager");
                 });
 
             modelBuilder.Entity("OrderingKioskSystem.Domain.Entities.MenuEntity", b =>
@@ -466,6 +493,10 @@ namespace OrderingKioskSystem.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -493,9 +524,55 @@ namespace OrderingKioskSystem.Infrastructure.Migrations
                         .HasMaxLength(11)
                         .HasColumnType("nvarchar(11)");
 
+                    b.Property<bool>("Status")
+                        .HasColumnType("bit");
+
                     b.HasKey("ID");
 
+                    b.HasIndex("Email")
+                        .IsUnique();
+
                     b.ToTable("Shipper");
+                });
+
+            modelBuilder.Entity("OrderingKioskSystem.Domain.Entities.UserEntity", b =>
+                {
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Email");
+
+                    b.ToTable("User");
+                });
+
+            modelBuilder.Entity("OrderingKioskSystem.Domain.Entities.BusinessEntity", b =>
+                {
+                    b.HasOne("OrderingKioskSystem.Domain.Entities.UserEntity", "User")
+                        .WithOne("Business")
+                        .HasForeignKey("OrderingKioskSystem.Domain.Entities.BusinessEntity", "Email")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("OrderingKioskSystem.Domain.Entities.ManagerEntity", b =>
+                {
+                    b.HasOne("OrderingKioskSystem.Domain.Entities.UserEntity", "User")
+                        .WithOne("Manager")
+                        .HasForeignKey("OrderingKioskSystem.Domain.Entities.ManagerEntity", "Email")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("OrderingKioskSystem.Domain.Entities.MenuEntity", b =>
@@ -602,6 +679,17 @@ namespace OrderingKioskSystem.Infrastructure.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("OrderingKioskSystem.Domain.Entities.ShipperEntity", b =>
+                {
+                    b.HasOne("OrderingKioskSystem.Domain.Entities.UserEntity", "User")
+                        .WithOne("Shipper")
+                        .HasForeignKey("OrderingKioskSystem.Domain.Entities.ShipperEntity", "Email")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("OrderingKioskSystem.Domain.Entities.BusinessEntity", b =>
                 {
                     b.Navigation("Menus");
@@ -646,6 +734,18 @@ namespace OrderingKioskSystem.Infrastructure.Migrations
             modelBuilder.Entity("OrderingKioskSystem.Domain.Entities.ShipperEntity", b =>
                 {
                     b.Navigation("Orders");
+                });
+
+            modelBuilder.Entity("OrderingKioskSystem.Domain.Entities.UserEntity", b =>
+                {
+                    b.Navigation("Business")
+                        .IsRequired();
+
+                    b.Navigation("Manager")
+                        .IsRequired();
+
+                    b.Navigation("Shipper")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
