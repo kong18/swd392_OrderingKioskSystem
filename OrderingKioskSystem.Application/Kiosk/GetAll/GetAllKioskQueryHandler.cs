@@ -16,7 +16,7 @@ namespace OrderingKioskSystem.Application.Kiosk.GetAll
         private readonly IKioskRepository _repository;
         private readonly IMapper _mapper;   
 
-        public GetAllKioskQueryHandler(KioskRepository repository, IMapper mapper)
+        public GetAllKioskQueryHandler(IKioskRepository repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;

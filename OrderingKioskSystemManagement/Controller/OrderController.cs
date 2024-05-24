@@ -37,7 +37,7 @@ namespace OrderingKioskSystemManagement.Api.Controller
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<ProductDTO>> GetThongTinLuongNhanVien(
+        public async Task<ActionResult<ProductDTO>> GetOrderByID(
             [FromRoute] string id,
             CancellationToken cancellationToken = default)
         {
