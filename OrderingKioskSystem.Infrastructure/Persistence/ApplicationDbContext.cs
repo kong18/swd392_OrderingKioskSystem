@@ -45,6 +45,12 @@ public class ApplicationDbContext : DbContext, IUnitOfWork
             .HasForeignKey(m => m.BusinessID)
             .OnDelete(DeleteBehavior.Restrict);
 
+        modelBuilder.Entity<UserEntity>()
+        .HasOne(u => u.Business)
+        .WithOne(b => b.User)
+        .HasForeignKey<BusinessEntity>(b => b.Email)
+        .HasPrincipalKey<UserEntity>(u => u.Email);
+
         base.OnModelCreating(modelBuilder);
        // modelBuilder.ApplyConfiguration(new ChinhSachNhanSuConfiguration());
        

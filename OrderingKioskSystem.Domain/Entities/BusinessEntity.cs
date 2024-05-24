@@ -18,5 +18,9 @@ namespace OrderingKioskSystem.Domain.Entities
         public required string BankName { get; set; }
         public virtual ICollection<MenuEntity> Menus { get; set; }
         public virtual ICollection<ProductEntity> Products { get; set; }
+        public required string Email { get; set; }
+        [ForeignKey(nameof(Email))]
+        public virtual UserEntity User { get; set; }
+        public bool Status { get; set; }
     }
 }

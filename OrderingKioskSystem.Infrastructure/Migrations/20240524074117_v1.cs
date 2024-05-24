@@ -12,28 +12,6 @@ namespace OrderingKioskSystem.Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Business",
-                columns: table => new
-                {
-                    ID = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Url = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    BankAccountNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    BankAccountName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    BankName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    NguoiTaoID = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    NgayTao = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    NguoiCapNhatID = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    NgayCapNhatCuoi = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    NguoiXoaID = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    NgayXoa = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Business", x => x.ID);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Category",
                 columns: table => new
                 {
@@ -91,6 +69,67 @@ namespace OrderingKioskSystem.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "User",
+                columns: table => new
+                {
+                    Email = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Role = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_User", x => x.Email);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Business",
+                columns: table => new
+                {
+                    ID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Url = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    BankAccountNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    BankAccountName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    BankName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Status = table.Column<bool>(type: "bit", nullable: false),
+                    NguoiTaoID = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NgayTao = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    NguoiCapNhatID = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NgayCapNhatCuoi = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    NguoiXoaID = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NgayXoa = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Business", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Business_User_Email",
+                        column: x => x.Email,
+                        principalTable: "User",
+                        principalColumn: "Email",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Manager",
+                columns: table => new
+                {
+                    ID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Manager", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Manager_User_Email",
+                        column: x => x.Email,
+                        principalTable: "User",
+                        principalColumn: "Email",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Shipper",
                 columns: table => new
                 {
@@ -98,6 +137,8 @@ namespace OrderingKioskSystem.Infrastructure.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Phone = table.Column<string>(type: "nvarchar(11)", maxLength: 11, nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Status = table.Column<bool>(type: "bit", nullable: false),
                     NguoiTaoID = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     NgayTao = table.Column<DateTime>(type: "datetime2", nullable: true),
                     NguoiCapNhatID = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -108,6 +149,12 @@ namespace OrderingKioskSystem.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Shipper", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Shipper_User_Email",
+                        column: x => x.Email,
+                        principalTable: "User",
+                        principalColumn: "Email",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -300,6 +347,18 @@ namespace OrderingKioskSystem.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Business_Email",
+                table: "Business",
+                column: "Email",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Manager_Email",
+                table: "Manager",
+                column: "Email",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Menu_BusinessID",
                 table: "Menu",
                 column: "BusinessID");
@@ -353,11 +412,20 @@ namespace OrderingKioskSystem.Infrastructure.Migrations
                 name: "IX_ProductMenu_ProductID",
                 table: "ProductMenu",
                 column: "ProductID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Shipper_Email",
+                table: "Shipper",
+                column: "Email",
+                unique: true);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Manager");
+
             migrationBuilder.DropTable(
                 name: "OrderDetail");
 
@@ -390,6 +458,9 @@ namespace OrderingKioskSystem.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Category");
+
+            migrationBuilder.DropTable(
+                name: "User");
         }
     }
 }
