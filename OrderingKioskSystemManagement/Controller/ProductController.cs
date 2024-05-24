@@ -4,6 +4,7 @@ using OrderingKioskSystem.Application.Common.Pagination;
 using OrderingKioskSystem.Application.Product;
 using OrderingKioskSystem.Application.Product.Create;
 using OrderingKioskSystem.Application.Product.Delete;
+using OrderingKioskSystem.Application.Product.Filter;
 using OrderingKioskSystem.Application.Product.GetAll;
 using OrderingKioskSystem.Application.Product.GetById;
 using OrderingKioskSystem.Application.Product.GetByPagination;
@@ -104,6 +105,21 @@ namespace OrderingKioskSystemManagement.Api.Controller
         {
             var result = await _mediator.Send(query, cancellationToken);
             return Ok(result);
+        }
+
+        [HttpGet("product/filter-product")]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(typeof(JsonResponse<PagedResult<ProductDTO>>), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<JsonResponse<PagedResult<ProductDTO>>>> FilterProduct(
+         [FromQuery] FilterProductQuery query,
+         CancellationToken cancellationToken = default)
+        {
+            var result = await _mediator.Send(query, cancellationToken);
+            return Ok(new JsonResponse<PagedResult<ProductDTO>>(result));
         }
 
     }
