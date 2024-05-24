@@ -11,19 +11,7 @@ using System.Threading.Tasks;
 
 namespace OrderingKioskSystem.Application.Menu
 {
-    public class MenuDTO : IMapFrom<MenuEntity>
+    public class MenuDTO 
     {
-        public string Name { get; set; }
-        public string Title { get; set; }
-        public string Type { get; set; }
-        public bool Status { get; set; }
-        public string BusinessID { get; set; }
-        public BusinessDTO Business { get; set; }
-        public List<ProductMenuDTO> ProductMenus { get; set; }
-
-        public void Mapping(Profile profile)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

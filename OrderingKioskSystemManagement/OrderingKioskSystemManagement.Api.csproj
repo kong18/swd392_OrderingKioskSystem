@@ -7,6 +7,8 @@
     <InvariantGlobalization>false</InvariantGlobalization>
     <OutputType>Exe</OutputType>
     <StartupObject>OrderingKioskSystemManagement.Api.Program</StartupObject>
+    <UserSecretsId>fe6d7aa7-2d32-4548-91fd-2fc2b96a988e</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
   <ItemGroup>

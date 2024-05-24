@@ -10,6 +10,5 @@ namespace OrderingKioskSystem.Application.Kiosk.GetAll
 {
     public class GetAllKioskQuery : IRequest<List<KioskDTO>>, IQuery
     {
-
     }
 }
