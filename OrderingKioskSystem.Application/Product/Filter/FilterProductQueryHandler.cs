@@ -45,7 +45,7 @@ namespace OrderingKioskSystem.Application.Product.Filter
                 query = query.Where(p => p.Price <= request.MaxPrice.Value);
             }
 
-
+       
             if (request.Status.HasValue)
             {
                 query = query.Where(p => p.Status == request.Status.Value);
