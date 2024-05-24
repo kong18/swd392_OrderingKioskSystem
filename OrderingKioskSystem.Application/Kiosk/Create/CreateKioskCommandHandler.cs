@@ -25,14 +25,14 @@ namespace OrderingKioskSystem.Application.Kiosk.Create
 
         public async Task<string> Handle(CreateKioskCommand request, CancellationToken cancellationToken)
         {
-            var userId = _currentUserService.UserId;
-            if (string.IsNullOrEmpty(userId))
-            {
-                throw new UnauthorizedAccessException("User ID không tìm thấy.");
-            }
+            //var userId = _currentUserService.UserId;
+            //if (string.IsNullOrEmpty(userId))
+            //{
+            //    throw new UnauthorizedAccessException("User ID không tìm thấy.");
+            //}
             var kiosk = new KioskEntity
             {
-                NguoiTaoID = _currentUserService?.UserId,
+                //NguoiTaoID = _currentUserService?.UserId,
                 Location = request.location
             };
 

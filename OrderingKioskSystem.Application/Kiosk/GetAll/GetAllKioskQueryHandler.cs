@@ -17,11 +17,19 @@ namespace OrderingKioskSystem.Application.Kiosk.GetAll
     //    private readonly IKioskRepository _repository;
     //    private readonly IMapper _mapper;
 
+<<<<<<< HEAD
     //    public GetAllKioskQueryHandler(KioskRepository repository, IMapper mapper)
     //    {
     //        _repository = repository;
     //        _mapper = mapper;
     //    }
+=======
+        public GetAllKioskQueryHandler(IKioskRepository repository, IMapper mapper)
+        {
+            _repository = repository;
+            _mapper = mapper;
+        }
+>>>>>>> e05268a07ff5b906745a452c411855b3bd7dd665
 
     //    public async Task<List<KioskDTO>> Handle(GetAllKioskQuery request, CancellationToken cancellationToken)
     //    {

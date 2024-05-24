@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using OrderingKioskSystem.Application.Common.Mappings;
-using OrderingKioskSystem.Application.Menu;
 using OrderingKioskSystem.Application.Product;
 using OrderingKioskSystem.Domain.Entities;
 using System;
@@ -18,7 +17,6 @@ namespace OrderingKioskSystem.Application.Business
         public string BankAccountNumber { get; set; }
         public string BankAccountName { get; set; }
         public string BankName { get; set; }
-        public List<MenuDTO> Menus { get; set; }
         public List<ProductDTO> Products { get; set; }
 
         public void Mapping(Profile profile)
