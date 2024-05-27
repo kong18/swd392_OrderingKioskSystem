@@ -13,7 +13,9 @@ namespace OrderingKioskSystem.Domain.Entities
     {
         [Key]
         public required string Email { get; set; }
-        public string Password { get; set; }
+        public required string Password { get; set; }
+        public string Name { get; set; }
+        public string Phone { get; set; }
         public string Role { get; set; }
         public virtual BusinessEntity Business { get; set; }
         public virtual ShipperEntity Shipper { get; set; }
