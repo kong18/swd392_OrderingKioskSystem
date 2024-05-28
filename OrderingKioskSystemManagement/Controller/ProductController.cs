@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using OrderingKioskSystem.Application.Common.Pagination;
 using OrderingKioskSystem.Application.Product;
@@ -71,7 +72,7 @@ namespace OrderingKioskSystemManagement.Api.Controller
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<List<ProductDTO>>> GetAllThongTinLuongNhanVien(
+        public async Task<ActionResult<List<ProductDTO>>> GetAllProduct(
            CancellationToken cancellationToken = default)
         {
             var result = await _mediator.Send(new GetAllProductQuery(), cancellationToken);
@@ -84,7 +85,7 @@ namespace OrderingKioskSystemManagement.Api.Controller
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<ProductDTO>> GetThongTinLuongNhanVien(
+        public async Task<ActionResult<ProductDTO>> GetProduct(
             [FromRoute] string id,
             CancellationToken cancellationToken = default)
         {
