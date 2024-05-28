@@ -11,13 +11,14 @@ namespace OrderingKioskSystem.Application.Order.Create
         private readonly IProductRepository _productRepository;
         private readonly IOrderDetailRepository _orderDetailRepository;
         private readonly IKioskRepository _kioskRepository;
-
-        public CreateOrderCommandHandler(IOrderRepository orderRepository, IProductRepository productRepository, IOrderDetailRepository orderDetailRepository, IKioskRepository kioskRepository)
+        private readonly OrderService _orderService;
+        public CreateOrderCommandHandler(OrderService orderService,IOrderRepository orderRepository, IProductRepository productRepository, IOrderDetailRepository orderDetailRepository, IKioskRepository kioskRepository)
         {
             _orderRepository = orderRepository;
             _productRepository = productRepository;
             _orderDetailRepository = orderDetailRepository;
             _kioskRepository = kioskRepository;
+            _orderService = orderService;
         }
 
         public async Task<CreateOrderResponse> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
@@ -97,7 +98,7 @@ namespace OrderingKioskSystem.Application.Order.Create
             response.Total = total;
             response.KioskID = request.KioskID;
             response.OrderId = orderID;
-
+            await _orderService.NotifyNewOrder(orderID);
             return response;
         }
     }

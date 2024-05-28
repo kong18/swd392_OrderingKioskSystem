@@ -4,6 +4,8 @@ using OrderingKioskSystem.Application.Order.Create;
 using OrderingKioskSystem.Application.Product.GetById;
 using OrderingKioskSystem.Application.Product;
 using System.Net.Mime;
+using OrderingKioskSystem.Application.Order.GetById;
+using OrderingKioskSystem.Application.Order;
 
 namespace OrderingKioskSystemManagement.Api.Controller
 {
@@ -31,18 +33,18 @@ namespace OrderingKioskSystemManagement.Api.Controller
             return Ok(new JsonResponse<CreateOrderResponse>(result));
         }
 
-        [HttpGet("order/{id}")]
-        [Produces(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<ProductDTO>> GetOrderByID(
-            [FromRoute] string id,
-            CancellationToken cancellationToken = default)
-        {
-            var result = await _mediator.Send(new GetProductByIdQuery(id), cancellationToken);
-            return Ok(new JsonResponse<ProductDTO>(result));
-        }
+        //[HttpGet("order/{id}")]
+        //[Produces(MediaTypeNames.Application.Json)]
+        //[ProducesResponseType(StatusCodes.Status400BadRequest)]
+        //[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        //[ProducesResponseType(StatusCodes.Status403Forbidden)]
+        //[ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+        //public async Task<ActionResult<OrderDTO>> GetOrderByID(
+        //    [FromRoute] string id,
+        //    CancellationToken cancellationToken = default)
+        //{
+        //    var result = await _mediator.Send(new GetOrderByIdQuery(id), cancellationToken);
+        //    return Ok(new JsonResponse<ProductDTO>(result));
+        //}
     }
 }

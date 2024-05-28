@@ -22,6 +22,8 @@ namespace OrderingKioskSystemManagement.Api
                 {
                     opt.Filters.Add<ExceptionFilter>();
                 });
+            services.AddSignalR();
+
             services.AddApplication(Configuration);
             services.ConfigureApplicationSecurity(Configuration);
             services.ConfigureProblemDetails();
@@ -58,6 +60,7 @@ namespace OrderingKioskSystemManagement.Api
             app.UseEndpoints(endpoints =>
             {
                 //endpoints.MapDefaultHealthChecks();
+                endpoints.MapHub<OrderingKioskSystem.Application.NotificationHub>("/notificationHub");
                 endpoints.MapControllers();
             });
             app.UseSwashbuckle(Configuration);
