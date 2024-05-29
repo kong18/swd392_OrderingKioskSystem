@@ -12,7 +12,7 @@ using OrderingKioskSystem.Infrastructure.Persistence;
 namespace OrderingKioskSystem.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240528050738_v1")]
+    [Migration("20240529150406_v1")]
     partial class v1
     {
         /// <inheritdoc />
@@ -168,6 +168,24 @@ namespace OrderingKioskSystem.Infrastructure.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("NgayCapNhatCuoi")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("NgayTao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("NgayXoa")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("NguoiCapNhatID")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NguoiTaoID")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NguoiXoaID")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Phone")

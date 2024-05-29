@@ -26,10 +26,11 @@ namespace OrderingKioskSystem.Application.Business.CreateBusinessCommand
 
         public async Task<string> Handle(CreateBusinessCommand request, CancellationToken cancellationToken)
         {
+            var hashedPassword = _userRepository.HashPassword(request.Password);
             var user = new UserEntity
             {
                 Email = request.Email,
-                Password = "123",
+                Password = hashedPassword,
                 Role = "Business"
             };
 
