@@ -11,13 +11,14 @@ namespace OrderingKioskSystem.Application.Order.Create
         private readonly IProductRepository _productRepository;
         private readonly IOrderDetailRepository _orderDetailRepository;
         private readonly IKioskRepository _kioskRepository;
-
-        public CreateOrderCommandHandler(IOrderRepository orderRepository, IProductRepository productRepository, IOrderDetailRepository orderDetailRepository, IKioskRepository kioskRepository)
+        private readonly OrderService _orderService;
+        public CreateOrderCommandHandler(OrderService orderService,IOrderRepository orderRepository, IProductRepository productRepository, IOrderDetailRepository orderDetailRepository, IKioskRepository kioskRepository)
         {
             _orderRepository = orderRepository;
             _productRepository = productRepository;
             _orderDetailRepository = orderDetailRepository;
             _kioskRepository = kioskRepository;
+            _orderService = orderService;
         }
 
         public async Task<CreateOrderResponse> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
@@ -60,26 +61,26 @@ namespace OrderingKioskSystem.Application.Order.Create
                 var product = await _productRepository.FindAsync(x => x.ID == item.ProductID, cancellationToken);
 
                 var responseItem = new ResponseItem
-                    {
-                        ProductID = product.ID,
-                        Name = product.Name,
-                        UnitPrice = product.Price,
-                        Quantity = item.Quantity,
-                        Price = product.Price * item.Quantity,
-                        Size = item.Size,
-                    };
+                {
+                    ProductID = product.ID,
+                    Name = product.Name,
+                    UnitPrice = product.Price,
+                    Quantity = item.Quantity,
+                    Price = product.Price * item.Quantity,
+                    Size = item.Size,
+                };
 
                 var orderDetail = new OrderDetailEntity
-                    {
-                        OrderID = orderID,
-                        ProductID = product.ID,
-                        Quantity = item.Quantity,
-                        UnitPrice = product.Price,
-                        Price = item.Quantity * product.Price,
-                        Size = item.Size,
-                        OrderDate = DateTime.Now,
-                        Status = true
-                    };
+                {
+                    OrderID = orderID,
+                    ProductID = product.ID,
+                    Quantity = item.Quantity,
+                    UnitPrice = product.Price,
+                    Price = item.Quantity * product.Price,
+                    Size = item.Size,
+                    OrderDate = DateTime.Now,
+                    Status = true
+                };
 
                 _orderDetailRepository.Add(orderDetail);
                 await _orderDetailRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
@@ -92,11 +93,12 @@ namespace OrderingKioskSystem.Application.Order.Create
             _orderRepository.Update(order);
             await _orderRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
 
-
             response.Items = listResponseItem;
             response.Total = total;
             response.KioskID = request.KioskID;
-            response.OrderId = orderID;
+            response.OrderId = orderID.ToString();
+
+            await _orderService.NotifyNewOrder(orderID.ToString());
 
             return response;
         }
