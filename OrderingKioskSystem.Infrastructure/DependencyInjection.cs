@@ -35,6 +35,7 @@ public static class DependencyInjection
         services.AddTransient<IShipperRepository, ShipperRepository>();
         services.AddTransient<IPaymentRepository, PaymentRepository>();
         services.AddTransient<IPaymentGatewayRepository, PaymentGatewayRepository>();
+        services.AddTransient<IUserRepository, UserRepository>();
 
 
         return services;

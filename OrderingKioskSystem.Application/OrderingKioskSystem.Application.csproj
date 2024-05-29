@@ -30,9 +30,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="OrderDetail\NewFolder\" />
     <Folder Include="PaymentGateway\" />
     <Folder Include="Payment\" />
-    <Folder Include="OrderDetail\" />
   </ItemGroup>
 
 </Project>

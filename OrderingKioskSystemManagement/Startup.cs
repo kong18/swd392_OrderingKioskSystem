@@ -4,6 +4,7 @@ using OrderingKioskSystemManagement.Api.Filters;
 using Serilog;
 using OrderingKioskSystem.Application;
 using OrderingKioskSystem.Infrastructure;
+using OrderingKioskSystem.Application.Order;
 namespace OrderingKioskSystemManagement.Api
 {
     public class Startup
@@ -23,7 +24,7 @@ namespace OrderingKioskSystemManagement.Api
                     opt.Filters.Add<ExceptionFilter>();
                 });
             services.AddSignalR();
-
+            services.AddScoped<OrderService>();
             services.AddApplication(Configuration);
             services.ConfigureApplicationSecurity(Configuration);
             services.ConfigureProblemDetails();

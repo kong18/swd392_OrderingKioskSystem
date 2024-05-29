@@ -68,18 +68,18 @@ namespace OrderingKioskSystemManagement.Api.Controller
             return Ok(new JsonResponse<string>(result));
         }
 
-        //[HttpGet("kiosk")]
-        //[Produces(MediaTypeNames.Application.Json)]
-        //[ProducesResponseType(StatusCodes.Status400BadRequest)]
-        //[ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        //[ProducesResponseType(StatusCodes.Status403Forbidden)]
-        //[ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        //public async Task<ActionResult<List<KioskDTO>>> GetAllKiosk(
-        //   CancellationToken cancellationToken = default)
-        //{
-        //    var result = await _mediator.Send(new GetAllKioskQuery(), cancellationToken);
-        //    return Ok(new JsonResponse<List<KioskDTO>>(result));
-        //}
+        [HttpGet("kiosk")]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<List<KioskDTO>>> GetAllKiosk(
+           CancellationToken cancellationToken = default)
+        {
+            var result = await _mediator.Send(new GetAllKioskQuery(), cancellationToken);
+            return Ok(new JsonResponse<List<KioskDTO>>(result));
+        }
 
         [HttpGet("kiosk/{id}")]
         [Produces(MediaTypeNames.Application.Json)]

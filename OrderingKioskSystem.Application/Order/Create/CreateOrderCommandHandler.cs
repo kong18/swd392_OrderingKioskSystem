@@ -61,26 +61,26 @@ namespace OrderingKioskSystem.Application.Order.Create
                 var product = await _productRepository.FindAsync(x => x.ID == item.ProductID, cancellationToken);
 
                 var responseItem = new ResponseItem
-                    {
-                        ProductID = product.ID,
-                        Name = product.Name,
-                        UnitPrice = product.Price,
-                        Quantity = item.Quantity,
-                        Price = product.Price * item.Quantity,
-                        Size = item.Size,
-                    };
+                {
+                    ProductID = product.ID,
+                    Name = product.Name,
+                    UnitPrice = product.Price,
+                    Quantity = item.Quantity,
+                    Price = product.Price * item.Quantity,
+                    Size = item.Size,
+                };
 
                 var orderDetail = new OrderDetailEntity
-                    {
-                        OrderID = orderID,
-                        ProductID = product.ID,
-                        Quantity = item.Quantity,
-                        UnitPrice = product.Price,
-                        Price = item.Quantity * product.Price,
-                        Size = item.Size,
-                        OrderDate = DateTime.Now,
-                        Status = true
-                    };
+                {
+                    OrderID = orderID,
+                    ProductID = product.ID,
+                    Quantity = item.Quantity,
+                    UnitPrice = product.Price,
+                    Price = item.Quantity * product.Price,
+                    Size = item.Size,
+                    OrderDate = DateTime.Now,
+                    Status = true
+                };
 
                 _orderDetailRepository.Add(orderDetail);
                 await _orderDetailRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
@@ -93,12 +93,13 @@ namespace OrderingKioskSystem.Application.Order.Create
             _orderRepository.Update(order);
             await _orderRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
 
-
             response.Items = listResponseItem;
             response.Total = total;
             response.KioskID = request.KioskID;
-            response.OrderId = orderID;
-            await _orderService.NotifyNewOrder(orderID);
+            response.OrderId = orderID.ToString();
+
+            await _orderService.NotifyNewOrder(orderID.ToString());
+
             return response;
         }
     }

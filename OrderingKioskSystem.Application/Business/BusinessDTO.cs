@@ -12,6 +12,7 @@ namespace OrderingKioskSystem.Application.Business
 {
     public class BusinessDTO : IMapFrom<BusinessEntity>
     {
+        public string ID { get; set; }
         public string Url { get; set; }
         public string Name { get; set; }
         public string BankAccountNumber { get; set; }
