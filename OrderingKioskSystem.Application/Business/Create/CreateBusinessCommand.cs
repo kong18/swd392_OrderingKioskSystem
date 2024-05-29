@@ -12,6 +12,7 @@ namespace OrderingKioskSystem.Application.Business.CreateBusinessCommand
     {
         public string Url { get; set; }
         public string Name { get; set; }
+        public string Password {  get; set; }   
         public string BankAccountNumber { get; set; }
         public string BankAccountName { get; set; }
         public string BankName { get; set; }

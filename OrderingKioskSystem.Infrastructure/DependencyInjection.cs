@@ -14,7 +14,7 @@ public static class DependencyInjection
         services.AddDbContext<ApplicationDbContext>((sp, options) =>
         {
             options.UseSqlServer(
-                configuration.GetConnectionString("server"),
+                configuration.GetConnectionString("local"),
                 b =>
                 {
                     b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName);
@@ -36,7 +36,7 @@ public static class DependencyInjection
         services.AddTransient<IPaymentRepository, PaymentRepository>();
         services.AddTransient<IPaymentGatewayRepository, PaymentGatewayRepository>();
         services.AddTransient<IUserRepository, UserRepository>();
-
+        services.AddTransient<IManagerRepository, ManagerRepository>();
 
         return services;
     }

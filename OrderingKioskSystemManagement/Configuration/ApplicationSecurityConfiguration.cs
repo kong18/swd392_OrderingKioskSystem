@@ -34,7 +34,7 @@ namespace OrderingKioskSystemManagement.Api.Configuration
                         ValidateLifetime = true,
                         ValidIssuer = configuration.GetSection("Security.Bearer:Authority").Get<string>(),
                         ValidAudience = configuration.GetSection("Security.Bearer:Audience").Get<string>(),
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("InternSystem!!!")),
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("this is my custom Secret key for authentication")),
                     };
                 });
 

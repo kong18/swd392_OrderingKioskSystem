@@ -15,12 +15,13 @@ namespace OrderingKioskSystemManagement.Api.Services
             {
 
                 new(JwtRegisteredClaimNames.Sub, ID),
+                
                 new(ClaimTypes.Role, roles)
             };
 
 
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("InternSystem!!!"));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("this is my custom Secret key for authentication"));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(

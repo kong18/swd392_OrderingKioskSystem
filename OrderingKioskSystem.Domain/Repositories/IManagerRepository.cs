@@ -7,10 +7,7 @@ using System.Threading.Tasks;
 
 namespace OrderingKioskSystem.Domain.Repositories
 {
-    public interface IUserRepository : IEFRepository<UserEntity, UserEntity>
+    public interface  IManagerRepository : IEFRepository<ManagerEntity, ManagerEntity>  
     {
-        string HashPassword(string password);
-        bool VerifyPassword(string password, string passwordHash);
-        string GeneratePassword();
     }
 }

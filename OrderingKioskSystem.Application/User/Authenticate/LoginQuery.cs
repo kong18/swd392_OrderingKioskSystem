@@ -6,19 +6,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OrderingKioskSystem.Application.User.CreateUser
+namespace OrderingKioskSystem.Application.User.Authenticate
 {
-    public class CreateNewUserCommand : IRequest<string>, ICommand
+    public class LoginQuery : IRequest<UserLoginDTO>,IQuery
     {
-        public CreateNewUserCommand(string email, string password, string role)
+        public LoginQuery()
+        {
+        }
+
+        public LoginQuery(string email, string password)
         {
             Email = email;
             Password = password;
-            Role = role;
         }
 
         public string Email { get; set; }
         public string Password { get; set; }
-        public string Role { get; set; }
     }
 }
