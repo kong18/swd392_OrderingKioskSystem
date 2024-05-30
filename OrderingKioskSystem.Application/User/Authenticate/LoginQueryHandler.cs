@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using OrderingKioskSystem.Application.Common.Interfaces;
 using OrderingKioskSystem.Domain.Common.Exceptions;
 using OrderingKioskSystem.Domain.Entities;
 using OrderingKioskSystem.Domain.Repositories;
@@ -12,11 +13,13 @@ namespace OrderingKioskSystem.Application.User.Authenticate
     {
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
+        private readonly IJwtService _jwtService;
 
-        public LoginQueryHandler(IUserRepository userRepository, IMapper mapper)
+        public LoginQueryHandler(IUserRepository userRepository, IMapper mapper, IJwtService jwtService)
         {
             _userRepository = userRepository;
             _mapper = mapper;
+            _jwtService = jwtService;
         }
 
         public async Task<UserLoginDTO> Handle(LoginQuery request, CancellationToken cancellationToken)

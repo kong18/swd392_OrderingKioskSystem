@@ -25,7 +25,7 @@ namespace OrderingKioskSystemManagement.Api.Controllers
         public async Task<IActionResult> Login([FromBody] LoginQuery query, CancellationToken cancellationToken)
         {
             var result = await _mediator.Send(query, cancellationToken);
-            var token = _jwtService.CreateToken(result.EntityId, result.Role);
+            var token = _jwtService.CreateToken(result.EntityId, result.Role,result.Email);
             return Ok(new JsonResponse<string>(token));
         }
     }

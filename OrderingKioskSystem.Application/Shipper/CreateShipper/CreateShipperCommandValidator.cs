@@ -5,11 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OrderingKioskSystem.Application.User.CreateShipper
+namespace OrderingKioskSystem.Application.Shipper.CreateShipper
 {
-    public class CreateShipperUserCommandValidator : AbstractValidator<CreateShipperUserCommand>
+    public class CreateShipperCommandValidator : AbstractValidator<CreateShipperCommand>
     {
-        public CreateShipperUserCommandValidator()
+        public CreateShipperCommandValidator()
         {
             RuleFor(x => x.Email).NotEmpty().EmailAddress();
             RuleFor(x => x.Password).NotEmpty().MinimumLength(6);
