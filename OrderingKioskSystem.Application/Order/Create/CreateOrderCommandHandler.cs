@@ -47,7 +47,7 @@ namespace OrderingKioskSystem.Application.Order.Create
             var order = new OrderEntity
             {
                 KioskID = request.KioskID,
-                Status = "OnGoing",
+                Status = "OnPreparing",
                 Note = request.Note ?? "",
                 Total = total,
             };
@@ -93,10 +93,10 @@ namespace OrderingKioskSystem.Application.Order.Create
             _orderRepository.Update(order);
             await _orderRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
 
-            response.Items = listResponseItem;
+            response.Products = listResponseItem;
             response.Total = total;
             response.KioskID = request.KioskID;
-            response.OrderId = orderID.ToString();
+            response.ID = orderID.ToString();
 
             await _orderService.NotifyNewOrder(orderID.ToString());
 

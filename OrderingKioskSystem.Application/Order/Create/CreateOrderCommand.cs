@@ -29,9 +29,9 @@ namespace OrderingKioskSystem.Application.Order.Create
     public class CreateOrderResponse
     {
         public string KioskID { get; set; }
-        public string OrderId { get; set; }
+        public string ID { get; set; }
         public decimal Total { get; set; }
-        public List<ResponseItem>? Items { get; set; }
+        public List<ResponseItem>? Products { get; set; }
     }
 
     public class ResponseItem
@@ -43,6 +43,5 @@ namespace OrderingKioskSystem.Application.Order.Create
         public decimal Price { get; set; }
         public string? Size { get; set; }
     }
-
 
 }
