@@ -9,24 +9,19 @@ namespace OrderingKioskSystemManagement.Api.Services
 {
     public class JwtService : IJwtService
     {
-        public string CreateToken(string ID, string roles)
+        public string CreateToken(string entityId, string role, string email)
         {
             var claims = new List<Claim>
             {
-
-                new(JwtRegisteredClaimNames.Sub, ID),
-                
-                new(ClaimTypes.Role, roles)
+                new(JwtRegisteredClaimNames.Sub, entityId),
+                new(JwtClaimTypes.Email, email),
+                new(ClaimTypes.Role, role)
             };
-
-
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("this is my custom Secret key for authentication"));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
-                // issuer: "test",
-                // audience: "api",
                 claims: claims,
                 expires: DateTime.Now.AddDays(1),
                 signingCredentials: creds);

@@ -1,8 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using OrderingKioskSystem.Application.Business.CreateBusinessCommand;
+using OrderingKioskSystem.Application.User.ChangePassword;
 using OrderingKioskSystem.Application.User.CreateManager;
-using OrderingKioskSystem.Application.User.CreateShipper;
 using System.Net.Mime;
 
 namespace OrderingKioskSystemManagement.Api.Controller
@@ -32,18 +31,11 @@ namespace OrderingKioskSystemManagement.Api.Controller
             var result = await _mediator.Send(command, cancellationToken);
             return CreatedAtAction(nameof(CreateManagerUser), new { id = result }, new JsonResponse<string>(result));
         }
-
-        [HttpPost("create-shipper")]
-        [Produces(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(typeof(JsonResponse<string>), StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<JsonResponse<string>>> CreateShipperUser(
-            [FromBody] CreateShipperUserCommand command,
-            CancellationToken cancellationToken = default)
+        [HttpPost("change-password")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordCommand command, CancellationToken cancellationToken)
         {
             var result = await _mediator.Send(command, cancellationToken);
-            return CreatedAtAction(nameof(CreateShipperUser), new { id = result }, new JsonResponse<string>(result));
+            return Ok(new { Message = result });
         }
     }
 }
