@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace OrderingKioskSystem.Application.Order.Create
 {
-    public class CreateOrderCommand : IRequest<CreateOrderResponse>
+    public class CreateOrderCommand : IRequest<OrderDTO>
     {
         public CreateOrderCommand(string kioskID, List<RequestItem> items)
         {
@@ -23,24 +23,6 @@ namespace OrderingKioskSystem.Application.Order.Create
     {
         public string ProductID { get; set; }
         public int Quantity { get; set; }
-        public string? Size { get; set; }
-    }
-
-    public class CreateOrderResponse
-    {
-        public string KioskID { get; set; }
-        public string ID { get; set; }
-        public decimal Total { get; set; }
-        public List<ResponseItem>? Products { get; set; }
-    }
-
-    public class ResponseItem
-    {
-        public string ProductID { get; set; }
-        public string Name { get; set; }
-        public decimal UnitPrice { get; set; }
-        public int Quantity { get; set; }
-        public decimal Price { get; set; }
         public string? Size { get; set; }
     }
 

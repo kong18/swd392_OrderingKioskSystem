@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using OrderingKioskSystem.Application.Category.Create;
+using OrderingKioskSystem.Application.Common.Interfaces;
 using OrderingKioskSystem.Domain.Entities;
 using OrderingKioskSystem.Domain.Repositories;
 using System;
@@ -13,10 +14,12 @@ namespace OrderingKioskSystem.Application.Category.Update
     public class UpdateCategoryCommandHandler : IRequestHandler<UpdateCategoryCommand, string>
     {
         private readonly ICategoryRepository _categoryRepository;
+        private readonly ICurrentUserService _currentUserService;
 
-        public UpdateCategoryCommandHandler(ICategoryRepository categoryRepository)
+        public UpdateCategoryCommandHandler(ICategoryRepository categoryRepository, ICurrentUserService currentUserService)
         {
             _categoryRepository = categoryRepository;
+            _currentUserService = currentUserService;
         }
 
         public async Task<string> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
@@ -31,6 +34,7 @@ namespace OrderingKioskSystem.Application.Category.Update
             categoryExist.Name = request.Name ?? categoryExist.Name;
             categoryExist.Url = request.Url ?? categoryExist.Url;
 
+            categoryExist.NguoiCapNhatID = _currentUserService.UserId;
             categoryExist.NgayCapNhat = DateTime.Now;
             _categoryRepository.Update(categoryExist);
 
