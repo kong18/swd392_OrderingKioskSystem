@@ -15,7 +15,7 @@ namespace OrderingKioskSystemManagement.Api.Services
             _claimsPrincipal = httpContextAccessor?.HttpContext?.User;
             _authorizationService = authorizationService;
         }
-       public string? UserEmail => _claimsPrincipal?.FindFirst(ClaimTypes.Email)?.Value;
+        public string? UserEmail => _claimsPrincipal?.FindFirst(JwtClaimTypes.Email)?.Value;
         public string? UserId => _claimsPrincipal?.FindFirst(JwtClaimTypes.Subject)?.Value;
 
         public async Task<bool> AuthorizeAsync(string policy)

@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using OrderingKioskSystem.Application.Common.Interfaces;
 using OrderingKioskSystem.Application.Product.Create;
 using OrderingKioskSystem.Domain.Entities;
 using OrderingKioskSystem.Domain.Repositories;
@@ -14,10 +15,12 @@ namespace OrderingKioskSystem.Application.Category.Create
     public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand, string>
     {
         private readonly ICategoryRepository _categoryRepository;
+        private readonly ICurrentUserService _currentUserService;
 
-        public CreateCategoryCommandHandler(ICategoryRepository categoryRepository)
+        public CreateCategoryCommandHandler(ICategoryRepository categoryRepository, ICurrentUserService currentUserService)
         {
             _categoryRepository = categoryRepository;
+            _currentUserService = currentUserService;
         }
 
         public async Task<string> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
@@ -33,6 +36,9 @@ namespace OrderingKioskSystem.Application.Category.Create
             {
                 Name = request.Name,
                 Url = request.Url,
+
+                NguoiTaoID = _currentUserService.UserId,
+                NgayTao = DateTime.Now
             };
 
             _categoryRepository.Add(category);
