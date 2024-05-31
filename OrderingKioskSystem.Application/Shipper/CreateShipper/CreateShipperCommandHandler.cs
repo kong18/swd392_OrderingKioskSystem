@@ -30,11 +30,11 @@ namespace OrderingKioskSystem.Application.Shipper.CreateShipper
 
         public async Task<string> Handle(CreateShipperCommand request, CancellationToken cancellationToken)
         {
-            var hashedPassword = _userRepository.HashPassword(request.Password);
+            var password = _userRepository.GeneratePassword();
             var user = new UserEntity
             {
                 Email = request.Email,
-                Password = hashedPassword,
+                Password = _userRepository.HashPassword(password),
                 Role = "Shipper"
             };
 
