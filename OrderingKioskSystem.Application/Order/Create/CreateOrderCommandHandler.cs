@@ -53,7 +53,7 @@ namespace OrderingKioskSystem.Application.Order.Create
                 Status = "OnPreparing",
                 Note = request.Note ?? "",
                 Total = total,
-                NguoiTaoID = _currentUserService.UserId,
+                //NguoiTaoID = _currentUserService.UserId,
                 NgayTao = DateTime.Now
             };
 

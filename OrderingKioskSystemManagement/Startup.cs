@@ -35,7 +35,7 @@ namespace OrderingKioskSystemManagement.Api
             {
             options.AddPolicy("CorsPolicy",
         builder => builder
-            .AllowAnyOrigin()  // Add your frontend origin here
+              // Add your frontend origin here
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials()
