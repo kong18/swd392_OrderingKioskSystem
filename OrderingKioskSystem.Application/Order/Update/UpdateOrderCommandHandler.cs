@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using OrderingKioskSystem.Application.Common.Interfaces;
 using OrderingKioskSystem.Application.Order.Create;
 using OrderingKioskSystem.Domain.Common.Exceptions;
 using OrderingKioskSystem.Domain.Entities;
@@ -16,12 +17,12 @@ namespace OrderingKioskSystem.Application.Order.Update
     {
         private readonly IOrderRepository _orderRepository;
         private readonly IShipperRepository _shipperRepository;
-        private readonly OrderService _orderService;
-        public UpdateOrderCommandHandler(OrderService orderService, IOrderRepository orderRepository, IShipperRepository shipperRepository)
+        private readonly ICurrentUserService _currentUserService;
+        public UpdateOrderCommandHandler(IOrderRepository orderRepository, IShipperRepository shipperRepository, ICurrentUserService currentUserService)
         {
             _orderRepository = orderRepository;
             _shipperRepository = shipperRepository;
-            _orderService = orderService;
+            _currentUserService = currentUserService;
         }
 
         public async Task<string> Handle(UpdateOrderCommand request, CancellationToken cancellationToken)
@@ -46,6 +47,8 @@ namespace OrderingKioskSystem.Application.Order.Update
             orderExist.Status = request.Status ?? orderExist.Status;
             orderExist.ShipperID = request.ShipperID ?? orderExist.ShipperID;
 
+            orderExist.NguoiCapNhatID = _currentUserService.UserId;
+            orderExist.NgayCapNhatCuoi = DateTime.Now;
             _orderRepository.Update(orderExist);
 
             return await _orderRepository.UnitOfWork.SaveChangesAsync(cancellationToken) > 0 ? "Update Success!" : "Update Fail!";
