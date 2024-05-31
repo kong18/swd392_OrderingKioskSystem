@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using OrderingKioskSystem.Application.Common.Interfaces;
+using OrderingKioskSystem.Application.User.SendEmail;
 using OrderingKioskSystem.Domain.Entities;
 using OrderingKioskSystem.Domain.Repositories;
 using System;
@@ -18,6 +19,7 @@ namespace OrderingKioskSystem.Application.Shipper.CreateShipper
         private readonly IProductRepository _productRepository;
         private readonly ICurrentUserService _currentUserService;
         private readonly IUserRepository _userRepository;
+        private readonly IEmailService _emailService;
 
         public CreateShipperCommandHandler(IMapper mapper, IProductRepository productRepository, ICurrentUserService currentUserService, IUserRepository userRepository, IShipperRepository shipperRepository)
         {
@@ -26,11 +28,27 @@ namespace OrderingKioskSystem.Application.Shipper.CreateShipper
             _currentUserService = currentUserService;
             _userRepository = userRepository;
             _shipperRepository = shipperRepository;
+            _emailService = new EmailService();
         }
 
         public async Task<string> Handle(CreateShipperCommand request, CancellationToken cancellationToken)
         {
-            var hashedPassword = _userRepository.HashPassword(request.Password);
+            bool userExist = await _userRepository.AnyAsync(x => x.Email == request.Email, cancellationToken);
+
+            if (userExist)
+            {
+                return "User's email exists!";
+            }
+
+            SendMailModel model = new SendMailModel
+            {
+                ReceiveAddress = request.Email,
+                Content = VerificationCodeGenerator.GenerateVerificationCode().ToString()
+            };
+
+            _emailService.SendMail(model);
+
+            var hashedPassword = _userRepository.HashPassword(model.Content);
             var user = new UserEntity
             {
                 Email = request.Email,
