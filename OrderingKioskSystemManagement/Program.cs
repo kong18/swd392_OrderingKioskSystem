@@ -1,5 +1,6 @@
 ﻿
 using Microsoft.AspNetCore.Hosting;
+using OrderingKioskSystem.Application.User.SendEmail;
 using Serilog;
 using Serilog.Events;
 
@@ -37,6 +38,15 @@ public static class Program
                 .Enrich.FromLogContext()
                 .WriteTo.Console()
                 .WriteTo.File("Logs/logs.txt", rollingInterval: RollingInterval.Day))
+
+            .ConfigureAppConfiguration((context, config) =>
+            {
+                // Build the configuration
+                var builtConfig = config.Build();
+
+                // Load the EmailSettings and set the singleton instance
+                EmailSettingModel.Instance = builtConfig.GetSection("EmailSettings").Get<EmailSettingModel>();
+            })
 
             .ConfigureWebHostDefaults(webBuilder =>
             {

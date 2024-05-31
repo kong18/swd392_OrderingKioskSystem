@@ -20,6 +20,8 @@ namespace OrderingKioskSystem.Application.Order
         public string Location { get; set; }
         public decimal Total {  get; set; }
         public string Note { get; set; }
+        public string Status { get; set; }
+        public DateTime NgayTao { get; set; }
         public string? ShipperName { get; set; }
         public List<ResponseItem> Products { get; set; } = new List<ResponseItem>();
         public void Mapping(Profile profile)

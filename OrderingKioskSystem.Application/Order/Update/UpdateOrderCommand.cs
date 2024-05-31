@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using OrderingKioskSystem.Application.Common.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace OrderingKioskSystem.Application.Order.Update
 {
-    public class UpdateOrderCommand : IRequest<string>
+    public class UpdateOrderCommand : IRequest<string>, ICommand
     {
         public UpdateOrderCommand(string? status, string? shipperID)
         {

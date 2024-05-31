@@ -15,4 +15,6 @@ namespace OrderingKioskSystem.Application.Order.GetById
         }
         public string ID { get; set; }
     }
+
+
 }

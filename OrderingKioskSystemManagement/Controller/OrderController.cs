@@ -8,6 +8,11 @@ using OrderingKioskSystem.Application.Order;
 using OrderingKioskSystem.Application.Order.Update;
 using OrderingKioskSystem.Application.Order.Delete;
 using OrderingKioskSystem.Application.Order.GetAll;
+using OrderingKioskSystem.Application.Common.Pagination;
+using OrderingKioskSystem.Application.Product.GetByPagination;
+using OrderingKioskSystem.Application.Order.GetByPagnition;
+using OrderingKioskSystem.Application.Product.Filter;
+using OrderingKioskSystem.Application.Order.Filter;
 
 namespace OrderingKioskSystemManagement.Api.Controller
 {
@@ -48,6 +53,21 @@ namespace OrderingKioskSystemManagement.Api.Controller
             var result = await _mediator.Send(new GetOrderByIdQuery(id), cancellationToken);
             return Ok(new JsonResponse<OrderDTO>(result));
         }
+
+        [HttpGet("order/pagnition")]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(typeof(JsonResponse<PagedResult<OrderDTO>>), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(JsonResponse<PagedResult<OrderDTO>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<JsonResponse<PagedResult<OrderDTO>>>> GetPagination([FromQuery] GetOrderByPagnitionQuery query, CancellationToken cancellationToken = default)
+        {
+            var result = await _mediator.Send(query, cancellationToken);
+            return Ok(result);
+        }
+
         [HttpPut("order")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -87,6 +107,21 @@ namespace OrderingKioskSystemManagement.Api.Controller
         {
             var result = await _mediator.Send(new GetAllOrderQuery(), cancellationToken);
             return Ok(new JsonResponse<List<OrderDTO>>(result));
+        }
+
+        [HttpGet("order/filter-order")]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(typeof(JsonResponse<PagedResult<ProductDTO>>), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<JsonResponse<PagedResult<ProductDTO>>>> FilterOrder(
+         [FromQuery] FilterOrderQuery query,
+         CancellationToken cancellationToken = default)
+        {
+            var result = await _mediator.Send(query, cancellationToken);
+            return Ok(new JsonResponse<PagedResult<OrderDTO>>(result));
         }
     }
 }

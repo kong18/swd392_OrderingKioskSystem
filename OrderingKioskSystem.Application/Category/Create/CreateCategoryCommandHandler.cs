@@ -32,6 +32,12 @@ namespace OrderingKioskSystem.Application.Category.Create
                 return "Category's Name can't be dupplicated";
             }
 
+            var userId = _currentUserService.UserId;
+            if (string.IsNullOrEmpty(userId))
+            {
+                throw new UnauthorizedAccessException("User ID không tìm thấy.");
+            }
+
             var category = new CategoryEntity
             {
                 Name = request.Name,

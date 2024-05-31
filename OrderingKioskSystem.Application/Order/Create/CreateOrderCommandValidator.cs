@@ -17,18 +17,18 @@ namespace OrderingKioskSystem.Application.Order.Create
             RuleFor(command => command.KioskID)
                 .NotEmpty().WithMessage("KioskID can't be empty or null");
 
-            RuleFor(command => command.Items)
-                .NotEmpty().WithMessage("Items list can't be empty or null")
+            RuleFor(command => command.Products)
+                .NotEmpty().WithMessage("Product's list can't be empty or null")
                 .Must(items => items != null && items.Count > 0).WithMessage("Items list must contain at least one item");
 
-            RuleForEach(command => command.Items)
+            RuleForEach(command => command.Products)
             .SetValidator(new RequestItemValidator());
         }
     }
 
     public class RequestItemValidator : AbstractValidator<RequestItem>
     {
-        private readonly string[] validSizes = { "small", "medium", "large" };
+        private readonly string[] validSizes = { "S", "M", "L" };
         public RequestItemValidator()
         {
 
@@ -40,7 +40,7 @@ namespace OrderingKioskSystem.Application.Order.Create
 
             RuleFor(item => item.Size)
             .Must(size => string.IsNullOrEmpty(size) || Array.Exists(validSizes, s => s.Equals(size, StringComparison.OrdinalIgnoreCase)))
-            .WithMessage("Size must be either empty or one of the predefined values: small, medium, large");
+            .WithMessage("Size must be either empty or one of the predefined values: S, M, L");
         }
     }
 }

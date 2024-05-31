@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using OrderingKioskSystem.Application.Common.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace OrderingKioskSystem.Application.Order.Delete
 {
-    public class DeleteOrderCommand : IRequest<string>
+    public class DeleteOrderCommand : IRequest<string>, ICommand
     {
         public DeleteOrderCommand(string id) 
         {
