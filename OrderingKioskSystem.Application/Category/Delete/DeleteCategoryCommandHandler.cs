@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using OrderingKioskSystem.Application.Category.Create;
+using OrderingKioskSystem.Application.Common.Interfaces;
 using OrderingKioskSystem.Domain.Entities;
 using OrderingKioskSystem.Domain.Repositories;
 using System;
@@ -13,10 +14,12 @@ namespace OrderingKioskSystem.Application.Category.Delete
     public class DeleteCategoryCommandHandler : IRequestHandler<DeleteCategoryCommand, string>
     {
         private readonly ICategoryRepository _categoryRepository;
+        private readonly ICurrentUserService _currentUserService;
 
-        public DeleteCategoryCommandHandler(ICategoryRepository categoryRepository)
+        public DeleteCategoryCommandHandler(ICategoryRepository categoryRepository, ICurrentUserService currentUserService)
         {
             _categoryRepository = categoryRepository;
+            _currentUserService = currentUserService;
         }
 
         public async Task<string> Handle(DeleteCategoryCommand request, CancellationToken cancellationToken)
@@ -29,6 +32,7 @@ namespace OrderingKioskSystem.Application.Category.Delete
             }
 
             categoryExist.NgayXoa = DateTime.Now;
+            categoryExist.NguoiXoaID = _currentUserService.UserId;
             _categoryRepository.Update(categoryExist);
 
             return await _categoryRepository.UnitOfWork.SaveChangesAsync(cancellationToken) > 0 ? "Delete Success!" : "Delete Fail!";

@@ -1,27 +1,33 @@
-﻿using MediatR;
+﻿using AutoMapper;
+using MediatR;
+using OrderingKioskSystem.Application.Common.Interfaces;
 using OrderingKioskSystem.Domain.Common.Exceptions;
 using OrderingKioskSystem.Domain.Entities;
 using OrderingKioskSystem.Domain.Repositories;
 
 namespace OrderingKioskSystem.Application.Order.Create
 {
-    public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, CreateOrderResponse>
+    public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, OrderDTO>
     {
         private readonly IOrderRepository _orderRepository;
         private readonly IProductRepository _productRepository;
         private readonly IOrderDetailRepository _orderDetailRepository;
         private readonly IKioskRepository _kioskRepository;
         private readonly OrderService _orderService;
-        public CreateOrderCommandHandler(OrderService orderService,IOrderRepository orderRepository, IProductRepository productRepository, IOrderDetailRepository orderDetailRepository, IKioskRepository kioskRepository)
+        private readonly IMapper _mapper;
+        private readonly ICurrentUserService _currentUserService;
+        public CreateOrderCommandHandler(OrderService orderService,IOrderRepository orderRepository, IProductRepository productRepository, IOrderDetailRepository orderDetailRepository, IKioskRepository kioskRepository, IMapper mapper, ICurrentUserService currentUserService)
         {
             _orderRepository = orderRepository;
             _productRepository = productRepository;
             _orderDetailRepository = orderDetailRepository;
             _kioskRepository = kioskRepository;
             _orderService = orderService;
+            _mapper = mapper;
+            _currentUserService = currentUserService;
         }
 
-        public async Task<CreateOrderResponse> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
+        public async Task<OrderDTO> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
         {
             bool kioskExist = await _kioskRepository.AnyAsync(x => x.ID == request.KioskID && !x.NgayXoa.HasValue, cancellationToken);
 
@@ -39,17 +45,16 @@ namespace OrderingKioskSystem.Application.Order.Create
                     throw new NotFoundException("Product is not found or deleted");
                 }
             }
-
-                    var response = new CreateOrderResponse();
-            var listResponseItem = new List<ResponseItem>();
             decimal total = 0;
 
             var order = new OrderEntity
             {
                 KioskID = request.KioskID,
-                Status = "OnGoing",
+                Status = "OnPreparing",
                 Note = request.Note ?? "",
                 Total = total,
+                NguoiTaoID = _currentUserService.UserId,
+                NgayTao = DateTime.Now
             };
 
             _orderRepository.Add(order);
@@ -59,16 +64,6 @@ namespace OrderingKioskSystem.Application.Order.Create
             foreach (var item in request.Items)
             {
                 var product = await _productRepository.FindAsync(x => x.ID == item.ProductID, cancellationToken);
-
-                var responseItem = new ResponseItem
-                {
-                    ProductID = product.ID,
-                    Name = product.Name,
-                    UnitPrice = product.Price,
-                    Quantity = item.Quantity,
-                    Price = product.Price * item.Quantity,
-                    Size = item.Size,
-                };
 
                 var orderDetail = new OrderDetailEntity
                 {
@@ -85,22 +80,16 @@ namespace OrderingKioskSystem.Application.Order.Create
                 _orderDetailRepository.Add(orderDetail);
                 await _orderDetailRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
 
-                total += responseItem.Price;
-                listResponseItem.Add(responseItem);
+                total += orderDetail.Price;
             }
 
             order.Total = total;
             _orderRepository.Update(order);
             await _orderRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
 
-            response.Items = listResponseItem;
-            response.Total = total;
-            response.KioskID = request.KioskID;
-            response.OrderId = orderID.ToString();
-
             await _orderService.NotifyNewOrder(orderID.ToString());
 
-            return response;
+            return order.MapToOrderDTO(_mapper);
         }
     }
 }

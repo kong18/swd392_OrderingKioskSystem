@@ -12,7 +12,7 @@ using OrderingKioskSystem.Infrastructure.Persistence;
 namespace OrderingKioskSystem.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240529150406_v1")]
+    [Migration("20240530113842_v1")]
     partial class v1
     {
         /// <inheritdoc />
