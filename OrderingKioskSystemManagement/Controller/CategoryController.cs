@@ -6,6 +6,8 @@ using OrderingKioskSystem.Application.Category.Delete;
 using OrderingKioskSystem.Application.Category.GetAll;
 using OrderingKioskSystem.Application.Category.GetById;
 using OrderingKioskSystem.Application.Category.Update;
+using OrderingKioskSystem.Application.DashboardCategory.GetPopularCategories;
+using OrderingKioskSystem.Application.DashboardCategory;
 using System.Net.Mime;
 
 namespace OrderingKioskSystemManagement.Api.Controller
@@ -87,6 +89,14 @@ namespace OrderingKioskSystemManagement.Api.Controller
         {
             var result = await _mediator.Send(new GetCategoryByIdQuery(id), cancellationToken);
             return Ok(new JsonResponse<CategoryDTO>(result));
+        }
+
+
+        [HttpGet("popular")]
+        public async Task<ActionResult<List<PopularCategoryDTO>>> GetPopularCategories(CancellationToken cancellationToken)
+        {
+            var result = await _mediator.Send(new GetPopularCategoriesQuery(), cancellationToken);
+            return Ok(result);
         }
     }
 }
