@@ -1,10 +1,10 @@
 ﻿using MediatR;
+using OrderingKioskSystem.Domain.Common.Exceptions;
 using OrderingKioskSystem.Domain.Entities;
 using OrderingKioskSystem.Domain.Repositories;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OrderingKioskSystem.Application.Product.Create
@@ -28,14 +28,22 @@ namespace OrderingKioskSystem.Application.Product.Create
 
             if (!categoryExist)
             {
-                return "CategoryID does not exist";
+                throw new NotFoundException("CategoryId does not exist");
             }
 
             bool businessExist = await _businessRepository.AnyAsync(x => x.ID == request.BusinessID && !x.NgayXoa.HasValue, cancellationToken);
 
             if (!businessExist)
             {
-                return "BusinessID does not exist";
+                throw new NotFoundException("Business does not exist");
+            }
+
+            bool productExists = await _productRepository.AnyAsync(
+                x => x.Name == request.Name && x.BusinessID == request.BusinessID && !x.NgayXoa.HasValue, cancellationToken);
+
+            if (productExists)
+            {
+                throw new DuplicationException("Same product has been existed");
             }
 
             var p = new ProductEntity
@@ -48,7 +56,6 @@ namespace OrderingKioskSystem.Application.Product.Create
                 Status = request.Status,
                 CategoryID = request.CategoryID,
                 BusinessID = request.BusinessID,
-
                 NgayTao = DateTime.Now
             };
 
