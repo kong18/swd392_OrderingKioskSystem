@@ -19,7 +19,7 @@ namespace OrderingKioskSystem.Application.Order.Filter
     {
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
-        public FilterOrderQueryHandler(ApplicationDbContext context, IOrderRepository orderRepository, IMapper mapper)
+        public FilterOrderQueryHandler(ApplicationDbContext context, IMapper mapper)
         {
             _mapper = mapper;
             _context = context;
@@ -28,6 +28,11 @@ namespace OrderingKioskSystem.Application.Order.Filter
         public async Task<PagedResult<OrderDTO>> Handle(FilterOrderQuery request, CancellationToken cancellationToken)
         {
             var query = _context.Orders.AsQueryable();
+
+            if (!string.IsNullOrEmpty(request.KioskID))
+            {
+                query = query.Where(p => p.KioskID.Contains(request.KioskID));
+            }
 
             if (!string.IsNullOrEmpty(request.Location))
             {
@@ -48,6 +53,11 @@ namespace OrderingKioskSystem.Application.Order.Filter
             if (!string.IsNullOrEmpty(request.Status))
             {
                 query = query.Where(p => p.Status.Contains(request.Status));
+            }
+
+            if (!string.IsNullOrEmpty(request.ShipperID))
+            {
+                query = query.Where(p => p.ShipperID.Contains(request.ShipperID));
             }
 
             if (!string.IsNullOrEmpty(request.ShipperName))

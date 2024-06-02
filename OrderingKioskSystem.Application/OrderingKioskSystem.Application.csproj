@@ -30,11 +30,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Menu\Create\" />
-    <Folder Include="Menu\Delete\" />
-    <Folder Include="Menu\GetById\" />
-    <Folder Include="Menu\GetAll\" />
-    <Folder Include="Menu\Update\" />
     <Folder Include="OrderDetail\NewFolder\" />
     <Folder Include="PaymentGateway\" />
     <Folder Include="Payment\" />

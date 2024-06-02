@@ -12,7 +12,7 @@ namespace OrderingKioskSystem.Domain.Entities
     [Table("ProductMenu")]
     public class ProductMenuEntity 
     {
-        protected ProductMenuEntity()
+        public ProductMenuEntity()
         {
             ID = Guid.NewGuid().ToString("N");
         }
