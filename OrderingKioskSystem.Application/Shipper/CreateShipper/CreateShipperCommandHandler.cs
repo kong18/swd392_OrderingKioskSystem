@@ -52,7 +52,7 @@ namespace OrderingKioskSystem.Application.Shipper.CreateShipper
             var user = new UserEntity
             {
                 Email = request.Email,
-                Password = hashedPassword,
+                Password = _userRepository.HashPassword(password),
                 Role = "Shipper"
             };
 

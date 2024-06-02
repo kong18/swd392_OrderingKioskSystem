@@ -10,15 +10,9 @@ using OrderingKioskSystem.Domain.Entities.Base;
 namespace OrderingKioskSystem.Domain.Entities
 {
     [Table("ProductMenu")]
-    public class ProductMenuEntity 
+    public class ProductMenuEntity : Entity
     {
-        public ProductMenuEntity()
-        {
-            ID = Guid.NewGuid().ToString("N");
-        }
-
-        [Key]
-        public string ID { get; set; }
+     
         public required string MenuID { get; set; }
         public required string ProductID { get; set; }
         [Column(TypeName = "decimal(18,4)")]

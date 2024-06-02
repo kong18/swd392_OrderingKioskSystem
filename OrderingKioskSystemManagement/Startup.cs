@@ -33,10 +33,13 @@ namespace OrderingKioskSystemManagement.Api
             services.ConfigureSwagger(Configuration);
             services.AddCors(options =>
             {
-                options.AddPolicy("CorsPolicy",
-                builder => builder.AllowAnyOrigin()
-                .AllowAnyMethod()
-                .AllowAnyHeader()
+            options.AddPolicy("CorsPolicy",
+        builder => builder
+
+            .WithOrigins()  
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials()
                 );
             });
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);

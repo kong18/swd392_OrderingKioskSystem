@@ -46,7 +46,7 @@ namespace OrderingKioskSystem.Application.Business.CreateBusinessCommand
             var user = new UserEntity
             {
                 Email = request.Email,
-                Password = hashedPassword,
+                Password = _userRepository.HashPassword(password),
                 Role = "Business"
             };
 
@@ -59,7 +59,7 @@ namespace OrderingKioskSystem.Application.Business.CreateBusinessCommand
             var business = new BusinessEntity
             {
                 Email = email,
-                NguoiTaoID = _currentUserService.UserId,
+               // NguoiTaoID = _currentUserService.UserId,
                 Url = request.Url,
                 Name = request.Name,
                 BankName = request.BankName,
