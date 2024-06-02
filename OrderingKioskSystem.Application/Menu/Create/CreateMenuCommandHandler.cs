@@ -70,7 +70,9 @@ namespace OrderingKioskSystem.Application.Menu.Create
                     ProductID = product.ID,
                     Price = product.Price,
                     MenuID = menuID,
-                    CreatedDate = DateTime.Now,
+
+                    NgayTao = DateTime.Now,
+                    NguoiTaoID = _currentUserService.UserId,
                 };
                 
 
