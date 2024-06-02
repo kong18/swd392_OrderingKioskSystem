@@ -15,10 +15,10 @@ namespace OrderingKioskSystem.Application.Order.Update
                 .NotEmpty().WithMessage("OrderID can't be empty or null");
 
             RuleFor(command => command.Status)
-            .NotEmpty().WithMessage("Status can't be empty or null")
-            .Must(status => new[] { "onPreparing", "Prepared", "onDelivering", "Delivered" }
+                .NotEmpty().WithMessage("Status can't be empty or null")
+                .Must(status => new[] { "OnPreparing", "Prepared", "OnDelivering", "Delivered" }
                 .Contains(status))
-            .WithMessage("Status must be one of the following values: onPreparing, Prepared, onDelivering, Delivered");
+                .WithMessage("Status must be one of the following values: OnPreparing, Prepared, OnDelivering, Delivered");
         }
     }
 }

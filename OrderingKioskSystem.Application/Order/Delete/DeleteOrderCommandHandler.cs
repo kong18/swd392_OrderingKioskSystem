@@ -24,7 +24,7 @@ namespace OrderingKioskSystem.Application.Order.Delete
 
         public async Task<string> Handle(DeleteOrderCommand request, CancellationToken cancellationToken)
         {
-            var orderExist = await _orderRepository.FindAsync(x => x.ID == request.ID && !x.NgayTao.HasValue, cancellationToken);
+            var orderExist = await _orderRepository.FindAsync(x => x.ID == request.ID && !x.NgayXoa.HasValue, cancellationToken);
 
             if (orderExist is null)
             {

@@ -17,23 +17,24 @@ namespace OrderingKioskSystem.Application.Kiosk.Create
         private readonly IMapper _mapper;
         private readonly IKioskRepository _repository;
         private readonly ICurrentUserService _currentUserService;
-        public CreateKioskCommandHandler(IMapper mapper, IKioskRepository repository)
+        public CreateKioskCommandHandler(IMapper mapper, IKioskRepository repository, ICurrentUserService currentUserService)
         {
             _mapper = mapper;
             _repository = repository;
+            _currentUserService = currentUserService;
         }
 
         public async Task<string> Handle(CreateKioskCommand request, CancellationToken cancellationToken)
         {
-           // var userId = _currentUserService.UserId;
-           // if (string.IsNullOrEmpty(userId))
-           // {
-           //     throw new UnauthorizedAccessException("User ID không tìm thấy.");
-           // }
+            var userId = _currentUserService.UserId;
+            if (string.IsNullOrEmpty(userId))
+            {
+                throw new UnauthorizedAccessException("User ID không tìm thấy.");
+            }
 
             var kiosk = new KioskEntity
             {
-                NguoiTaoID = _currentUserService?.UserId,
+                NguoiTaoID = _currentUserService.UserId,
                 Location = request.location
             };
 

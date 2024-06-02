@@ -5,16 +5,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OrderingKioskSystem.Application.Order.GetById
+namespace OrderingKioskSystem.Application.Menu.GetById
 {
-    public class GetOrderByIdQuery : IRequest<OrderDTO>
+    public class GetMenuByIdQuery : IRequest<MenuDTO>
     {
-        public GetOrderByIdQuery(string id)
+        public GetMenuByIdQuery(string iD)
         {
-            ID = id;
+            ID = iD;
         }
+
         public string ID { get; set; }
     }
-
-
 }

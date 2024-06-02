@@ -4,6 +4,7 @@ using OrderingKioskSystem.Application.Common.Interfaces;
 using OrderingKioskSystem.Domain.Common.Exceptions;
 using OrderingKioskSystem.Domain.Entities;
 using OrderingKioskSystem.Domain.Repositories;
+using System;
 
 namespace OrderingKioskSystem.Application.Order.Create
 {
@@ -36,7 +37,7 @@ namespace OrderingKioskSystem.Application.Order.Create
                 throw new NotFoundException("Kiosk does not exist");
             }
 
-            foreach (var item in request.Items)
+            foreach (var item in request.Products)
             {
                 bool productExist = await _productRepository.AnyAsync(x => x.ID == item.ProductID && !x.NgayXoa.HasValue, cancellationToken);
 
@@ -61,18 +62,39 @@ namespace OrderingKioskSystem.Application.Order.Create
             await _orderRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
             var orderID = order.ID;
 
-            foreach (var item in request.Items)
+            foreach (var item in request.Products)
             {
                 var product = await _productRepository.FindAsync(x => x.ID == item.ProductID, cancellationToken);
+                var bonusPrice = 0;
+
+                if (!string.IsNullOrEmpty(item.Size))
+                {
+                    
+                    switch (item.Size)
+                    {
+                        case "S":
+                            bonusPrice = 0;
+                            break;
+                        case "M":
+                            bonusPrice = 5;
+                            break;
+                        case "L":
+                            bonusPrice = 10;
+                            break;
+                        default:
+                            bonusPrice = 0;
+                            break;
+                    }
+                }
 
                 var orderDetail = new OrderDetailEntity
                 {
                     OrderID = orderID,
-                    ProductID = product.ID,
+                    ProductID = item.ProductID,
                     Quantity = item.Quantity,
-                    UnitPrice = product.Price,
-                    Price = item.Quantity * product.Price,
-                    Size = item.Size,
+                    UnitPrice = product.Price + bonusPrice,
+                    Price = item.Quantity * (product.Price + bonusPrice),
+                    Size = item.Size?.ToUpper(),
                     OrderDate = DateTime.Now,
                     Status = true
                 };

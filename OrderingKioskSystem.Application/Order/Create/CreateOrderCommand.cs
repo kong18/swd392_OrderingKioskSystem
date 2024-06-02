@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using OrderingKioskSystem.Application.Common.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,16 +8,17 @@ using System.Threading.Tasks;
 
 namespace OrderingKioskSystem.Application.Order.Create
 {
-    public class CreateOrderCommand : IRequest<OrderDTO>
+    public class CreateOrderCommand : IRequest<OrderDTO>, ICommand
     {
-        public CreateOrderCommand(string kioskID, List<RequestItem> items)
+        public CreateOrderCommand(string kioskID, List<RequestItem> products, string Note)
         {
             KioskID = kioskID;
-            Items = items;
+            Products = products;
+            this.Note = Note;
         }
         public string KioskID { get; set; }
         public string? Note {  get; set; }
-        public List<RequestItem> Items { get; set; }
+        public List<RequestItem> Products { get; set; }
     }
 
     public class RequestItem

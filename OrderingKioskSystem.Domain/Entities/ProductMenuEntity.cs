@@ -12,13 +12,10 @@ namespace OrderingKioskSystem.Domain.Entities
     [Table("ProductMenu")]
     public class ProductMenuEntity : Entity
     {
-     
         public required string MenuID { get; set; }
         public required string ProductID { get; set; }
         [Column(TypeName = "decimal(18,4)")]
         public required decimal Price { get; set; }
-        public required DateTime CreatedDate { get; set; }
-
         [ForeignKey("MenuID")]
         public virtual MenuEntity Menu { get; set; }
 

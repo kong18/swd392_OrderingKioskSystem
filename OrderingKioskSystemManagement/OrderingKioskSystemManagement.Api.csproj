@@ -12,6 +12,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Controllers\**" />
+    <Content Remove="Controllers\**" />
+    <EmbeddedResource Remove="Controllers\**" />
+    <None Remove="Controllers\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Asp.Versioning.Mvc" Version="8.1.0" />
     <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.0" />
     <PackageReference Include="AspNetCore.HealthChecks.SqlServer" Version="8.0.2" />
@@ -34,10 +41,6 @@
     <ProjectReference Include="..\OrderingKioskSystem.Application\OrderingKioskSystem.Application.csproj" />
     <ProjectReference Include="..\OrderingKioskSystem.Domain\OrderingKioskSystem.Domain.csproj" />
     <ProjectReference Include="..\OrderingKioskSystem.Infrastructure\OrderingKioskSystem.Infrastructure.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Controllers\" />
   </ItemGroup>
 
 </Project>

@@ -27,7 +27,7 @@ namespace OrderingKioskSystem.Application.Order.Update
 
         public async Task<string> Handle(UpdateOrderCommand request, CancellationToken cancellationToken)
         {
-            var orderExist = await _orderRepository.FindAsync(x => x.ID == request.ID && !x.NgayTao.HasValue, cancellationToken);
+            var orderExist = await _orderRepository.FindAsync(x => x.ID == request.ID && !x.NgayXoa.HasValue, cancellationToken);
 
             if (orderExist is null)
             {

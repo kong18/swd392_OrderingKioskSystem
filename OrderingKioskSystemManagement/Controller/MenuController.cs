@@ -1,127 +1,129 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using OrderingKioskSystem.Application.Order.Create;
+using OrderingKioskSystem.Application.Common.Pagination;
+using OrderingKioskSystem.Application.Order.Delete;
+using OrderingKioskSystem.Application.Order.Filter;
+using OrderingKioskSystem.Application.Order.GetAll;
+using OrderingKioskSystem.Application.Order;
 using OrderingKioskSystem.Application.Product;
 using System.Net.Mime;
-using OrderingKioskSystem.Application.Order.GetById;
-using OrderingKioskSystem.Application.Order;
-using OrderingKioskSystem.Application.Order.Update;
-using OrderingKioskSystem.Application.Order.Delete;
-using OrderingKioskSystem.Application.Order.GetAll;
-using OrderingKioskSystem.Application.Common.Pagination;
-using OrderingKioskSystem.Application.Product.GetByPagination;
-using OrderingKioskSystem.Application.Order.GetByPagnition;
-using OrderingKioskSystem.Application.Product.Filter;
-using OrderingKioskSystem.Application.Order.Filter;
+using OrderingKioskSystem.Application.Menu.Create;
+using OrderingKioskSystem.Application.Menu;
+using OrderingKioskSystem.Application.Menu.GetById;
+using OrderingKioskSystem.Application.Menu.GetByPagnition;
+using OrderingKioskSystem.Application.Menu.Update;
+using OrderingKioskSystem.Application.Menu.Delete;
+using OrderingKioskSystem.Application.Menu.GetAll;
+using OrderingKioskSystem.Application.Menu.Filter;
 
 namespace OrderingKioskSystemManagement.Api.Controller
 {
     [ApiController]
-    public class OrderController : ControllerBase
+    public class MenuController : ControllerBase
     {
         private readonly ISender _mediator;
 
-        public OrderController(ISender mediator)
+        public MenuController(ISender mediator)
         {
             _mediator = mediator;
         }
 
-        [HttpPost("order")]
+        [HttpPost("menu")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> CreateOrder(
-           [FromBody] CreateOrderCommand command,
+        public async Task<ActionResult> CreateMenu(
+           [FromBody] CreateMenuCommand command,
            CancellationToken cancellationToken = default)
         {
             var result = await _mediator.Send(command, cancellationToken);
-            return Ok(new JsonResponse<OrderDTO>(result));
+            return Ok(new JsonResponse<string>(result));
         }
 
-        [HttpGet("order/{id}")]
+        [HttpGet("menu/{id}")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<OrderDTO>> GetOrderByID(
+        public async Task<ActionResult<MenuDTO>> GetMenuByID(
             [FromRoute] string id,
             CancellationToken cancellationToken = default)
         {
-            var result = await _mediator.Send(new GetOrderByIdQuery(id), cancellationToken);
-            return Ok(new JsonResponse<OrderDTO>(result));
+            var result = await _mediator.Send(new GetMenuByIdQuery(id), cancellationToken);
+            return Ok(new JsonResponse<MenuDTO>(result));
         }
 
-        [HttpGet("order/pagnition")]
+        [HttpGet("menu/pagnition")]
         [Produces(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(typeof(JsonResponse<PagedResult<OrderDTO>>), StatusCodes.Status201Created)]
-        [ProducesResponseType(typeof(JsonResponse<PagedResult<OrderDTO>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(JsonResponse<PagedResult<MenuDTO>>), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(JsonResponse<PagedResult<MenuDTO>>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<JsonResponse<PagedResult<OrderDTO>>>> GetPagination([FromQuery] GetOrderByPagnitionQuery query, CancellationToken cancellationToken = default)
+        public async Task<ActionResult<JsonResponse<PagedResult<MenuDTO>>>> GetPagination([FromQuery] GetMenuByPagnitionQuery query, CancellationToken cancellationToken = default)
         {
             var result = await _mediator.Send(query, cancellationToken);
             return Ok(result);
         }
 
-        [HttpPut("order")]
+        [HttpPut("menu")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> UpdateOrder(
-            [FromBody] UpdateOrderCommand command,
+        public async Task<ActionResult> UpdateMenu(
+            [FromBody] UpdateMenuCommand command,
             CancellationToken cancellationToken = default)
         {
             var result = await _mediator.Send(command, cancellationToken);
             return Ok(new JsonResponse<string>(result));
         }
 
-        [HttpDelete("order/{id}")]
+        [HttpDelete("menu/{id}")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> DeleteOrder(
+        public async Task<ActionResult> DeleteMenu(
             [FromRoute] string id,
             CancellationToken cancellationToken = default)
         {
-            var result = await _mediator.Send(new DeleteOrderCommand(id), cancellationToken);
+            var result = await _mediator.Send(new DeleteMenuCommand(id), cancellationToken);
             return Ok(new JsonResponse<string>(result));
         }
 
-        [HttpGet("order")]
+        [HttpGet("menu")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<List<ProductDTO>>> GetAllOrder(
+        public async Task<ActionResult<List<MenuDTO>>> GetAllOrder(
            CancellationToken cancellationToken = default)
         {
-            var result = await _mediator.Send(new GetAllOrderQuery(), cancellationToken);
-            return Ok(new JsonResponse<List<OrderDTO>>(result));
+            var result = await _mediator.Send(new GetAllMenuQuery(), cancellationToken);
+            return Ok(new JsonResponse<List<MenuDTO>>(result));
         }
 
-        [HttpGet("order/filter-order")]
+        [HttpGet("menu/filter-menu")]
         [Produces(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(typeof(JsonResponse<PagedResult<ProductDTO>>), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(JsonResponse<PagedResult<MenuDTO>>), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<JsonResponse<PagedResult<ProductDTO>>>> FilterOrder(
-         [FromQuery] FilterOrderQuery query,
+        public async Task<ActionResult<JsonResponse<PagedResult<MenuDTO>>>> FilterMenu(
+         [FromQuery] FilterMenuQuery query,
          CancellationToken cancellationToken = default)
         {
             var result = await _mediator.Send(query, cancellationToken);
-            return Ok(new JsonResponse<PagedResult<OrderDTO>>(result));
+            return Ok(new JsonResponse<PagedResult<MenuDTO>>(result));
         }
     }
 }
