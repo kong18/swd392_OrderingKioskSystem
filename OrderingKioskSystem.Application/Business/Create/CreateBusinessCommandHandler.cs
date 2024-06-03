@@ -41,7 +41,7 @@ namespace OrderingKioskSystem.Application.Business.CreateBusinessCommand
 
             _emailService.SendMail(model);
 
-            var hashedPassword = _userRepository.HashPassword(model.Content);
+            var hashedPassword = _userRepository.GeneratePassword();
 
             var user = new UserEntity
             {
