@@ -70,7 +70,7 @@ namespace OrderingKioskSystemManagement.Api.Controller
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<List<CategoryDTO>>> GetAllThongTinLuongNhanVien(
+        public async Task<ActionResult<List<CategoryDTO>>> GetAllCategory(
            CancellationToken cancellationToken = default)
         {
             var result = await _mediator.Send(new GetAllCategoryQuery(), cancellationToken);
@@ -83,7 +83,7 @@ namespace OrderingKioskSystemManagement.Api.Controller
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<CategoryDTO>> GetThongTinLuongNhanVien(
+        public async Task<ActionResult<CategoryDTO>> GetCategoryById(
             [FromRoute] int id,
             CancellationToken cancellationToken = default)
         {
@@ -92,11 +92,6 @@ namespace OrderingKioskSystemManagement.Api.Controller
         }
 
 
-        [HttpGet("popular")]
-        public async Task<ActionResult<List<PopularCategoryDTO>>> GetPopularCategories(CancellationToken cancellationToken)
-        {
-            var result = await _mediator.Send(new GetPopularCategoriesQuery(), cancellationToken);
-            return Ok(result);
-        }
+
     }
 }
