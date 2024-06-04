@@ -42,6 +42,10 @@ namespace OrderingKioskSystem.Application.Menu.Create
             {
                 RuleFor(item => item.ProductID)
                     .NotEmpty().WithMessage("ProductID can't be empty or null");
+
+                RuleFor(item => item.Price)
+                    .NotEmpty().WithMessage("Price can't be empty or null")
+                    .GreaterThan(0).WithMessage("Price must be greater than 0");
             }
         }
     }
