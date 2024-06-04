@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 using System.Reflection;
+using OrderingKioskSystem.Application.FileUpload;
 
 namespace OrderingKioskSystem.Application
 {
@@ -24,6 +25,7 @@ namespace OrderingKioskSystem.Application
             });
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services.AddScoped<IValidatorProvider, ValidatorProvider>();
+            services.AddTransient<FileUploadService>();
 
             return services;
         }

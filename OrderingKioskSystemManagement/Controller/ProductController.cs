@@ -32,8 +32,8 @@ namespace OrderingKioskSystemManagement.Api.Controller
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> CreateProduct(
-           [FromBody] CreateProductCommand command,
-           CancellationToken cancellationToken = default)
+         [FromForm] CreateProductCommand command,
+         CancellationToken cancellationToken = default)
         {
             var result = await _mediator.Send(command, cancellationToken);
             return Ok(new JsonResponse<string>(result));

@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Http;
 using OrderingKioskSystem.Application.Common.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -30,6 +31,7 @@ namespace OrderingKioskSystem.Application.Product.Create
         public bool Status { get; set; }
         public int CategoryID { get; set; }
         public string BusinessID { get; set; }
+        public IFormFile ImageFile { get; set; }
 
     }
 }
