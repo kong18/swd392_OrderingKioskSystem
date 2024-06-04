@@ -30,5 +30,6 @@ namespace OrderingKioskSystem.Application.Menu.Create
     public class RequestItem
     {
         public string ProductID { get; set; }
+        public decimal Price {  get; set; }
     }
 }

@@ -14,17 +14,13 @@ namespace OrderingKioskSystem.Application.Shipper.CreateShipper
 {
     public class CreateShipperCommandHandler : IRequestHandler<CreateShipperCommand, string>
     {
-        private readonly IMapper _mapper;
         private readonly IShipperRepository _shipperRepository;
-        private readonly IProductRepository _productRepository;
         private readonly ICurrentUserService _currentUserService;
         private readonly IUserRepository _userRepository;
         private readonly IEmailService _emailService;
 
-        public CreateShipperCommandHandler(IMapper mapper, IProductRepository productRepository, ICurrentUserService currentUserService, IUserRepository userRepository, IShipperRepository shipperRepository)
+        public CreateShipperCommandHandler(ICurrentUserService currentUserService, IUserRepository userRepository, IShipperRepository shipperRepository)
         {
-            _mapper = mapper;
-            _productRepository = productRepository;
             _currentUserService = currentUserService;
             _userRepository = userRepository;
             _shipperRepository = shipperRepository;

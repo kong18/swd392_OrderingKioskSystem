@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using OrderingKioskSystem.Application.Common.Interfaces;
 using OrderingKioskSystem.Domain.Common.Exceptions;
 using OrderingKioskSystem.Domain.Entities;
@@ -17,7 +18,7 @@ namespace OrderingKioskSystem.Application.Order.Create
         private readonly OrderService _orderService;
         private readonly IMapper _mapper;
         private readonly ICurrentUserService _currentUserService;
-        public CreateOrderCommandHandler(OrderService orderService,IOrderRepository orderRepository, IProductRepository productRepository, IOrderDetailRepository orderDetailRepository, IKioskRepository kioskRepository, IMapper mapper, ICurrentUserService currentUserService)
+        public CreateOrderCommandHandler(OrderService orderService, IOrderRepository orderRepository, IProductRepository productRepository, IOrderDetailRepository orderDetailRepository, IKioskRepository kioskRepository, IMapper mapper, ICurrentUserService currentUserService)
         {
             _orderRepository = orderRepository;
             _productRepository = productRepository;
@@ -37,81 +38,112 @@ namespace OrderingKioskSystem.Application.Order.Create
                 throw new NotFoundException("Kiosk does not exist");
             }
 
+            // Check if all products exist
             foreach (var item in request.Products)
             {
                 bool productExist = await _productRepository.AnyAsync(x => x.ID == item.ProductID && !x.NgayXoa.HasValue, cancellationToken);
 
                 if (!productExist)
                 {
-                    throw new NotFoundException("Product is not found or deleted");
+                    throw new NotFoundException($"Product with ID {item.ProductID} is not found or deleted");
                 }
             }
-            decimal total = 0;
 
-            var order = new OrderEntity
+            // Get the DbContext from the UnitOfWork
+            var dbContext = _orderRepository.UnitOfWork as DbContext;
+            if (dbContext == null)
             {
-                KioskID = request.KioskID,
-                Status = "OnPreparing",
-                Note = request.Note ?? "",
-                Total = total,
-                //NguoiTaoID = _currentUserService.UserId,
-                NgayTao = DateTime.Now
-            };
+                throw new InvalidOperationException("The UnitOfWork is not associated with a DbContext.");
+            }
 
-            _orderRepository.Add(order);
-            await _orderRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
-            var orderID = order.ID;
-
-            foreach (var item in request.Products)
+            using (var transaction = await dbContext.Database.BeginTransactionAsync(cancellationToken))
             {
-                var product = await _productRepository.FindAsync(x => x.ID == item.ProductID, cancellationToken);
-                var bonusPrice = 0;
-
-                if (!string.IsNullOrEmpty(item.Size))
+                try
                 {
-                    
-                    switch (item.Size)
+                    decimal total = 0;
+
+                    // Create and add the new order
+                    var order = new OrderEntity
                     {
-                        case "S":
-                            bonusPrice = 0;
-                            break;
-                        case "M":
-                            bonusPrice = 5;
-                            break;
-                        case "L":
-                            bonusPrice = 10;
-                            break;
-                        default:
-                            bonusPrice = 0;
-                            break;
+                        KioskID = request.KioskID,
+                        Status = "OnPreparing",
+                        Note = request.Note ?? "",
+                        Total = total,
+
+                        NguoiTaoID = _currentUserService.UserId,
+                        NgayTao = DateTime.Now
+                    };
+
+                    _orderRepository.Add(order);
+                    await _orderRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
+                    var orderID = order.ID;
+
+                    // Add each product to the order
+                    foreach (var item in request.Products)
+                    {
+                        var product = await _productRepository.FindAsync(x => x.ID == item.ProductID, cancellationToken);
+                        var bonusPrice = 0;
+
+                        if (!string.IsNullOrEmpty(item.Size))
+                        {
+                            switch (item.Size.ToUpper())
+                            {
+                                case "S":
+                                    bonusPrice = 0;
+                                    break;
+                                case "M":
+                                    bonusPrice = 5;
+                                    break;
+                                case "L":
+                                    bonusPrice = 10;
+                                    break;
+                                default:
+                                    bonusPrice = 0;
+                                    break;
+                            }
+                        }
+
+                        var orderDetail = new OrderDetailEntity
+                        {
+                            OrderID = orderID,
+                            ProductID = item.ProductID,
+                            Quantity = item.Quantity,
+                            UnitPrice = product.Price + bonusPrice,
+                            Price = item.Quantity * (product.Price + bonusPrice),
+                            Size = item.Size?.ToUpper(),
+                            OrderDate = DateTime.Now,
+                            Status = true
+                        };
+
+                        _orderDetailRepository.Add(orderDetail);
+
+                        total += orderDetail.Price;
                     }
+
+                    // Save changes for all order details in a single transaction
+                    await _orderDetailRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
+
+                    // Update the total price of the order
+                    order.Total = total;
+                    _orderRepository.Update(order);
+                    await _orderRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
+
+                    // Commit the transaction
+                    await transaction.CommitAsync(cancellationToken);
+
+                    // Notify about the new order
+                    await _orderService.NotifyNewOrder(orderID.ToString());
+
+                    // Map and return the order DTO
+                    return order.MapToOrderDTO(_mapper);
                 }
-
-                var orderDetail = new OrderDetailEntity
+                catch (Exception ex)
                 {
-                    OrderID = orderID,
-                    ProductID = item.ProductID,
-                    Quantity = item.Quantity,
-                    UnitPrice = product.Price + bonusPrice,
-                    Price = item.Quantity * (product.Price + bonusPrice),
-                    Size = item.Size?.ToUpper(),
-                    OrderDate = DateTime.Now,
-                    Status = true
-                };
-
-                _orderDetailRepository.Add(orderDetail);
-                await _orderDetailRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
-
-                total += orderDetail.Price;
+                    await transaction.RollbackAsync(cancellationToken);
+                    // Log the exception (ex)
+                    throw new ApplicationException($"An error occurred while creating the order: {ex.Message}", ex);
+                }
             }
-
-            order.Total = total;
-            _orderRepository.Update(order);
-            await _orderRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
-
-            await _orderService.NotifyNewOrder(orderID.ToString());
-
-            return order.MapToOrderDTO(_mapper);
         }
     }
 }
