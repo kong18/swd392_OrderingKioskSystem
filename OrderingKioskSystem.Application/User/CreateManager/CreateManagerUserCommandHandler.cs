@@ -24,6 +24,7 @@ namespace OrderingKioskSystem.Application.User.CreateManager
 
         public async Task<string> Handle(CreateManagerUserCommand request, CancellationToken cancellationToken)
         {
+            
             var user = new UserEntity
             {
                 Email = request.Email,

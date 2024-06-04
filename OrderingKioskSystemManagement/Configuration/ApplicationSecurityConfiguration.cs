@@ -1,9 +1,10 @@
-﻿using OrderingKioskSystem.Application.Common.Interfaces;
-using OrderingKioskSystemManagement.Api.Services;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-
+using OrderingKioskSystem.Application.Common.Interfaces;
+using OrderingKioskSystemManagement.Api.Services;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 
@@ -19,36 +20,44 @@ namespace OrderingKioskSystemManagement.Api.Configuration
             services.AddTransient<IJwtService, JwtService>();
             JwtSecurityTokenHandler.DefaultMapInboundClaims = false;
             services.AddHttpContextAccessor();
+
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme; // Add this line
             })
-                .AddJwtBearer(options =>
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters()
                 {
-                    options.TokenValidationParameters = new TokenValidationParameters()
-                    {
-                        ValidateAudience = false,
-                        ValidateIssuer = false,
-                        ValidateIssuerSigningKey = true,
-                        ValidateLifetime = true,
-                        ValidIssuer = configuration.GetSection("Security.Bearer:Authority").Get<string>(),
-                        ValidAudience = configuration.GetSection("Security.Bearer:Audience").Get<string>(),
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("this is my custom Secret key for authentication")),
-                    };
-                });
+                    ValidateAudience = false,
+                    ValidateIssuer = false,
+                    ValidateIssuerSigningKey = true,
+                    ValidateLifetime = true,
+                    ValidIssuer = configuration.GetSection("Security.Bearer:Authority").Get<string>(),
+                    ValidAudience = configuration.GetSection("Security.Bearer:Audience").Get<string>(),
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("this is my custom Secret key for authentication")),
+                };
+            })
+            .AddGoogle(options =>
+            {
+                options.ClientId = configuration.GetSection("Authentication:Google:ClientId").Get<string>();
+                options.ClientSecret = configuration.GetSection("Authentication:Google:ClientSecret").Get<string>();
+                options.CallbackPath = "/dang-nhap-tu-google";
+            })
+            .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme); // Ensure cookies are used
 
             services.AddAuthorization(ConfigureAuthorization);
 
             return services;
         }
 
-
         private static void ConfigureAuthorization(AuthorizationOptions options)
         {
-            //Configure policies and other authorization options here. For example:
-            //options.AddPolicy("EmployeeOnly", policy => policy.RequireClaim("role", "employee"));
-            //options.AddPolicy("AdminOnly", policy => policy.RequireClaim("role", "Admin"));
+            // Configure policies and other authorization options here. For example:
+            // options.AddPolicy("EmployeeOnly", policy => policy.RequireClaim("role", "employee"));
+            // options.AddPolicy("AdminOnly", policy => policy.RequireClaim("role", "Admin"));
         }
     }
 }
