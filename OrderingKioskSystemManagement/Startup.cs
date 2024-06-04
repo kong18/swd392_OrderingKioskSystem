@@ -1,9 +1,19 @@
-﻿using OrderingKioskSystemManagement.Api.Configuration;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using OrderingKioskSystemManagement.Api.Configuration;
 using OrderingKioskSystemManagement.Api.Filters;
 using Serilog;
 using OrderingKioskSystem.Application;
 using OrderingKioskSystem.Infrastructure;
 using OrderingKioskSystem.Application.Order;
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
+using OrderingKioskSystemManagement.Application;
+using OrderingKioskSystem.Application.FileUpload;
+using System;
+using System.IO;
 
 namespace OrderingKioskSystemManagement.Api
 {
@@ -42,7 +52,23 @@ namespace OrderingKioskSystemManagement.Api
                         .AllowCredentials()
                 );
             });
+            
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+
+            // Configure Firebase
+            var firebaseConfigPath = @"D:\Config\oderingkiosksystem-firebase-adminsdk-8l6s1-1d9328443e.json"; // Use the actual path to your JSON file
+            if (!File.Exists(firebaseConfigPath))
+            {
+                throw new FileNotFoundException($"Firebase configuration file not found at {firebaseConfigPath}");
+            }
+
+            FirebaseApp.Create(new AppOptions()
+            {
+                Credential = GoogleCredential.FromFile(firebaseConfigPath)
+            });
+
+            services.AddSingleton(new FirebaseConfig { Type = "service_account" });
+            services.AddSingleton<FileUploadService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
