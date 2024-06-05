@@ -12,7 +12,6 @@ using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
 using OrderingKioskSystemManagement.Application;
 using OrderingKioskSystem.Application.FileUpload;
-using System;
 using System.IO;
 
 namespace OrderingKioskSystemManagement.Api
@@ -28,11 +27,7 @@ namespace OrderingKioskSystemManagement.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers(
-                opt =>
-                {
-                    opt.Filters.Add<ExceptionFilter>();
-                });
+            services.AddControllers(opt => opt.Filters.Add<ExceptionFilter>());
             services.AddSignalR();
             services.AddScoped<OrderService>();
             services.AddApplication(Configuration);
@@ -49,27 +44,32 @@ namespace OrderingKioskSystemManagement.Api
                         .WithOrigins("https://localhost:7182")
                         .AllowAnyHeader()
                         .AllowAnyMethod()
-                        .AllowCredentials()
-                );
+                        .AllowCredentials());
             });
-            
+
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
 
-            // Configure Firebase
-            var firebaseConfigPath = @"D:\Config\oderingkiosksystem-firebase-adminsdk-8l6s1-1d9328443e.json"; // Use the actual path to your JSON file
-            if (!File.Exists(firebaseConfigPath))
+            // Additional logging
+            var firebaseSection = Configuration.GetSection("FirebaseConfig");
+            if (!firebaseSection.Exists())
             {
-                throw new FileNotFoundException($"Firebase configuration file not found at {firebaseConfigPath}");
+                throw new ArgumentNullException("FirebaseConfig section does not exist in configuration.");
             }
 
-            FirebaseApp.Create(new AppOptions()
+            var firebaseConfig = firebaseSection.Get<FirebaseConfig>();
+            if (firebaseConfig == null)
             {
-                Credential = GoogleCredential.FromFile(firebaseConfigPath)
-            });
+                throw new ArgumentNullException(nameof(firebaseConfig), "FirebaseConfig section is missing in configuration.");
+            }
 
-            services.AddSingleton(new FirebaseConfig { Type = "service_account" });
+           
+           
+
+
+            services.AddSingleton(firebaseConfig);
             services.AddSingleton<FileUploadService>();
         }
+
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
@@ -84,7 +84,7 @@ namespace OrderingKioskSystemManagement.Api
             app.UseExceptionHandler();
             app.UseHttpsRedirection();
             app.UseRouting();
-            app.UseAuthentication(); // Ensure this is before UseAuthorization
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
@@ -92,6 +92,7 @@ namespace OrderingKioskSystemManagement.Api
                 endpoints.MapControllers();
                 endpoints.MapHub<OrderingKioskSystem.Application.NotificationHub>("/notificationHub");
             });
+
             app.UseSwashbuckle(Configuration);
         }
     }
