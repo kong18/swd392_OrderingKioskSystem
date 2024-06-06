@@ -11,6 +11,8 @@ namespace OrderingKioskSystem.Application.Overview
         public string TimePeriod { get; set; }
         public decimal TotalSales { get; set; }
         public int TotalOrders { get; set; }
+        public string PeriodType { get; set; }  // New property to distinguish between day, week, and month
     }
+
 
 }
