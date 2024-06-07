@@ -3,14 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1 - Api", "1 - Api", "{0A9F7B18-460E-4A46-A995-376F410C7E92}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2 - Application", "2 - Application", "{56DB668F-C2EE-4BEE-8279-F6146BA5B255}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3 - Domain", "3 - Domain", "{517DCE02-C86D-431B-90B8-72AADA930C85}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4 - Infrastructure", "4 - Infrastructure", "{B1B65F2D-EBA0-4620-9835-89963B79EA06}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrderingKioskSystem.Domain", "OrderingKioskSystem.Domain\OrderingKioskSystem.Domain.csproj", "{1485221B-69C3-4E0B-A6FE-AC6759628F0C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrderingKioskSystemManagement.Api", "OrderingKioskSystemManagement\OrderingKioskSystemManagement.Api.csproj", "{647E2CFE-811B-4EA9-B74D-9BAFC968241F}"
@@ -44,12 +36,6 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{1485221B-69C3-4E0B-A6FE-AC6759628F0C} = {517DCE02-C86D-431B-90B8-72AADA930C85}
-		{647E2CFE-811B-4EA9-B74D-9BAFC968241F} = {0A9F7B18-460E-4A46-A995-376F410C7E92}
-		{2D30547F-5895-4C13-8774-3094F5408915} = {56DB668F-C2EE-4BEE-8279-F6146BA5B255}
-		{7BE518EB-F77A-41FE-AD60-A5CBE3ECC9A9} = {B1B65F2D-EBA0-4620-9835-89963B79EA06}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {35698B24-B0BF-4BF6-9AF2-374B59064287}

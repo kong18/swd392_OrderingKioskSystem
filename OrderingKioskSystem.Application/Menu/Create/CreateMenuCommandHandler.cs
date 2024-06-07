@@ -46,69 +46,40 @@ namespace OrderingKioskSystem.Application.Menu.Create
                 }
             }
 
-            // Get the DbContext from the UnitOfWork
-            var dbContext = _menuRepository.UnitOfWork as DbContext;
-            if (dbContext == null)
+            // Create and add the new menu
+            var menu = new MenuEntity
             {
-                throw new InvalidOperationException("The UnitOfWork is not associated with a DbContext.");
+                Name = request.Name,
+                Title = request.Title,
+                Type = request.Type,
+                Status = request.Status,
+                BusinessID = request.BusinessID,
+                NguoiTaoID = _currentUserService.UserId,
+                NgayTao = DateTime.Now
+            };
+
+            _menuRepository.Add(menu);
+            await _menuRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
+            var menuID = menu.ID;
+
+            // Add each product to the menu
+            foreach (var item in request.Products)
+            {
+                var productMenu = new ProductMenuEntity
+                {
+                    ProductID = item.ProductID,
+                    Price = item.Price,
+                    MenuID = menuID,
+                    NgayTao = DateTime.Now,
+                    NguoiTaoID = _currentUserService.UserId,
+                };
+
+                _productMenuRepository.Add(productMenu);
+                await _productMenuRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
             }
 
-            using (var transaction = await dbContext.Database.BeginTransactionAsync(cancellationToken))
-            {
-                try
-                {
-                    // Create and add the new menu
-                    var menu = new MenuEntity
-                    {
-                        Name = request.Name,
-                        Title = request.Title,
-                        Type = request.Type,
-                        Status = request.Status,
-                        BusinessID = request.BusinessID,
-                        NguoiTaoID = _currentUserService.UserId,
-                        NgayTao = DateTime.Now
-                    };
+            return "Create Success";
 
-                    _menuRepository.Add(menu);
-                    await _menuRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
-                    var menuID = menu.ID;
-
-                    // Add each product to the menu
-                    foreach (var item in request.Products)
-                    {
-                        var productMenu = new ProductMenuEntity
-                        {
-                            ProductID = item.ProductID,
-                            Price = item.Price,
-                            MenuID = menuID,
-                            NgayTao = DateTime.Now,
-                            NguoiTaoID = _currentUserService.UserId,
-                        };
-
-                        _productMenuRepository.Add(productMenu);
-                    }
-
-                    // Save changes for all product menus in a single transaction
-                    var saveResult = await _productMenuRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
-
-                    if (saveResult > 0)
-                    {
-                        await transaction.CommitAsync(cancellationToken);
-                        return "Create Success!";
-                    }
-                    else
-                    {
-                        await transaction.RollbackAsync(cancellationToken);
-                        return "Create Failed!";
-                    }
-                }
-                catch (Exception ex)
-                {
-                    await transaction.RollbackAsync(cancellationToken);
-                    // Log the exception (ex)
-                    return $"An error occurred: {ex.Message}";
-                }
-            }
         }
     }
 }

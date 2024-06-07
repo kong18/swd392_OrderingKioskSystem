@@ -12,7 +12,7 @@ using OrderingKioskSystem.Infrastructure.Persistence;
 namespace OrderingKioskSystem.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240531165035_v1")]
+    [Migration("20240606160140_v1")]
     partial class v1
     {
         /// <inheritdoc />
@@ -486,9 +486,6 @@ namespace OrderingKioskSystem.Infrastructure.Migrations
                 {
                     b.Property<string>("ID")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("MenuID")
                         .IsRequired()

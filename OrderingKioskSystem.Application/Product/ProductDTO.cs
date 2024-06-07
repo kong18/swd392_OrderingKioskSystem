@@ -8,7 +8,7 @@ namespace OrderingKioskSystem.Application.Product
     {
         public ProductDTO() { }
 
-        public static ProductDTO Create(string id, string name, string code, string url, string description, decimal price, bool isAvailable, bool status, int categoryID, string businessID)
+        public static ProductDTO Create(string id, string name, string code, string url, string description, decimal price, bool status, int categoryID, string businessID)
         {
             return new ProductDTO
             {
@@ -18,7 +18,6 @@ namespace OrderingKioskSystem.Application.Product
                 Url = url,
                 Description = description,
                 Price = price,
-                IsAvailable = isAvailable,
                 Status = status,
                 CategoryID = categoryID,
                 BusinessID = businessID
@@ -31,15 +30,17 @@ namespace OrderingKioskSystem.Application.Product
         public string Url { get; set; }
         public string Description { get; set; }
         public decimal Price { get; set; }
-        public bool IsAvailable { get; set; }
         public bool Status { get; set; }
         public int CategoryID { get; set; }
+        public string CategoryName {  get; set; }
         public string BusinessID { get; set; }
+        public string BusinessName { get; set; }
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<ProductEntity, ProductDTO>();
-            profile.CreateMap<ProductDTO, ProductEntity>();
+            profile.CreateMap<ProductEntity, ProductDTO>()
+                .ForMember(dto => dto.CategoryName, opt => opt.MapFrom(entity => entity.Category.Name))
+                .ForMember(dto => dto.BusinessName, opt => opt.MapFrom(entity => entity.Business.Name));
         }
     }
 }

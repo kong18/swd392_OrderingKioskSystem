@@ -484,9 +484,6 @@ namespace OrderingKioskSystem.Infrastructure.Migrations
                     b.Property<string>("ID")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("MenuID")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");

@@ -11,8 +11,8 @@ namespace OrderingKioskSystem.Application.Product.GetByPagination
 {
     public class GetProductByPaginationQuery : IRequest<PagedResult<ProductDTO>>, IQuery
     {
-        public int PageNumber { get; set; }
-        public int PageSize { get; set; }
+        public int PageNumber { get; set; } = 1;
+        public int PageSize { get; set; } = 10;
         public GetProductByPaginationQuery(int pageNumber, int pageSize)
         {
             PageNumber = pageNumber;
