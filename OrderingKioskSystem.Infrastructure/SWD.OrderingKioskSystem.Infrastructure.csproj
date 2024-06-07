@@ -27,7 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\OrderingKioskSystem.Domain\OrderingKioskSystem.Domain.csproj" />
+    <ProjectReference Include="..\OrderingKioskSystem.Domain\SWD.OrderingKioskSystem.Domain.csproj" />
   </ItemGroup>
 
 </Project>

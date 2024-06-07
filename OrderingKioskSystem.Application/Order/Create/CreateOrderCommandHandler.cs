@@ -6,6 +6,8 @@ using OrderingKioskSystem.Domain.Common.Exceptions;
 using OrderingKioskSystem.Domain.Entities;
 using OrderingKioskSystem.Domain.Repositories;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace OrderingKioskSystem.Application.Order.Create
 {
@@ -18,6 +20,7 @@ namespace OrderingKioskSystem.Application.Order.Create
         private readonly OrderService _orderService;
         private readonly IMapper _mapper;
         private readonly ICurrentUserService _currentUserService;
+
         public CreateOrderCommandHandler(OrderService orderService, IOrderRepository orderRepository, IProductRepository productRepository, IOrderDetailRepository orderDetailRepository, IKioskRepository kioskRepository, IMapper mapper, ICurrentUserService currentUserService)
         {
             _orderRepository = orderRepository;
@@ -49,11 +52,16 @@ namespace OrderingKioskSystem.Application.Order.Create
                 }
             }
 
-            // Get the DbContext from the UnitOfWork
             var dbContext = _orderRepository.UnitOfWork as DbContext;
             if (dbContext == null)
             {
                 throw new InvalidOperationException("The UnitOfWork is not associated with a DbContext.");
+            }
+
+            // Check if there's an ambient transaction and throw an exception if there is
+            if (System.Transactions.Transaction.Current != null)
+            {
+                throw new InvalidOperationException("An ambient transaction is already in progress.");
             }
 
             using (var transaction = await dbContext.Database.BeginTransactionAsync(cancellationToken))
@@ -69,7 +77,6 @@ namespace OrderingKioskSystem.Application.Order.Create
                         Status = "OnPreparing",
                         Note = request.Note ?? "",
                         Total = total,
-
                         NguoiTaoID = _currentUserService.UserId,
                         NgayTao = DateTime.Now
                     };

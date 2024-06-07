@@ -3,6 +3,7 @@ using MediatR;
 using OrderingKioskSystem.Application.Business.GetAllBusiness;
 using OrderingKioskSystem.Application.Common.Interfaces;
 using OrderingKioskSystem.Application.User.SendEmail;
+using OrderingKioskSystem.Domain.Common.Exceptions;
 using OrderingKioskSystem.Domain.Entities;
 using OrderingKioskSystem.Domain.Repositories;
 using OrderingKioskSystem.Infrastructure.Repositories;
@@ -30,7 +31,7 @@ namespace OrderingKioskSystem.Application.Business.CreateBusinessCommand
 
             if (userExist)
             {
-                return "User's email exists!";
+                throw new DuplicationException("Same user has been existed");
             }
 
             SendMailModel model = new SendMailModel
