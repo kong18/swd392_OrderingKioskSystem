@@ -8,7 +8,7 @@ using OrderingKioskSystem.Infrastructure.Persistence;
 
 #nullable disable
 
-namespace OrderingKioskSystem.Infrastructure.Migrations
+namespace SWD.OrderingKioskSystem.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot

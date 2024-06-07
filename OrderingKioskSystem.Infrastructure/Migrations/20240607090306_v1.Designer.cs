@@ -9,10 +9,10 @@ using OrderingKioskSystem.Infrastructure.Persistence;
 
 #nullable disable
 
-namespace OrderingKioskSystem.Infrastructure.Migrations
+namespace SWD.OrderingKioskSystem.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240606160140_v1")]
+    [Migration("20240607090306_v1")]
     partial class v1
     {
         /// <inheritdoc />

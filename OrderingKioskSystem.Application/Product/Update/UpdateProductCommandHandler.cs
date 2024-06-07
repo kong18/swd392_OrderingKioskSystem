@@ -1,4 +1,7 @@
 ﻿using MediatR;
+using Microsoft.EntityFrameworkCore.Query.Internal;
+using OrderingKioskSystem.Application.Common.Interfaces;
+using OrderingKioskSystem.Application.FileUpload;
 using OrderingKioskSystem.Application.Product.Create;
 using OrderingKioskSystem.Domain.Entities;
 using OrderingKioskSystem.Domain.Repositories;
@@ -15,12 +18,16 @@ namespace OrderingKioskSystem.Application.Product.Update
         private readonly IProductRepository _productRepository;
         private readonly ICategoryRepository _categoryRepository;
         private readonly IBusinessRepository _businessRepository;
+        private readonly ICurrentUserService _currentUserService;
+        private readonly FileUploadService _fileUploadService;
 
-        public UpdateProductCommandHandler(IProductRepository productRepository, ICategoryRepository categoryRepository, IBusinessRepository businessRepository)
+        public UpdateProductCommandHandler(IProductRepository productRepository, ICategoryRepository categoryRepository, IBusinessRepository businessRepository, ICurrentUserService currentUserService, FileUploadService fileUploadService)
         {
             _productRepository = productRepository;
             _categoryRepository = categoryRepository;
             _businessRepository = businessRepository;
+            _currentUserService = currentUserService;
+            _fileUploadService = fileUploadService;
         }
 
         public async Task<string> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
@@ -32,33 +39,43 @@ namespace OrderingKioskSystem.Application.Product.Update
                 return "ProductID does not exist";
             }
 
-            
-            bool categoryExist = await _categoryRepository.AnyAsync(x => x.ID == request.CategoryID, cancellationToken);
-
-            if (!categoryExist)
+            if (request.CategoryID != null)
             {
-                return "CategoryID does not exist";
-            }
-            
+                bool categoryExist = await _categoryRepository.AnyAsync(x => x.ID == request.CategoryID, cancellationToken);
 
+                if (!categoryExist)
+                {
+                    return "CategoryID does not exist";
+                }
+            }
+
+            var businessID = _currentUserService.UserId;
             
-            bool businessExist = await _businessRepository.AnyAsync(x => x.ID == request.BusinessID, cancellationToken);
+            bool businessExist = await _businessRepository.AnyAsync(x => x.ID == businessID, cancellationToken);
 
             if (!businessExist)
             {
                 return "BusinessID does not exist";
             }
-            
 
-            productExist.Name = request.Name;
-            productExist.Code = request.Code;
-            productExist.Url = request.Url;
-            productExist.Description = request.Description;
-            productExist.Price = request.Price;
-            productExist.Status = request.Status;
-            productExist.CategoryID = request.CategoryID;
-            productExist.BusinessID = request.BusinessID;
+            string imageUrl = string.Empty;
+            if (request.ImageFile != null)
+            {
+                using (var stream = request.ImageFile.OpenReadStream())
+                {
+                    imageUrl = await _fileUploadService.UploadFileAsync(stream, $"{Guid.NewGuid()}.jpg");
+                }
+            }
+
+            productExist.Name = request.Name ?? productExist.Name;
+            productExist.Code = request.Code ?? productExist.Code;
+            productExist.Url = !string.IsNullOrEmpty(imageUrl) ? imageUrl : productExist.Url;
+            productExist.Description = request.Description ?? productExist.Description;
+            productExist.Price = request.Price ?? productExist.Price;
+            productExist.Status = request.Status ?? productExist.Status;
+            productExist.CategoryID = request.CategoryID ?? productExist.CategoryID;
             
+            productExist.NguoiCapNhatID = businessID;
             productExist.NgayCapNhatCuoi = DateTime.Now;
             _productRepository.Update(productExist);
 

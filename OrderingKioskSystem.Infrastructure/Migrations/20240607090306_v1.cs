@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace OrderingKioskSystem.Infrastructure.Migrations
+namespace SWD.OrderingKioskSystem.Infrastructure.Migrations
 {
     /// <inheritdoc />
     public partial class v1 : Migration

@@ -29,9 +29,6 @@ namespace OrderingKioskSystem.Application.Product.Create
 
             RuleFor(command => command.CategoryID)
                 .NotEmpty().WithMessage("CategoryID can't be empty or null");
-
-            RuleFor(command => command.BusinessID)
-                .NotEmpty().WithMessage("BussinessID can't be empty or null");
         }
     }
 }
