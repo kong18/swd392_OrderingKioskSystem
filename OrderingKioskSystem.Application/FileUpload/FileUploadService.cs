@@ -24,7 +24,7 @@ namespace OrderingKioskSystem.Application.FileUpload
             try
             {
                 var resizedStream = new MemoryStream();
-                ResizeImage(fileStream, resizedStream);
+                CompressImage(fileStream, resizedStream);
 
                 var jwtToken = await GenerateJwtTokenAsync();
 
@@ -52,12 +52,16 @@ namespace OrderingKioskSystem.Application.FileUpload
             }
         }
 
-        private void ResizeImage(Stream inputStream, Stream outputStream, int width = 800, int height = 600)
+        private void CompressImage(Stream inputStream, Stream outputStream, int quality = 75)
         {
             using (var image = Image.Load(inputStream))
             {
-                image.Mutate(x => x.Resize(width, height));
-                image.Save(outputStream, new JpegEncoder());
+                var encoder = new JpegEncoder
+                {
+                    Quality = quality // Adjust the quality (1-100) to compress the image
+                };
+
+                image.Save(outputStream, encoder);
                 outputStream.Seek(0, SeekOrigin.Begin);
             }
         }
