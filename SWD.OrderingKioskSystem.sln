@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrderingKioskSystem.Domain", "OrderingKioskSystem.Domain\OrderingKioskSystem.Domain.csproj", "{1485221B-69C3-4E0B-A6FE-AC6759628F0C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SWD.OrderingKioskSystem.Domain", "OrderingKioskSystem.Domain\SWD.OrderingKioskSystem.Domain.csproj", "{1485221B-69C3-4E0B-A6FE-AC6759628F0C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrderingKioskSystemManagement.Api", "OrderingKioskSystemManagement\OrderingKioskSystemManagement.Api.csproj", "{647E2CFE-811B-4EA9-B74D-9BAFC968241F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SWD.OrderingKioskSystemManagement.Api", "OrderingKioskSystemManagement\SWD.OrderingKioskSystemManagement.Api.csproj", "{647E2CFE-811B-4EA9-B74D-9BAFC968241F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrderingKioskSystem.Application", "OrderingKioskSystem.Application\OrderingKioskSystem.Application.csproj", "{2D30547F-5895-4C13-8774-3094F5408915}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SWD.OrderingKioskSystem.Application", "OrderingKioskSystem.Application\SWD.OrderingKioskSystem.Application.csproj", "{2D30547F-5895-4C13-8774-3094F5408915}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrderingKioskSystem.Infrastructure", "OrderingKioskSystem.Infrastructure\OrderingKioskSystem.Infrastructure.csproj", "{7BE518EB-F77A-41FE-AD60-A5CBE3ECC9A9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SWD.OrderingKioskSystem.Infrastructure", "OrderingKioskSystem.Infrastructure\SWD.OrderingKioskSystem.Infrastructure.csproj", "{7BE518EB-F77A-41FE-AD60-A5CBE3ECC9A9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

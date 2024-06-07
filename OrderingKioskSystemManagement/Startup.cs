@@ -1,9 +1,18 @@
-﻿using OrderingKioskSystemManagement.Api.Configuration;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using OrderingKioskSystemManagement.Api.Configuration;
 using OrderingKioskSystemManagement.Api.Filters;
 using Serilog;
 using OrderingKioskSystem.Application;
 using OrderingKioskSystem.Infrastructure;
 using OrderingKioskSystem.Application.Order;
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
+using OrderingKioskSystemManagement.Application;
+using OrderingKioskSystem.Application.FileUpload;
+using System.IO;
 
 namespace OrderingKioskSystemManagement.Api
 {
@@ -18,11 +27,7 @@ namespace OrderingKioskSystemManagement.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers(
-                opt =>
-                {
-                    opt.Filters.Add<ExceptionFilter>();
-                });
+            services.AddControllers(opt => opt.Filters.Add<ExceptionFilter>());
             services.AddSignalR();
             services.AddScoped<OrderService>();
             services.AddApplication(Configuration);
@@ -39,11 +44,32 @@ namespace OrderingKioskSystemManagement.Api
                         .WithOrigins("https://localhost:7182")
                         .AllowAnyHeader()
                         .AllowAnyMethod()
-                        .AllowCredentials()
-                );
+                        .AllowCredentials());
             });
+
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+
+            // Additional logging
+            var firebaseSection = Configuration.GetSection("FirebaseConfig");
+            if (!firebaseSection.Exists())
+            {
+                throw new ArgumentNullException("FirebaseConfig section does not exist in configuration.");
+            }
+
+            var firebaseConfig = firebaseSection.Get<FirebaseConfig>();
+            if (firebaseConfig == null)
+            {
+                throw new ArgumentNullException(nameof(firebaseConfig), "FirebaseConfig section is missing in configuration.");
+            }
+
+           
+           
+
+
+            services.AddSingleton(firebaseConfig);
+            services.AddSingleton<FileUploadService>();
         }
+
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
@@ -58,7 +84,7 @@ namespace OrderingKioskSystemManagement.Api
             app.UseExceptionHandler();
             app.UseHttpsRedirection();
             app.UseRouting();
-            app.UseAuthentication(); // Ensure this is before UseAuthorization
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
@@ -66,6 +92,7 @@ namespace OrderingKioskSystemManagement.Api
                 endpoints.MapControllers();
                 endpoints.MapHub<OrderingKioskSystem.Application.NotificationHub>("/notificationHub");
             });
+
             app.UseSwashbuckle(Configuration);
         }
     }

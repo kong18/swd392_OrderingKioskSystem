@@ -23,6 +23,8 @@
     <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.0" />
     <PackageReference Include="AspNetCore.HealthChecks.SqlServer" Version="8.0.2" />
     <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="8.0.1" />
+    <PackageReference Include="FirebaseAdmin" Version="3.0.0" />
+    <PackageReference Include="Google.Apis.Auth" Version="1.68.0" />
     <PackageReference Include="IdentityModel" Version="7.0.0" />
     <PackageReference Include="MailKit" Version="4.5.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.4" />
@@ -38,9 +40,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\OrderingKioskSystem.Application\OrderingKioskSystem.Application.csproj" />
-    <ProjectReference Include="..\OrderingKioskSystem.Domain\OrderingKioskSystem.Domain.csproj" />
-    <ProjectReference Include="..\OrderingKioskSystem.Infrastructure\OrderingKioskSystem.Infrastructure.csproj" />
+    <ProjectReference Include="..\OrderingKioskSystem.Application\SWD.OrderingKioskSystem.Application.csproj" />
+    <ProjectReference Include="..\OrderingKioskSystem.Domain\SWD.OrderingKioskSystem.Domain.csproj" />
+    <ProjectReference Include="..\OrderingKioskSystem.Infrastructure\SWD.OrderingKioskSystem.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

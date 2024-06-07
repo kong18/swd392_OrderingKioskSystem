@@ -10,8 +10,11 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+    <PackageReference Include="FirebaseAdmin" Version="3.0.0" />
+    <PackageReference Include="FirebaseStorage.net" Version="1.0.3" />
     <PackageReference Include="FluentValidation" Version="11.9.1" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.9.1" />
+    <PackageReference Include="Google.Apis.Auth" Version="1.68.0" />
     <PackageReference Include="MediatR" Version="12.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.6" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17" />
@@ -23,11 +26,12 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
     <PackageReference Include="NinjaNye.SearchExtensions" Version="3.0.1" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="3.1.4" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\OrderingKioskSystem.Domain\OrderingKioskSystem.Domain.csproj" />
-    <ProjectReference Include="..\OrderingKioskSystem.Infrastructure\OrderingKioskSystem.Infrastructure.csproj" />
+    <ProjectReference Include="..\OrderingKioskSystem.Domain\SWD.OrderingKioskSystem.Domain.csproj" />
+    <ProjectReference Include="..\OrderingKioskSystem.Infrastructure\SWD.OrderingKioskSystem.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>

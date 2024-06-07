@@ -6,6 +6,8 @@ using OrderingKioskSystem.Domain.Common.Exceptions;
 using OrderingKioskSystem.Domain.Entities;
 using OrderingKioskSystem.Domain.Repositories;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace OrderingKioskSystem.Application.Order.Create
 {
@@ -18,6 +20,7 @@ namespace OrderingKioskSystem.Application.Order.Create
         private readonly OrderService _orderService;
         private readonly IMapper _mapper;
         private readonly ICurrentUserService _currentUserService;
+
         public CreateOrderCommandHandler(OrderService orderService, IOrderRepository orderRepository, IProductRepository productRepository, IOrderDetailRepository orderDetailRepository, IKioskRepository kioskRepository, IMapper mapper, ICurrentUserService currentUserService)
         {
             _orderRepository = orderRepository;
