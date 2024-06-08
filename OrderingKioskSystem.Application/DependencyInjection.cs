@@ -6,6 +6,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 using System.Reflection;
 using OrderingKioskSystem.Application.FileUpload;
+using SixLabors.ImageSharp;
+using SWD.OrderingKioskSystem.Application.Payment;
+using SWD.OrderingKioskSystem.Domain.Repositories;
 
 namespace OrderingKioskSystem.Application
 {
@@ -26,7 +29,8 @@ namespace OrderingKioskSystem.Application
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services.AddScoped<IValidatorProvider, ValidatorProvider>();
             services.AddTransient<FileUploadService>();
-
+            services.AddHttpClient<IVietQrService, VietQrService>();
+           
             return services;
         }
     }
