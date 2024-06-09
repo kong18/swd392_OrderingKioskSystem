@@ -107,7 +107,7 @@ namespace OrderingKioskSystemManagement.Api.Controller
         public async Task<ActionResult<List<MenuDTO>>> GetAllOrder(
            CancellationToken cancellationToken = default)
         {
-            var result = await _mediator.Send(new GetAllMenuQuery(), cancellationToken);
+            var result = await _mediator.Send(new GetMenuQuery(), cancellationToken);
             return Ok(new JsonResponse<List<MenuDTO>>(result));
         }
 

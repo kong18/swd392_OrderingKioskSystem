@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace OrderingKioskSystem.Application.Order.GetAll
 {
-    public class GetAllOrderQueryHandler : IRequestHandler<GetAllOrderQuery, List<OrderDTO>>
+    public class GetAllOrderQueryHandler : IRequestHandler<GetOrderQuery, List<OrderDTO>>
     {
         private readonly IOrderRepository _orderRepository;
         private readonly IMapper _mapper;
@@ -20,7 +20,7 @@ namespace OrderingKioskSystem.Application.Order.GetAll
             _orderRepository = orderRepository;
             _mapper = mapper;
         }
-        public async Task<List<OrderDTO>> Handle(GetAllOrderQuery request, CancellationToken cancellationToken)
+        public async Task<List<OrderDTO>> Handle(GetOrderQuery request, CancellationToken cancellationToken)
         {
             var list = await _orderRepository.FindAllAsync(x => !x.NgayXoa.HasValue, cancellationToken);
 

@@ -66,6 +66,7 @@ namespace OrderingKioskSystem.Application.Business.CreateBusinessCommand
                 BankName = request.BankName,
                 BankAccountName = request.BankAccountName,
                 BankAccountNumber = request.BankAccountNumber,
+                BinId = request.BinId,
 
             };
             _repository.Add(business);

@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace OrderingKioskSystem.Application.Shipper.GetAllShipper
 {
-    public class GetAllShipperQueryHandler : IRequestHandler<GetAllShipper, List<ShipperDTO>>
+    public class GetAllShipperQueryHandler : IRequestHandler<GetShipper, List<ShipperDTO>>
     {
         private readonly IShipperRepository _repository;
         private readonly IMapper _mapper;
@@ -21,7 +21,7 @@ namespace OrderingKioskSystem.Application.Shipper.GetAllShipper
             _mapper = mapper;
         }
 
-        public async Task<List<ShipperDTO>> Handle(GetAllShipper request, CancellationToken cancellationToken)
+        public async Task<List<ShipperDTO>> Handle(GetShipper request, CancellationToken cancellationToken)
         {
             var shipper = await _repository.FindAllAsync(c => c.NgayXoa == null, cancellationToken);
             return shipper.MapToShipperDTOist(_mapper);
