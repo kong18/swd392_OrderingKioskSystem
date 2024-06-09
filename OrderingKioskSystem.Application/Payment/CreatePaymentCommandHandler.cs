@@ -22,7 +22,6 @@ public class CreatePaymentCommandHandler : IRequestHandler<CreatePaymentCommand,
 
     public async Task<string> Handle(CreatePaymentCommand request, CancellationToken cancellationToken)
     {
-        // Tìm order
         var order = await _orderRepository.FindAsync(x => x.ID == request.OrderID, cancellationToken);
 
         if (order == null || order.NgayXoa.HasValue)
