@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OrderingKioskSystem.Application.Business.GetAllBusiness
+namespace OrderingKioskSystem.Application.Kiosk.GetAll
 {
-    public class GetAllBusinessQuery : IRequest<List<BusinessDTO>>, IQuery
+    public class GetKioskQuery : IRequest<List<KioskDTO>>, IQuery
     {
     }
 }

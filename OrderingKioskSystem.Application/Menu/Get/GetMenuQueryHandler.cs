@@ -11,17 +11,17 @@ using System.Threading.Tasks;
 
 namespace OrderingKioskSystem.Application.Menu.GetAll
 {
-    public class GetAllMenuQueryHandler : IRequestHandler<GetAllMenuQuery, List<MenuDTO>>
+    public class GetMenuQueryHandler : IRequestHandler<GetMenuQuery, List<MenuDTO>>
     {
         private readonly IMenuRepository _menuRepository;
         private readonly IMapper _mapper;
-        public GetAllMenuQueryHandler(IMenuRepository menuRepository, IMapper mapper)
+        public GetMenuQueryHandler(IMenuRepository menuRepository, IMapper mapper)
         {
             _menuRepository = menuRepository;
             _mapper = mapper;
         }
 
-        public async Task<List<MenuDTO>> Handle(GetAllMenuQuery request, CancellationToken cancellationToken)
+        public async Task<List<MenuDTO>> Handle(GetMenuQuery request, CancellationToken cancellationToken)
         {
             var menuList = await _menuRepository.FindAllAsync(x => !x.NgayXoa.HasValue, cancellationToken);
 

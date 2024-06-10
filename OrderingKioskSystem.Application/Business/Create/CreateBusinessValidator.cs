@@ -6,6 +6,11 @@ namespace OrderingKioskSystem.Application.Business.CreateBusinessCommand
     {
         public CreateBusinessValidator()
         {
+            RuleFor(x => x.BinId)
+               .NotEmpty().WithMessage("BinID can't be empty")
+               .Matches(@"^\d+$").WithMessage("BinID must be numeric");
+
+
             RuleFor(x => x.Url)
                 .NotEmpty().WithMessage("URL can't be empty")
                 .Must(BeAValidUrl).WithMessage("Invalid URL format");

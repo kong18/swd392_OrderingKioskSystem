@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace OrderingKioskSystem.Application.Product.GetAll
 {
-    public class GetAllProductQueryHandler : IRequestHandler<GetAllProductQuery, List<ProductDTO>>
+    public class GetAllProductQueryHandler : IRequestHandler<GetProductQuery, List<ProductDTO>>
     {
         private readonly IProductRepository _productRepository;
         private readonly IMapper _mapper;
@@ -22,7 +22,7 @@ namespace OrderingKioskSystem.Application.Product.GetAll
             _mapper = mapper;
         }
 
-        public async Task<List<ProductDTO>> Handle(GetAllProductQuery request, CancellationToken cancellationToken)
+        public async Task<List<ProductDTO>> Handle(GetProductQuery request, CancellationToken cancellationToken)
         {
             var products = await _productRepository.FindAllAsync(x => !x.NgayXoa.HasValue,cancellationToken);
 

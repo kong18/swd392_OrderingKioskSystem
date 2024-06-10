@@ -77,7 +77,7 @@ namespace OrderingKioskSystemManagement.Api.Controller
         public async Task<ActionResult<List<ShipperDTO>>> GetAllShipper(
            CancellationToken cancellationToken = default)
         {
-            var result = await _mediator.Send(new GetAllShipper(), cancellationToken);
+            var result = await _mediator.Send(new GetShipper(), cancellationToken);
             return Ok(new JsonResponse<List<ShipperDTO>>(result));
         }
 
