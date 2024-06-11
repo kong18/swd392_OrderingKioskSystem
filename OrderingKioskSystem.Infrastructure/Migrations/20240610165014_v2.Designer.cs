@@ -9,11 +9,11 @@ using OrderingKioskSystem.Infrastructure.Persistence;
 
 #nullable disable
 
-namespace OrderingKioskSystem.Infrastructure.Migrations
+namespace SWD.OrderingKioskSystem.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240531165035_v1")]
-    partial class v1
+    [Migration("20240610165014_v2")]
+    partial class v2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -44,6 +44,9 @@ namespace OrderingKioskSystem.Infrastructure.Migrations
                     b.Property<string>("BankName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("BinId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -486,9 +489,6 @@ namespace OrderingKioskSystem.Infrastructure.Migrations
                 {
                     b.Property<string>("ID")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("MenuID")
                         .IsRequired()

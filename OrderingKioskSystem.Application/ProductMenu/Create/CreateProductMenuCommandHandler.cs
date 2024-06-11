@@ -31,55 +31,31 @@ namespace OrderingKioskSystem.Application.ProductMenu.Create
                 return "Menu is not found or deleted";
             }
 
-            var dbContext = _productMenuRepository.UnitOfWork as DbContext;
-            if (dbContext == null)
+            foreach (var item in request.Products)
             {
-                throw new InvalidOperationException("The UnitOfWork is not associated with a DbContext.");
-            }
+                bool productExist = await _productRepository.AnyAsync(x => x.ID == item.ProductID && !x.NgayXoa.HasValue, cancellationToken);
 
-            using (var transaction = await dbContext.Database.BeginTransactionAsync(cancellationToken))
-            {
-                try
+                if (!productExist)
                 {
-                    foreach (var item in request.Products)
-                    {
-                        var product = await _productRepository.FindAsync(x => x.ID == item.ProductID && !x.NgayXoa.HasValue, cancellationToken);
-
-                        if (product == null)
-                        {
-                            return $"Product with {item.ProductID} is not found or deleted";
-                        }
-
-                        var productMenu = new ProductMenuEntity
-                        {
-                            ProductID = item.ProductID,
-                            MenuID = menuExist.ID,
-                            Price = item.Price,
-                        };
-
-                        _productMenuRepository.Add(productMenu);
-                    }
-
-                    var saveResult = await _productMenuRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
-
-                    if (saveResult > 0)
-                    {
-                        await transaction.CommitAsync(cancellationToken);
-                        return "Add Success";
-                    }
-                    else
-                    {
-                        await transaction.RollbackAsync(cancellationToken);
-                        return "Add Fail";
-                    }
-                }
-                catch (Exception ex)
-                {
-                    await transaction.RollbackAsync(cancellationToken);
-                    // Log the exception (ex)
-                    return $"An error occurred: {ex.Message}";
+                    return $"Product with ID {item.ProductID} is not found or deleted";
                 }
             }
+
+            foreach (var item in request.Products)
+            {
+
+                var productMenu = new ProductMenuEntity
+                {
+                    ProductID = item.ProductID,
+                    MenuID = menuExist.ID,
+                    Price = item.Price,
+                };
+
+                _productMenuRepository.Add(productMenu);
+                await _productMenuRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
+            }
+
+            return "Add Success";
         }
     }
 }

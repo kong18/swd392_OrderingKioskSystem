@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace OrderingKioskSystem.Application.Shipper.GetAllShipper
 {
-    public class GetAllShipper : IRequest<List<ShipperDTO>>, IQuery
+    public class GetShipperQuery : IRequest<List<ShipperDTO>>, IQuery
     {
     }
 }

@@ -27,11 +27,8 @@ namespace OrderingKioskSystem.Application.Product.Create
                 .NotEmpty().WithMessage("Price can't be empty or null")
                 .GreaterThan(0).WithMessage("Price must be greater than 0");
 
-            RuleFor(command => command.CategoryID)
+            RuleFor(command => command.CategoryName)
                 .NotEmpty().WithMessage("CategoryID can't be empty or null");
-
-            RuleFor(command => command.BusinessID)
-                .NotEmpty().WithMessage("BussinessID can't be empty or null");
         }
     }
 }

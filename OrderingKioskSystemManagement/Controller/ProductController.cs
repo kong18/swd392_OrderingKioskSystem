@@ -32,7 +32,7 @@ namespace OrderingKioskSystemManagement.Api.Controller
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> CreateProduct(
-         [FromForm] CreateProductCommand command,
+            [FromForm] CreateProductCommand command,
          CancellationToken cancellationToken = default)
         {
             var result = await _mediator.Send(command, cancellationToken);
@@ -46,7 +46,7 @@ namespace OrderingKioskSystemManagement.Api.Controller
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> UpdateProduct(
-            [FromBody] UpdateProductCommand command,
+            [FromForm] UpdateProductCommand command,
             CancellationToken cancellationToken = default)
         {
             var result = await _mediator.Send(command, cancellationToken);
@@ -116,7 +116,7 @@ namespace OrderingKioskSystemManagement.Api.Controller
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<JsonResponse<PagedResult<ProductDTO>>>> FilterProduct(
-         [FromQuery] FilterProductQuery query,
+            [FromQuery] FilterProductQuery query,
          CancellationToken cancellationToken = default)
         {
             var result = await _mediator.Send(query, cancellationToken);

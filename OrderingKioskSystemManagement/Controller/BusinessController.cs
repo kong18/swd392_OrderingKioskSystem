@@ -12,6 +12,8 @@ using OrderingKioskSystem.Application.Category.Delete;
 using OrderingKioskSystem.Application.Category.GetAll;
 using OrderingKioskSystem.Application.Category.GetById;
 using OrderingKioskSystem.Application.Category.Update;
+using SWD.OrderingKioskSystem.Application.Payment;
+using SWD.OrderingKioskSystem.Application.QRCode;
 using System.Net.Mime;
 
 namespace OrderingKioskSystemManagement.Api.Controller
@@ -94,6 +96,13 @@ namespace OrderingKioskSystemManagement.Api.Controller
         {
             var result = await _mediator.Send(new GetBusinessByIdQuery(id), cancellationToken);
             return Ok(new JsonResponse<BusinessDTO>(result));
+        }
+
+        [HttpPost("createQR")]
+        public async Task<IActionResult> CreateQR([FromBody] CreateQRCommand command)
+        {
+            var qrCodeUrl = await _mediator.Send(command);
+            return Ok(new { qrCodeUrl });
         }
     }
 }

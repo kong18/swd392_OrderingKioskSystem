@@ -6,8 +6,6 @@ using OrderingKioskSystem.Application.Category.Delete;
 using OrderingKioskSystem.Application.Category.GetAll;
 using OrderingKioskSystem.Application.Category.GetById;
 using OrderingKioskSystem.Application.Category.Update;
-using OrderingKioskSystem.Application.DashboardCategory.GetPopularCategories;
-using OrderingKioskSystem.Application.DashboardCategory;
 using System.Net.Mime;
 
 namespace OrderingKioskSystemManagement.Api.Controller

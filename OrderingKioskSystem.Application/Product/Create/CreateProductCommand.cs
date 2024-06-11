@@ -12,26 +12,22 @@ namespace OrderingKioskSystem.Application.Product.Create
     public class CreateProductCommand : IRequest<string>, ICommand
     {
         public CreateProductCommand() { }
-        public CreateProductCommand(string code,  string name, string description, decimal price, bool isAvailable, bool status, int categoryID, string businessID)
+        public CreateProductCommand(string code,  string name, string description, decimal price, bool status, string categoryName)
         {
             Code = code;
-         
             Name = name;
             Description = description;
             Price = price;
             Status = status;
-            CategoryID = categoryID;
-            BusinessID = businessID;
+            CategoryName = categoryName;
         }
         public string Name { get; set; }
         public string Code { get; set; }
    
         public string Description { get; set; }
         public decimal Price { get; set; }
-        public bool IsAvailable { get; set; }
-        public bool Status { get; set; }
-        public int CategoryID { get; set; }
-        public string BusinessID { get; set; }
+        public bool Status { get; set; } = true;
+        public string CategoryName {  get; set; }
         public IFormFile ImageFile { get; set; }
 
     }
