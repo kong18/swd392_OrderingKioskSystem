@@ -15,7 +15,7 @@ namespace OrderingKioskSystem.Domain.Entities
         public required string Name { get; set; }
         public required string BankAccountNumber { get; set; }
         public required string BankAccountName { get; set; }
-        public required string BinId {  get; set; }
+        public required int BinId {  get; set; }
         public required string BankName { get; set; }
         public virtual ICollection<MenuEntity> Menus { get; set; }
         public virtual ICollection<ProductEntity> Products { get; set; }

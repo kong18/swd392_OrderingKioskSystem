@@ -1,6 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using SWD.OrderingKioskSystem.Application.QRCode;
 using SWD.OrderingKioskSystem.Domain.Repositories;
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SWD.OrderingKioskSystem.Application.Payment
+namespace SWD.OrderingKioskSystem.Application.QRCode
 {
     public class VietQrService : IVietQrService
     {

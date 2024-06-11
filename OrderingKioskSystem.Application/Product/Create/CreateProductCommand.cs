@@ -12,15 +12,14 @@ namespace OrderingKioskSystem.Application.Product.Create
     public class CreateProductCommand : IRequest<string>, ICommand
     {
         public CreateProductCommand() { }
-        public CreateProductCommand(string code,  string name, string description, decimal price, bool status, int categoryID)
+        public CreateProductCommand(string code,  string name, string description, decimal price, bool status, string categoryName)
         {
             Code = code;
             Name = name;
             Description = description;
             Price = price;
             Status = status;
-            CategoryID = categoryID;
-
+            CategoryName = categoryName;
         }
         public string Name { get; set; }
         public string Code { get; set; }
@@ -28,7 +27,7 @@ namespace OrderingKioskSystem.Application.Product.Create
         public string Description { get; set; }
         public decimal Price { get; set; }
         public bool Status { get; set; } = true;
-        public int CategoryID {  get; set; }
+        public string CategoryName {  get; set; }
         public IFormFile ImageFile { get; set; }
 
     }

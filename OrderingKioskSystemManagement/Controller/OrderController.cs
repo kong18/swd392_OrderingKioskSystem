@@ -9,10 +9,13 @@ using OrderingKioskSystem.Application.Order.Update;
 using OrderingKioskSystem.Application.Order.Delete;
 using OrderingKioskSystem.Application.Order.GetAll;
 using OrderingKioskSystem.Application.Common.Pagination;
-using OrderingKioskSystem.Application.Product.GetByPagination;
 using OrderingKioskSystem.Application.Order.GetByPagnition;
-using OrderingKioskSystem.Application.Product.Filter;
 using OrderingKioskSystem.Application.Order.Filter;
+using Microsoft.AspNetCore.SignalR;
+using Newtonsoft.Json;
+using System.Text;
+using SWD.OrderingKioskSystem.Application.QRCode;
+using System.Threading;
 
 namespace OrderingKioskSystemManagement.Api.Controller
 {
@@ -20,10 +23,16 @@ namespace OrderingKioskSystemManagement.Api.Controller
     public class OrderController : ControllerBase
     {
         private readonly ISender _mediator;
+        private readonly OrderService _orderService;
+        private readonly RegisterWebhook _registerWebhook;
+        private readonly ILogger<OrderController> _logger;
 
-        public OrderController(ISender mediator)
+        public OrderController(ISender mediator, OrderService orderService, RegisterWebhook registerWebhook, ILogger<OrderController> logger)
         {
             _mediator = mediator;
+            _orderService = orderService;
+            _registerWebhook = registerWebhook;
+            _logger = logger;
         }
 
         [HttpPost("order")]
@@ -123,5 +132,58 @@ namespace OrderingKioskSystemManagement.Api.Controller
             var result = await _mediator.Send(query, cancellationToken);
             return Ok(new JsonResponse<PagedResult<OrderDTO>>(result));
         }
+
+        [HttpPost("webhook")]
+        public async Task<IActionResult> PaymentWebhook([FromBody] VietQRPaymentStatusUpdate update)
+        {
+            try
+            {
+                if (update.Status == "success")
+                {
+                    await _orderService.NotifyNewOrder(update.OrderId);
+                    return Ok(new { message = "Payment success notification sent to frontend." });
+                }
+
+                return BadRequest(new { message = "Invalid status." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while processing the webhook.");
+                return StatusCode(500, new { message = "An internal server error occurred.", detail = ex.Message });
+            }
+        }
+
+        [HttpPost("registerWebhook")]
+        public async Task<IActionResult> RegisterWebhook([FromBody] RegisterWebhookRequest request)
+        {
+            try
+            {
+                var result = await _registerWebhook.RegiterWebHook(request);
+
+                if (result == "Success")
+                {
+                    return Ok(new { message = "Webhook registered successfully." });
+                }
+                else
+                {
+                    return StatusCode(500, new { message = "Failed to register webhook." });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while registering webhook.");
+                return StatusCode(500, new { message = "An internal server error occurred.", detail = ex.Message });
+            }
+        }
+    }
+
+    public class VietQRPaymentStatusUpdate
+    {
+        public string Status { get; set; }
+        public string OrderId { get; set; }
+        public int Amount { get; set; }
+        public string Currency { get; set; }
+        public string TransactionId { get; set; }
+        public DateTime Timestamp { get; set; }
     }
 }

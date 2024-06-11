@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace OrderingKioskSystem.Application.Product.GetAll
 {
-    public class GetAllProductQuery : IRequest<List<ProductDTO>>
+    public class GetProductQuery : IRequest<List<ProductDTO>>
     {
-        public GetAllProductQuery() { }
+        public GetProductQuery() { }
     }
 }

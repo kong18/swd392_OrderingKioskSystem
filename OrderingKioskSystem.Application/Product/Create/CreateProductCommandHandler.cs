@@ -30,14 +30,14 @@ namespace OrderingKioskSystem.Application.Product.Create
 
         public async Task<string> Handle(CreateProductCommand request, CancellationToken cancellationToken)
         {
-            var categoryExist = await _categoryRepository.FindAsync(x => x.Name == request.Name && !x.NgayXoa.HasValue, cancellationToken);
+            var categoryExist = await _categoryRepository.FindAsync(x => x.Name == request.CategoryName && !x.NgayXoa.HasValue, cancellationToken);
 
             if (categoryExist is null)
             {
                 throw new NotFoundException("Category does not exist");
             }
 
-            var businessID = _currentUserService.UserId;
+            var businessID = "36e1c727b5de415cad4b2a3a6100c4d8";
 
             bool businessExist = await _businessRepository.AnyAsync(x => x.ID == businessID  &&  !x.NgayXoa.HasValue, cancellationToken);
 

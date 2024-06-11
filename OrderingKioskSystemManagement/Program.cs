@@ -5,6 +5,7 @@ using Serilog.Events;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 
+
 namespace OrderingKioskSystemManagement.Api
 {
     public static class Program

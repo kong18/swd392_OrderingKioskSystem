@@ -13,8 +13,9 @@ using Google.Apis.Auth.OAuth2;
 using OrderingKioskSystemManagement.Application;
 using OrderingKioskSystem.Application.FileUpload;
 using System.IO;
-using SWD.OrderingKioskSystem.Application.Payment;
 using SWD.OrderingKioskSystem.Domain.Repositories;
+using SWD.OrderingKioskSystem.Application.QRCode;
+
 
 namespace OrderingKioskSystemManagement.Api
 {

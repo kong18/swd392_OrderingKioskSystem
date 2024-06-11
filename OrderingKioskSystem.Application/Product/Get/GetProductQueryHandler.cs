@@ -11,12 +11,12 @@ using System.Threading.Tasks;
 
 namespace OrderingKioskSystem.Application.Product.GetAll
 {
-    public class GetAllProductQueryHandler : IRequestHandler<GetProductQuery, List<ProductDTO>>
+    public class GetProductQueryHandler : IRequestHandler<GetProductQuery, List<ProductDTO>>
     {
         private readonly IProductRepository _productRepository;
         private readonly IMapper _mapper;
 
-        public GetAllProductQueryHandler(IProductRepository productRepository, IMapper mapper)
+        public GetProductQueryHandler(IProductRepository productRepository, IMapper mapper)
         {
             _productRepository = productRepository;
             _mapper = mapper;

@@ -7,9 +7,7 @@ namespace OrderingKioskSystem.Application.Business.CreateBusinessCommand
         public CreateBusinessValidator()
         {
             RuleFor(x => x.BinId)
-               .NotEmpty().WithMessage("BinID can't be empty")
-               .Matches(@"^\d+$").WithMessage("BinID must be numeric");
-
+                .GreaterThan(0).WithMessage("BinID must be greater than zero");
 
             RuleFor(x => x.Url)
                 .NotEmpty().WithMessage("URL can't be empty")
