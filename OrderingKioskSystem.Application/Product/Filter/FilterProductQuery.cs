@@ -7,8 +7,7 @@ namespace OrderingKioskSystem.Application.Product.Filter
     {
         public string ?Name { get; set; }
         public string ?Code { get; set; }
-        public decimal? MinPrice { get; set; }
-        public decimal? MaxPrice { get; set; }
+        public string? SortOrder { get; set; } = "asc";
         public bool? Status { get; set; }
         public int? CategoryID { get; set; }
         public string ?BusinessID { get; set; }

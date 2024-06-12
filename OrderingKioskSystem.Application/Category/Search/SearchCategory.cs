@@ -7,8 +7,11 @@ using System.Threading.Tasks;
 
 namespace OrderingKioskSystem.Application.Category.GetAll
 {
-    public class GetAllCategoryQuery : IRequest<List<CategoryDTO>>
+    public class SearchCategory : IRequest<List<CategoryDTO>>
     {
-        public GetAllCategoryQuery() { }
+        public string? Name { get; set; }
+        public SearchCategory(string? name = null) {
+            Name = name;
+        }
     }
 }
