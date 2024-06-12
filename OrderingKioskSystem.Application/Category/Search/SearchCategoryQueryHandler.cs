@@ -11,27 +11,28 @@ using System.Threading.Tasks;
 
 namespace OrderingKioskSystem.Application.Category.GetAll
 {
-    public class GetAllCategoryQueryHandler : IRequestHandler<GetAllCategoryQuery, List<CategoryDTO>>
+    public class SearchCategoryQueryHandler : IRequestHandler<SearchCategory, List<CategoryDTO>>
     {
         private readonly ICategoryRepository _categoryRepository;
         private readonly IMapper _mapper;
 
-        public GetAllCategoryQueryHandler(ICategoryRepository categoryRepository, IMapper mapper)
+
+        public SearchCategoryQueryHandler(ICategoryRepository categoryRepository, IMapper mapper)
         {
             _categoryRepository = categoryRepository;
             _mapper = mapper;
         }
 
-        public async Task<List<CategoryDTO>> Handle(GetAllCategoryQuery request, CancellationToken cancellationToken)
+        public async Task<List<CategoryDTO>> Handle(SearchCategory request, CancellationToken cancellationToken)
         {
-            var categories = await _categoryRepository.FindAllAsync(x => !x.NgayXoa.HasValue, cancellationToken);
+            var query = await _categoryRepository.FindAllAsync(c => c.NgayXoa == null, cancellationToken);
 
-            if (categories is null)
+            if (!string.IsNullOrEmpty(request.Name))
             {
-                throw new NotFoundException("Category List is empty");
+                query = query.Where(b => b.Name.Contains(request.Name)).ToList();
             }
 
-            return categories.MapToCategoryDTOList(_mapper);
+            return query.MapToCategoryDTOList(_mapper); ;
         }
     }
 }
