@@ -1,24 +1,23 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using OrderingKioskSystem.Application.Common.Pagination;
-using OrderingKioskSystem.Application.Order.Delete;
-using OrderingKioskSystem.Application.Order.Filter;
-using OrderingKioskSystem.Application.Order.GetAll;
-using OrderingKioskSystem.Application.Order;
-using OrderingKioskSystem.Application.Product;
-using System.Net.Mime;
-using OrderingKioskSystem.Application.Menu.Create;
 using OrderingKioskSystem.Application.Menu;
+using OrderingKioskSystem.Application.Menu.Create;
+using OrderingKioskSystem.Application.Menu.Delete;
+using OrderingKioskSystem.Application.Menu.Filter;
+using OrderingKioskSystem.Application.Menu.GetAll;
 using OrderingKioskSystem.Application.Menu.GetById;
 using OrderingKioskSystem.Application.Menu.GetByPagnition;
 using OrderingKioskSystem.Application.Menu.Update;
-using OrderingKioskSystem.Application.Menu.Delete;
-using OrderingKioskSystem.Application.Menu.GetAll;
-using OrderingKioskSystem.Application.Menu.Filter;
+using OrderingKioskSystem.Application.Product;
+using OrderingKioskSystemManagement.Api.Controller;
+using SWD.OrderingKioskSystem.Application.Menu.GetProductsByMenuId;
+using System.Net.Mime;
 
-namespace OrderingKioskSystemManagement.Api.Controller
+namespace OrderingKioskSystemManagement.Api.Controllers
 {
     [ApiController]
+    [Route("api/v1/menus")]
     public class MenuController : ControllerBase
     {
         private readonly ISender _mediator;
@@ -28,7 +27,7 @@ namespace OrderingKioskSystemManagement.Api.Controller
             _mediator = mediator;
         }
 
-        [HttpPost("menu")]
+        [HttpPost]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -42,7 +41,7 @@ namespace OrderingKioskSystemManagement.Api.Controller
             return Ok(new JsonResponse<string>(result));
         }
 
-        [HttpGet("menu/{id}")]
+        [HttpGet("{id}")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -56,7 +55,7 @@ namespace OrderingKioskSystemManagement.Api.Controller
             return Ok(new JsonResponse<MenuDTO>(result));
         }
 
-        [HttpGet("menu/pagnition")]
+        [HttpGet("pagination")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(typeof(JsonResponse<PagedResult<MenuDTO>>), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(JsonResponse<PagedResult<MenuDTO>>), StatusCodes.Status200OK)]
@@ -70,21 +69,23 @@ namespace OrderingKioskSystemManagement.Api.Controller
             return Ok(result);
         }
 
-        [HttpPut("menu")]
+        [HttpPut("{id}")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> UpdateMenu(
+            [FromRoute] string id,
             [FromBody] UpdateMenuCommand command,
             CancellationToken cancellationToken = default)
         {
+            command.ID= id; // Ensure the command has the id
             var result = await _mediator.Send(command, cancellationToken);
             return Ok(new JsonResponse<string>(result));
         }
 
-        [HttpDelete("menu/{id}")]
+        [HttpDelete("{id}")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -98,20 +99,20 @@ namespace OrderingKioskSystemManagement.Api.Controller
             return Ok(new JsonResponse<string>(result));
         }
 
-        [HttpGet("menu")]
+        [HttpGet]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<List<MenuDTO>>> GetAllOrder(
+        public async Task<ActionResult<List<MenuDTO>>> GetAllMenus(
            CancellationToken cancellationToken = default)
         {
             var result = await _mediator.Send(new GetMenuQuery(), cancellationToken);
             return Ok(new JsonResponse<List<MenuDTO>>(result));
         }
 
-        [HttpGet("menu/filter-menu")]
+        [HttpGet("filter")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(typeof(JsonResponse<PagedResult<MenuDTO>>), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -124,6 +125,20 @@ namespace OrderingKioskSystemManagement.Api.Controller
         {
             var result = await _mediator.Send(query, cancellationToken);
             return Ok(new JsonResponse<PagedResult<MenuDTO>>(result));
+        }
+
+        [HttpGet("{id}/products")]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<List<ProductDTO>>> GetProductsByMenuID(
+           [FromRoute] string id,
+           CancellationToken cancellationToken = default)
+        {
+            var result = await _mediator.Send(new GetProductsByMenuIdQuery(id), cancellationToken);
+            return Ok(new JsonResponse<List<ProductDTO>>(result));
         }
     }
 }

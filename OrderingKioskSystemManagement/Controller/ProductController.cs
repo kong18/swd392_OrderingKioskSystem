@@ -1,5 +1,4 @@
-﻿
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using OrderingKioskSystem.Application.Common.Pagination;
 using OrderingKioskSystem.Application.Product;
@@ -10,11 +9,13 @@ using OrderingKioskSystem.Application.Product.GetAll;
 using OrderingKioskSystem.Application.Product.GetById;
 using OrderingKioskSystem.Application.Product.GetByPagination;
 using OrderingKioskSystem.Application.Product.Update;
+using OrderingKioskSystemManagement.Api.Controller;
 using System.Net.Mime;
 
-namespace OrderingKioskSystemManagement.Api.Controller
+namespace OrderingKioskSystemManagement.Api.Controllers
 {
     [ApiController]
+    [Route("api/v1/products")]
     public class ProductController : ControllerBase
     {
 
@@ -25,7 +26,7 @@ namespace OrderingKioskSystemManagement.Api.Controller
             _mediator = mediator;
         }
 
-        [HttpPost("product")]
+        [HttpPost]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -39,21 +40,23 @@ namespace OrderingKioskSystemManagement.Api.Controller
             return Ok(new JsonResponse<string>(result));
         }
 
-        [HttpPut("product")]
+        [HttpPut("{id}")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> UpdateProduct(
+            [FromRoute] string id,
             [FromForm] UpdateProductCommand command,
             CancellationToken cancellationToken = default)
         {
+            command.ID = id; // Ensure the command has the id
             var result = await _mediator.Send(command, cancellationToken);
             return Ok(new JsonResponse<string>(result));
         }
 
-        [HttpDelete("product/{id}")]
+        [HttpDelete("{id}")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -67,20 +70,20 @@ namespace OrderingKioskSystemManagement.Api.Controller
             return Ok(new JsonResponse<string>(result));
         }
 
-        [HttpGet("product")]
+        [HttpGet]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<List<ProductDTO>>> GetAllProduct(
+        public async Task<ActionResult<List<ProductDTO>>> GetAllProducts(
            CancellationToken cancellationToken = default)
         {
             var result = await _mediator.Send(new GetProductQuery(), cancellationToken);
             return Ok(new JsonResponse<List<ProductDTO>>(result));
         }
 
-        [HttpGet("product/{id}")]
+        [HttpGet("{id}")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -94,7 +97,7 @@ namespace OrderingKioskSystemManagement.Api.Controller
             return Ok(new JsonResponse<ProductDTO>(result));
         }
 
-        [HttpGet("product/phan-trang")]
+        [HttpGet("pagination")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(typeof(JsonResponse<PagedResult<ProductDTO>>), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(JsonResponse<PagedResult<ProductDTO>>), StatusCodes.Status200OK)]
@@ -108,7 +111,7 @@ namespace OrderingKioskSystemManagement.Api.Controller
             return Ok(result);
         }
 
-        [HttpGet("product/filter-product")]
+        [HttpGet("filter")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(typeof(JsonResponse<PagedResult<ProductDTO>>), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

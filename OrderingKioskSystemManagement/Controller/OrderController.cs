@@ -16,10 +16,12 @@ using Newtonsoft.Json;
 using System.Text;
 using SWD.OrderingKioskSystem.Application.QRCode;
 using System.Threading;
+using OrderingKioskSystemManagement.Api.Controller;
 
-namespace OrderingKioskSystemManagement.Api.Controller
+namespace OrderingKioskSystemManagement.Api.Controllers
 {
     [ApiController]
+    [Route("api/v1/orders")]
     public class OrderController : ControllerBase
     {
         private readonly ISender _mediator;
@@ -35,7 +37,7 @@ namespace OrderingKioskSystemManagement.Api.Controller
             _logger = logger;
         }
 
-        [HttpPost("order")]
+        [HttpPost]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -49,7 +51,7 @@ namespace OrderingKioskSystemManagement.Api.Controller
             return Ok(new JsonResponse<OrderDTO>(result));
         }
 
-        [HttpGet("order/{id}")]
+        [HttpGet("{id}")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -63,7 +65,7 @@ namespace OrderingKioskSystemManagement.Api.Controller
             return Ok(new JsonResponse<OrderDTO>(result));
         }
 
-        [HttpGet("order/pagnition")]
+        [HttpGet("pagination")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(typeof(JsonResponse<PagedResult<OrderDTO>>), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(JsonResponse<PagedResult<OrderDTO>>), StatusCodes.Status200OK)]
@@ -77,21 +79,23 @@ namespace OrderingKioskSystemManagement.Api.Controller
             return Ok(result);
         }
 
-        [HttpPut("order")]
+        [HttpPut("{id}")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> UpdateOrder(
+            [FromRoute] string id,
             [FromBody] UpdateOrderCommand command,
             CancellationToken cancellationToken = default)
         {
+            command.ID = id; // Ensure the command has the id
             var result = await _mediator.Send(command, cancellationToken);
             return Ok(new JsonResponse<string>(result));
         }
 
-        [HttpDelete("order/{id}")]
+        [HttpDelete("{id}")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -105,27 +109,27 @@ namespace OrderingKioskSystemManagement.Api.Controller
             return Ok(new JsonResponse<string>(result));
         }
 
-        [HttpGet("order")]
+        [HttpGet]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<List<ProductDTO>>> GetAllOrder(
+        public async Task<ActionResult<List<ProductDTO>>> GetAllOrders(
            CancellationToken cancellationToken = default)
         {
             var result = await _mediator.Send(new GetOrderQuery(), cancellationToken);
             return Ok(new JsonResponse<List<OrderDTO>>(result));
         }
 
-        [HttpGet("order/filter-order")]
+        [HttpGet("filter")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(typeof(JsonResponse<PagedResult<ProductDTO>>), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<JsonResponse<PagedResult<ProductDTO>>>> FilterOrder(
+        public async Task<ActionResult<JsonResponse<PagedResult<ProductDTO>>>> FilterOrders(
          [FromQuery] FilterOrderQuery query,
          CancellationToken cancellationToken = default)
         {
@@ -153,7 +157,7 @@ namespace OrderingKioskSystemManagement.Api.Controller
             }
         }
 
-        [HttpPost("registerWebhook")]
+        [HttpPost("register-webhook")]
         public async Task<IActionResult> RegisterWebhook([FromBody] RegisterWebhookRequest request)
         {
             try

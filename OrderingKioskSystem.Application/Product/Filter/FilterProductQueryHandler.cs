@@ -35,17 +35,6 @@ namespace OrderingKioskSystem.Application.Product.Filter
                 query = query.Where(p => p.Code.Contains(request.Code));
             }
 
-            if (request.MinPrice.HasValue)
-            {
-                query = query.Where(p => p.Price >= request.MinPrice.Value);
-            }
-
-            if (request.MaxPrice.HasValue)
-            {
-                query = query.Where(p => p.Price <= request.MaxPrice.Value);
-            }
-
-       
             if (request.Status.HasValue)
             {
                 query = query.Where(p => p.Status == request.Status.Value);
@@ -60,6 +49,11 @@ namespace OrderingKioskSystem.Application.Product.Filter
             {
                 query = query.Where(p => p.BusinessID == request.BusinessID);
             }
+
+            // Apply sorting by price
+            query = request.SortOrder?.ToLower() == "desc"
+                ? query.OrderByDescending(p => p.Price)
+                : query.OrderBy(p => p.Price);
 
             // Pagination
             var totalCount = await query.CountAsync(cancellationToken);

@@ -12,11 +12,14 @@ using OrderingKioskSystem.Application.Kiosk.Update;
 using OrderingKioskSystem.Application.Kiosk.Delete;
 using OrderingKioskSystem.Application.Kiosk;
 using OrderingKioskSystem.Application.Kiosk.GetById;
-using OrderingKioskSystem.Application.Kiosk.GetAll;
+using OrderingKioskSystem.Application.Common.Pagination;
+using OrderingKioskSystem.Application.Kiosk.Get;
+using SWD.OrderingKioskSystem.Domain.Repositories;
 
 namespace OrderingKioskSystemManagement.Api.Controller
 {
     [ApiController]
+    [Route("api/v1/kiosks")]
     public class KioskController : ControllerBase
     {
         private readonly ISender _mediator;
@@ -26,7 +29,7 @@ namespace OrderingKioskSystemManagement.Api.Controller
             _mediator = mediator;
         }
 
-        [HttpPost("kiosk")]
+        [HttpPost]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -40,21 +43,23 @@ namespace OrderingKioskSystemManagement.Api.Controller
             return Ok(new JsonResponse<string>(result));
         }
 
-        [HttpPut("kiosk")]
+        [HttpPut("{id}")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> UpdateKiosk(
+            [FromRoute] string id,
             [FromBody] UpdateKioskCommand command,
             CancellationToken cancellationToken = default)
         {
+            command.Id = id; // Ensure the command has the id
             var result = await _mediator.Send(command, cancellationToken);
             return Ok(new JsonResponse<string>(result));
         }
 
-        [HttpDelete("kiosk/{id}")]
+        [HttpDelete("{id}")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -68,26 +73,32 @@ namespace OrderingKioskSystemManagement.Api.Controller
             return Ok(new JsonResponse<string>(result));
         }
 
-        [HttpGet("kiosk")]
+        [HttpGet]
         [Produces(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<List<KioskDTO>>> GetAllKiosk(
-           CancellationToken cancellationToken = default)
+        public async Task<ActionResult<PagedResult<KioskDTO>>> SearchKiosks(
+            [FromQuery] string? location,
+            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageSize = PaginationDefaults.DefaultPageSize,
+            CancellationToken cancellationToken = default)
         {
-            var result = await _mediator.Send(new GetKioskQuery(), cancellationToken);
-            return Ok(new JsonResponse<List<KioskDTO>>(result));
+            var query = new SearchKioskQuery
+            {
+                Location = location,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
+
+            var result = await _mediator.Send(query, cancellationToken);
+            return Ok(new JsonResponse<PagedResult<KioskDTO>>(result));
         }
 
-        [HttpGet("kiosk/{id}")]
+        [HttpGet("{id}")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<KioskDTO>> GetAllKiosk(
+        public async Task<ActionResult<KioskDTO>> GetKioskById(
             [FromRoute] string id,
             CancellationToken cancellationToken = default)
         {
