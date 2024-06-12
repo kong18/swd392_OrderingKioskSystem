@@ -1,16 +1,13 @@
 ﻿using MediatR;
-using OrderingKioskSystem.Application.Kiosk;
-using System;
+using OrderingKioskSystem.Application.Common.Pagination;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace SWD.OrderingKioskSystem.Application.Kiosk.Get
+namespace OrderingKioskSystem.Application.Kiosk.Get
 {
-    public class SearchKioskQuery : IRequest<List<KioskDTO>>
+    public class SearchKioskQuery : IRequest<PagedResult<KioskDTO>>
     {
-        public string? Title { get; set; }
         public string? Location { get; set; }
+        public int PageNumber { get; set; } = 1;
+        public int PageSize { get; set; } = 10;
     }
 }

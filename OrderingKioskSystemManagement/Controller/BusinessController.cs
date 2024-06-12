@@ -6,19 +6,14 @@ using OrderingKioskSystem.Application.Business.Delete;
 using OrderingKioskSystem.Application.Business.GetAllBusiness;
 using OrderingKioskSystem.Application.Business.GetBusinessById;
 using OrderingKioskSystem.Application.Business.Update;
-using OrderingKioskSystem.Application.Category;
-using OrderingKioskSystem.Application.Category.Create;
-using OrderingKioskSystem.Application.Category.Delete;
-using OrderingKioskSystem.Application.Category.GetAll;
-using OrderingKioskSystem.Application.Category.GetById;
-using OrderingKioskSystem.Application.Category.Update;
+using OrderingKioskSystemManagement.Api.Controller;
 using SWD.OrderingKioskSystem.Application.Payment;
-using SWD.OrderingKioskSystem.Application.QRCode;
 using System.Net.Mime;
 
-namespace OrderingKioskSystemManagement.Api.Controller
+namespace OrderingKioskSystemManagement.Api.Controllers
 {
     [ApiController]
+    [Route("api/v1/businesses")]
     public class BusinessController : ControllerBase
     {
         private readonly ISender _mediator;
@@ -28,7 +23,7 @@ namespace OrderingKioskSystemManagement.Api.Controller
             _mediator = mediator;
         }
 
-        [HttpPost("business")]
+        [HttpPost]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -42,22 +37,23 @@ namespace OrderingKioskSystemManagement.Api.Controller
             return Ok(new JsonResponse<string>(result));
         }
 
-
-        [HttpPut("business")]
+        [HttpPut("{id}")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> UpdateBusiness(
+            [FromRoute] string id,
             [FromBody] UpdateBusinessCommand command,
             CancellationToken cancellationToken = default)
         {
+            command.Id = id; // Ensure the command has the id
             var result = await _mediator.Send(command, cancellationToken);
             return Ok(new JsonResponse<string>(result));
         }
 
-        [HttpDelete("business/{id}")]
+        [HttpDelete("{id}")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -71,20 +67,20 @@ namespace OrderingKioskSystemManagement.Api.Controller
             return Ok(new JsonResponse<string>(result));
         }
 
-        [HttpGet("business")]
+        [HttpGet]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<List<BusinessDTO>>> GetAllBusiness(
+        public async Task<ActionResult<List<BusinessDTO>>> GetAllBusinesses(
            CancellationToken cancellationToken = default)
         {
             var result = await _mediator.Send(new GetBusinessByFilterQuery(), cancellationToken);
             return Ok(new JsonResponse<List<BusinessDTO>>(result));
         }
 
-        [HttpGet("business/{id}")]
+        [HttpGet("{id}")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -98,11 +94,6 @@ namespace OrderingKioskSystemManagement.Api.Controller
             return Ok(new JsonResponse<BusinessDTO>(result));
         }
 
-        [HttpPost("createQR")]
-        public async Task<IActionResult> CreateQR([FromBody] CreateQRCommand command)
-        {
-            var qrCodeUrl = await _mediator.Send(command);
-            return Ok(new { qrCodeUrl });
-        }
+        
     }
 }
