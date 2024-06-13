@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SWD.OrderingKioskSystem.Application.Util
+namespace SWD.OrderingKioskSystem.Application.VnPay
 {
-    internal class PayLib
+    internal class VnPayLibrary
     {
     }
 }
