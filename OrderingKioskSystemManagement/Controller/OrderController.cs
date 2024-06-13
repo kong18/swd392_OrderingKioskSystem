@@ -7,7 +7,6 @@ using OrderingKioskSystem.Application.Order.GetById;
 using OrderingKioskSystem.Application.Order;
 using OrderingKioskSystem.Application.Order.Update;
 using OrderingKioskSystem.Application.Order.Delete;
-using OrderingKioskSystem.Application.Order.GetAll;
 using OrderingKioskSystem.Application.Common.Pagination;
 using OrderingKioskSystem.Application.Order.GetByPagnition;
 using OrderingKioskSystem.Application.Order.Filter;
@@ -109,20 +108,9 @@ namespace OrderingKioskSystemManagement.Api.Controllers
             return Ok(new JsonResponse<string>(result));
         }
 
-        [HttpGet]
-        [Produces(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<List<ProductDTO>>> GetAllOrders(
-           CancellationToken cancellationToken = default)
-        {
-            var result = await _mediator.Send(new GetOrderQuery(), cancellationToken);
-            return Ok(new JsonResponse<List<OrderDTO>>(result));
-        }
+        
 
-        [HttpGet("filter")]
+        [HttpGet]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(typeof(JsonResponse<PagedResult<ProductDTO>>), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

@@ -1,17 +1,17 @@
-﻿using MediatR;
-using OrderingKioskSystem.Application.Common.Pagination;
+﻿    using MediatR;
+    using OrderingKioskSystem.Application.Common.Pagination;
 
-namespace OrderingKioskSystem.Application.Product.Filter
-{
-    public class FilterProductQuery : IRequest<PagedResult<ProductDTO>>
+    namespace OrderingKioskSystem.Application.Product.Filter
     {
-        public string ?Name { get; set; }
-        public string ?Code { get; set; }
-        public string? SortOrder { get; set; } = "asc";
-        public bool? Status { get; set; }
-        public int? CategoryID { get; set; }
-        public string ?BusinessID { get; set; }
-        public int PageNumber { get; set; } = 1;
-        public int PageSize { get; set; } = 10;
+        public class FilterProductQuery : IRequest<PagedResult<ProductDTO>>
+        {
+            public string ?Name { get; set; }
+            public string ?Code { get; set; }
+            public bool? SortOrder { get; set; }
+            public bool? Status { get; set; }
+            public int? CategoryID { get; set; }
+            public string ?BusinessID { get; set; }
+            public int PageNumber { get; set; } = 1;
+            public int PageSize { get; set; } = 10;
+        }
     }
-}

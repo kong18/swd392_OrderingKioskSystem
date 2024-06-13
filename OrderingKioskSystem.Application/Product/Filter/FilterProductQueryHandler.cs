@@ -51,9 +51,12 @@ namespace OrderingKioskSystem.Application.Product.Filter
             }
 
             // Apply sorting by price
-            query = request.SortOrder?.ToLower() == "desc"
-                ? query.OrderByDescending(p => p.Price)
-                : query.OrderBy(p => p.Price);
+            if (request.SortOrder.HasValue)
+            {
+                query = request.SortOrder.Value
+                    ? query.OrderByDescending(p => p.Price)
+                    : query.OrderBy(p => p.Price);
+            }
 
             // Pagination
             var totalCount = await query.CountAsync(cancellationToken);

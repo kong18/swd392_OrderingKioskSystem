@@ -5,7 +5,6 @@ using OrderingKioskSystem.Application.Menu;
 using OrderingKioskSystem.Application.Menu.Create;
 using OrderingKioskSystem.Application.Menu.Delete;
 using OrderingKioskSystem.Application.Menu.Filter;
-using OrderingKioskSystem.Application.Menu.GetAll;
 using OrderingKioskSystem.Application.Menu.GetById;
 using OrderingKioskSystem.Application.Menu.GetByPagnition;
 using OrderingKioskSystem.Application.Menu.Update;
@@ -99,20 +98,9 @@ namespace OrderingKioskSystemManagement.Api.Controllers
             return Ok(new JsonResponse<string>(result));
         }
 
-        [HttpGet]
-        [Produces(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<List<MenuDTO>>> GetAllMenus(
-           CancellationToken cancellationToken = default)
-        {
-            var result = await _mediator.Send(new GetMenuQuery(), cancellationToken);
-            return Ok(new JsonResponse<List<MenuDTO>>(result));
-        }
+       
 
-        [HttpGet("filter")]
+        [HttpGet]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(typeof(JsonResponse<PagedResult<MenuDTO>>), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
