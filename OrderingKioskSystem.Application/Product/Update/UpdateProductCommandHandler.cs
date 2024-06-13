@@ -39,7 +39,7 @@ namespace OrderingKioskSystem.Application.Product.Update
                 return "ProductID does not exist";
             }
 
-            if (request.CategoryID != null)
+            if (request.categoryid != null)
             {
                 bool categoryExist = await _categoryRepository.AnyAsync(x => x.ID == request.categoryid, cancellationToken);
 

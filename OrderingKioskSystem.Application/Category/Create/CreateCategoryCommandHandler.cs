@@ -25,7 +25,7 @@ namespace OrderingKioskSystem.Application.Category.Create
 
         public async Task<string> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
         {
-            bool categoryExist = await _categoryRepository.AnyAsync(x => x.Name == request.Name, cancellationToken);
+            bool categoryExist = await _categoryRepository.AnyAsync(x => x.Name == request.name, cancellationToken);
 
             if (categoryExist)
             {
@@ -40,8 +40,8 @@ namespace OrderingKioskSystem.Application.Category.Create
 
             var category = new CategoryEntity
             {
-                Name = request.Name,
-                Url = request.Url,
+                Name = request.name,
+                Url = request.url,
 
                 NguoiTaoID = _currentUserService.UserId,
                 NgayTao = DateTime.Now

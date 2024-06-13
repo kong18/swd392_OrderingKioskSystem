@@ -49,7 +49,7 @@ namespace OrderingKioskSystemManagement.Api.Controllers
             [FromForm] UpdateProductCommand command,
             CancellationToken cancellationToken = default)
         {
-            command.ID = id; // Ensure the command has the id
+            command.id = id; // Ensure the command has the id
             var result = await _mediator.Send(command, cancellationToken);
             return Ok(new JsonResponse<string>(result));
         }

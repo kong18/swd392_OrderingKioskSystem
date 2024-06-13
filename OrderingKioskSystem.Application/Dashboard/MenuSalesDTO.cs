@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace SWD.OrderingKioskSystem.Application.Dashboard
 {
-    internal class MenuSalesDTO
+    public class MenuSalesDTO
     {
+        public string Label { get; set; }
+        public decimal Value { get; set; }
     }
 }

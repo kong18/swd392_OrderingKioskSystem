@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace SWD.OrderingKioskSystem.Application.Dashboard
 {
-    internal class SalesDataDTO
+    public class SalesDataDTO
     {
+        public List<MenuSalesDTO> Menus { get; set; }
+        public List<ProductSalesDTO> Products { get; set; }
     }
 }

@@ -11,11 +11,11 @@ namespace OrderingKioskSystem.Application.Category.Create
     {
         public CreateCategoryCommandValidator()
         {
-            RuleFor(command => command.Name)
+            RuleFor(command => command.name)
                 .NotEmpty().WithMessage("Name can't be empty or null")
                 .MaximumLength(100).WithMessage("Name can't be over 100 words");
 
-            RuleFor(command => command.Url)
+            RuleFor(command => command.url)
                 .NotEmpty().WithMessage("Url can't be empty or null");
         }
     }
