@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SWD.OrderingKioskSystem.Application.VnPay
+namespace SWD.OrderingKioskSystem.Application.User
 {
-    internal class OrderDataModel
+    internal class DeleteManager
     {
     }
 }
