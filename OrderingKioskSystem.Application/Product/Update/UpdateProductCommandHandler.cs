@@ -32,7 +32,7 @@ namespace OrderingKioskSystem.Application.Product.Update
 
         public async Task<string> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
         {
-            var productExist = await _productRepository.FindAsync(x => x.ID == request.ID, cancellationToken);
+            var productExist = await _productRepository.FindAsync(x => x.ID == request.id, cancellationToken);
 
             if (productExist is null || productExist.NgayXoa.HasValue)
             {
@@ -41,7 +41,7 @@ namespace OrderingKioskSystem.Application.Product.Update
 
             if (request.CategoryID != null)
             {
-                bool categoryExist = await _categoryRepository.AnyAsync(x => x.ID == request.CategoryID, cancellationToken);
+                bool categoryExist = await _categoryRepository.AnyAsync(x => x.ID == request.categoryid, cancellationToken);
 
                 if (!categoryExist)
                 {
@@ -59,21 +59,21 @@ namespace OrderingKioskSystem.Application.Product.Update
             }
 
             string imageUrl = string.Empty;
-            if (request.ImageFile != null)
+            if (request.imagefile != null)
             {
-                using (var stream = request.ImageFile.OpenReadStream())
+                using (var stream = request.imagefile.OpenReadStream())
                 {
                     imageUrl = await _fileUploadService.UploadFileAsync(stream, $"{Guid.NewGuid()}.jpg");
                 }
             }
 
-            productExist.Name = request.Name ?? productExist.Name;
-            productExist.Code = request.Code ?? productExist.Code;
+            productExist.Name = request.name ?? productExist.Name;
+            productExist.Code = request.code ?? productExist.Code;
             productExist.Url = !string.IsNullOrEmpty(imageUrl) ? imageUrl : productExist.Url;
-            productExist.Description = request.Description ?? productExist.Description;
-            productExist.Price = request.Price ?? productExist.Price;
-            productExist.Status = request.Status ?? productExist.Status;
-            productExist.CategoryID = request.CategoryID ?? productExist.CategoryID;
+            productExist.Description = request.description ?? productExist.Description;
+            productExist.Price = request.price ?? productExist.Price;
+            productExist.Status = request.status ?? productExist.Status;
+            productExist.CategoryID = request.categoryid ?? productExist.CategoryID;
             
             productExist.NguoiCapNhatID = businessID;
             productExist.NgayCapNhatCuoi = DateTime.Now;

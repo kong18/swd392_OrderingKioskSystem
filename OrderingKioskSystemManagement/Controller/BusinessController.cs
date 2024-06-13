@@ -3,12 +3,16 @@ using Microsoft.AspNetCore.Mvc;
 using OrderingKioskSystem.Application.Business;
 using OrderingKioskSystem.Application.Business.CreateBusinessCommand;
 using OrderingKioskSystem.Application.Business.Delete;
-using OrderingKioskSystem.Application.Business.GetAllBusiness;
+
 using OrderingKioskSystem.Application.Business.GetBusinessById;
 using OrderingKioskSystem.Application.Business.Update;
+using OrderingKioskSystem.Application.Common.Pagination;
+using OrderingKioskSystem.Application.Menu.Filter;
+using OrderingKioskSystem.Application.Menu;
 using OrderingKioskSystemManagement.Api.Controller;
 using SWD.OrderingKioskSystem.Application.Payment;
 using System.Net.Mime;
+using OrderingKioskSystem.Application.Business.GetBusinessByFilter;
 
 namespace OrderingKioskSystemManagement.Api.Controllers
 {
@@ -67,19 +71,21 @@ namespace OrderingKioskSystemManagement.Api.Controllers
             return Ok(new JsonResponse<string>(result));
         }
 
+
         [HttpGet]
         [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(typeof(JsonResponse<PagedResult<BusinessDTO>>), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<List<BusinessDTO>>> GetAllBusinesses(
-           CancellationToken cancellationToken = default)
+        public async Task<ActionResult<JsonResponse<PagedResult<BusinessDTO>>>> FilterBusiness(
+        [FromQuery] GetBusinessByFilterQuery query,
+        CancellationToken cancellationToken = default)
         {
-            var result = await _mediator.Send(new GetBusinessByFilterQuery(), cancellationToken);
-            return Ok(new JsonResponse<List<BusinessDTO>>(result));
+            var result = await _mediator.Send(query, cancellationToken);
+            return Ok(new JsonResponse<PagedResult<BusinessDTO>>(result));
         }
-
         [HttpGet("{id}")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

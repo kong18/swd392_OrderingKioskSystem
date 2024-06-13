@@ -11,16 +11,16 @@ namespace OrderingKioskSystem.Application.Product.Update
     {
         public UpdateProductCommandValidator()
         {
-            RuleFor(command => command.ID)
+            RuleFor(command => command.id)
                 .NotEmpty().WithMessage("ID can't be empty or null");
 
-            RuleFor(command => command.Name)
+            RuleFor(command => command.name)
                 .MaximumLength(100).WithMessage("Name can't be over 100 words");
 
-            RuleFor(command => command.Description)
+            RuleFor(command => command.description)
                 .MaximumLength(150).WithMessage("Description can't be over 150 words");
 
-            RuleFor(command => command.Price)
+            RuleFor(command => command.price)
                 .GreaterThan(0).WithMessage("Price must be greater than 0");
 
         }

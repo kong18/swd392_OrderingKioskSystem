@@ -22,7 +22,7 @@ namespace OrderingKioskSystem.Application.Product.Delete
 
         public async Task<string> Handle(DeleteProductCommand request, CancellationToken cancellationToken)
         {
-            var product = await _productRepository.FindAsync(x => x.ID == request.ID, cancellationToken);
+            var product = await _productRepository.FindAsync(x => x.ID == request.id, cancellationToken);
 
             if (product is null || product.NgayXoa.HasValue)
             {
