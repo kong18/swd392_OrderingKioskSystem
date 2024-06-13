@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Microsoft.AspNetCore.Http;
 
 namespace OrderingKioskSystem.Application.Business.CreateBusinessCommand
 {
@@ -6,12 +7,15 @@ namespace OrderingKioskSystem.Application.Business.CreateBusinessCommand
     {
         public CreateBusinessValidator()
         {
+            RuleFor(x => x.Email)
+                .NotEmpty().WithMessage("Email can't be empty or null")
+                .EmailAddress().WithMessage("Not type of Email");
+
             RuleFor(x => x.BinId)
                 .GreaterThan(0).WithMessage("BinID must be greater than zero");
 
-            RuleFor(x => x.Url)
-                .NotEmpty().WithMessage("URL can't be empty")
-                .Must(BeAValidUrl).WithMessage("Invalid URL format");
+            RuleFor(x => x.ImageFile)
+                .NotEmpty().WithMessage("URL can't be empty");
 
             RuleFor(x => x.Name)
                 .NotEmpty().WithMessage("Name can't be empty")
@@ -28,11 +32,6 @@ namespace OrderingKioskSystem.Application.Business.CreateBusinessCommand
             RuleFor(x => x.BankName)
                 .NotEmpty().WithMessage("Bank Name can't be empty")
                 .MaximumLength(100).WithMessage("Bank Name can't be longer than 100 characters");
-        }
-
-        private bool BeAValidUrl(string url)
-        {
-            return Uri.TryCreate(url, UriKind.Absolute, out _);
         }
     }
 }

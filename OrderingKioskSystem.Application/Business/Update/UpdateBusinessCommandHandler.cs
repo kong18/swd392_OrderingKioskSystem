@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using OrderingKioskSystem.Application.Common.Interfaces;
+using OrderingKioskSystem.Application.FileUpload;
 using OrderingKioskSystem.Domain.Common.Exceptions;
 using OrderingKioskSystem.Domain.Repositories;
 using System;
@@ -16,12 +17,14 @@ namespace OrderingKioskSystem.Application.Business.Update
         private readonly IBusinessRepository _businessRepository;
         private readonly IMapper _mapper;
         private readonly ICurrentUserService _currentUserService;
+        private readonly FileUploadService _fileUploadService;
 
-        public UpdateBusinessCommandHandler(IBusinessRepository businessRepository, IMapper mapper, ICurrentUserService currentUserService)
+        public UpdateBusinessCommandHandler(IBusinessRepository businessRepository, IMapper mapper, ICurrentUserService currentUserService, FileUploadService fileUploadService)
         {
             _businessRepository = businessRepository;
             _mapper = mapper;
             _currentUserService = currentUserService;
+            _fileUploadService = fileUploadService;
         }
 
         public async Task<string> Handle(UpdateBusinessCommand request, CancellationToken cancellationToken)
@@ -37,12 +40,23 @@ namespace OrderingKioskSystem.Application.Business.Update
             {
                 throw new NotFoundException($"Business with Id {request.Id} not found.");
             }
+
+            string imageUrl = string.Empty;
+            if (request.ImageFile != null)
+            {
+                using (var stream = request.ImageFile.OpenReadStream())
+                {
+                    imageUrl = await _fileUploadService.UploadFileAsync(stream, $"{Guid.NewGuid()}.jpg");
+                }
+            }
+            
+            existingBusiness.Url = !string.IsNullOrEmpty(imageUrl) ? imageUrl : existingBusiness.Url;
+            existingBusiness.Name = request.Name ?? existingBusiness.Name;
+            existingBusiness.BankAccountNumber = request.BankAccountNumber ?? existingBusiness.BankAccountNumber;
+            existingBusiness.BankAccountName = request.BankAccountName ?? existingBusiness.BankAccountName;
+            existingBusiness.BankName = request.BankName ?? existingBusiness.BankName;
+
             existingBusiness.NguoiCapNhatID = userId;
-            existingBusiness.Url = request.Url;
-            existingBusiness.Name = request.Name;
-            existingBusiness.BankAccountNumber = request.BankAccountNumber;
-            existingBusiness.BankAccountName = request.BankAccountName;
-            existingBusiness.BankName = request.BankName;
             existingBusiness.NgayCapNhatCuoi = DateTime.UtcNow;
            
             _businessRepository.Update(existingBusiness);

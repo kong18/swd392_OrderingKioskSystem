@@ -41,6 +41,12 @@ namespace OrderingKioskSystem.Application.Kiosk.Get
             var items = await query.Skip((request.PageNumber - 1) * pageSize)
                                    .Take(pageSize)
                                    .ToListAsync(cancellationToken);
+            var pageCount = totalCount / request.PageSize;
+
+            if (pageCount % request.PageSize >= 1 || pageCount == 0)
+            {
+                pageCount++;
+            }
 
             var dtos = _mapper.Map<List<KioskDTO>>(items);
 
@@ -48,6 +54,7 @@ namespace OrderingKioskSystem.Application.Kiosk.Get
             {
                 Data = dtos,
                 TotalCount = totalCount,
+                PageCount = pageCount,
                 PageNumber = request.PageNumber,
                 PageSize = pageSize
             };

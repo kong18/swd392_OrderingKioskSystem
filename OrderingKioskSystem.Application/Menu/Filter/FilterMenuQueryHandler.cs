@@ -60,6 +60,12 @@ namespace OrderingKioskSystem.Application.Menu.Filter
             var items = await query.Skip((request.PageNumber - 1) * request.PageSize)
                                    .Take(request.PageSize)
                                    .ToListAsync(cancellationToken);
+            var pageCount = totalCount / request.PageSize;
+
+            if (pageCount % request.PageSize >= 1 || pageCount == 0)
+            {
+                pageCount++;
+            }
 
             var dtos = _mapper.Map<List<MenuDTO>>(items);
 
@@ -67,6 +73,7 @@ namespace OrderingKioskSystem.Application.Menu.Filter
             {
                 Data = dtos,
                 TotalCount = totalCount,
+                PageCount = pageCount,
                 PageNumber = request.PageNumber,
                 PageSize = request.PageSize
             };

@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using OrderingKioskSystem.Application.Common.Interfaces;
+using OrderingKioskSystem.Application.FileUpload;
 using OrderingKioskSystem.Application.Product.Create;
 using OrderingKioskSystem.Domain.Entities;
 using OrderingKioskSystem.Domain.Repositories;
@@ -16,11 +17,13 @@ namespace OrderingKioskSystem.Application.Category.Create
     {
         private readonly ICategoryRepository _categoryRepository;
         private readonly ICurrentUserService _currentUserService;
+        private readonly FileUploadService _fileUploadService;
 
-        public CreateCategoryCommandHandler(ICategoryRepository categoryRepository, ICurrentUserService currentUserService)
+        public CreateCategoryCommandHandler(ICategoryRepository categoryRepository, ICurrentUserService currentUserService, FileUploadService fileUploadService)
         {
             _categoryRepository = categoryRepository;
             _currentUserService = currentUserService;
+            _fileUploadService = fileUploadService;
         }
 
         public async Task<string> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
@@ -38,10 +41,16 @@ namespace OrderingKioskSystem.Application.Category.Create
                 throw new UnauthorizedAccessException("User ID không tìm thấy.");
             }
 
+            string imageUrl = string.Empty;
+            using (var stream = request.ImageFile.OpenReadStream())
+            {
+                imageUrl = await _fileUploadService.UploadFileAsync(stream, $"{Guid.NewGuid()}.jpg");
+            }
+
             var category = new CategoryEntity
             {
                 Name = request.Name,
-                Url = request.Url,
+                Url = imageUrl,
 
                 NguoiTaoID = _currentUserService.UserId,
                 NgayTao = DateTime.Now

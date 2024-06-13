@@ -53,14 +53,12 @@ namespace OrderingKioskSystem.Application.Order.Create
                 }
             }
 
-            decimal total = 0;
-
             var order = new OrderEntity
             {
                 KioskID = request.KioskID,
                 Status = "OnPreparing",
                 Note = request.Note ?? "",
-                Total = total,
+                Total = request.Total,
                 NguoiTaoID = _currentUserService.UserId,
                 NgayTao = DateTime.Now
             };
@@ -74,8 +72,8 @@ namespace OrderingKioskSystem.Application.Order.Create
                 var product = await _productRepository.FindAsync(x => x.ID == item.ProductID, cancellationToken);
                 var bonusPrice = item.Size?.ToUpper() switch
                 {
-                    "M" => 5,
-                    "L" => 10,
+                    "M" => 5000,
+                    "L" => 10000,
                     _ => 0
                 };
 
@@ -93,14 +91,7 @@ namespace OrderingKioskSystem.Application.Order.Create
 
                 _orderDetailRepository.Add(orderDetail);
                 await _orderDetailRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
-
-                total += orderDetail.Price;
             }
-
-            order.Total = total;
-            _orderRepository.Update(order);
-            await _orderRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
-
             await _orderService.NotifyNewOrder(orderID.ToString());
 
             return order.MapToOrderDTO(_mapper);

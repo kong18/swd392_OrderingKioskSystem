@@ -50,16 +50,24 @@ namespace OrderingKioskSystem.Application.Product.Filter
                 query = query.Where(p => p.BusinessID == request.BusinessID);
             }
 
-            // Apply sorting by price
-            query = request.SortOrder?.ToLower() == "desc"
+            if (request.SortOrder.HasValue)
+            {
+                // Apply sorting by price
+                query = request.SortOrder.Value == true
                 ? query.OrderByDescending(p => p.Price)
                 : query.OrderBy(p => p.Price);
+            }
 
             // Pagination
             var totalCount = await query.CountAsync(cancellationToken);
             var items = await query.Skip((request.PageNumber - 1) * request.PageSize)
                                    .Take(request.PageSize)
                                    .ToListAsync(cancellationToken);
+            var pageCount = totalCount / request.PageSize;
+            if (pageCount % request.PageSize >= 1 || pageCount == 0)
+            {
+                pageCount++;
+            }
 
             var dtos = _mapper.Map<List<ProductDTO>>(items);
 
@@ -67,6 +75,7 @@ namespace OrderingKioskSystem.Application.Product.Filter
             {
                 Data = dtos,
                 TotalCount = totalCount,
+                PageCount = pageCount,
                 PageNumber = request.PageNumber,
                 PageSize = request.PageSize
             };

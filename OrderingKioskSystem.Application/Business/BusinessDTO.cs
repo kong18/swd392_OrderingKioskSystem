@@ -16,6 +16,7 @@ namespace OrderingKioskSystem.Application.Business
         public string Url { get; set; }
         public string BinId {  get; set; }
         public string Name { get; set; }
+        public string Email { get; set; }
         public string BankAccountNumber { get; set; }
         public string BankAccountName { get; set; }
         public string BankName { get; set; }

@@ -15,17 +15,14 @@ namespace OrderingKioskSystem.Application.Shipper.UpdateShipper
             RuleFor(x => x.Id)
                 .NotEmpty().WithMessage("Id can't be empty");
 
-            
-
-            RuleFor(x => x.ShipperName)
-                .NotEmpty().WithMessage("Name can't be empty")
+            RuleFor(x => x.Name)
                 .MaximumLength(100).WithMessage("Name can't be longer than 100 characters");
 
-            RuleFor(x => x.Address)
-                .NotEmpty().WithMessage("Address can't be empty").MaximumLength(100).WithMessage("Address can't be longer than 100 characters");
+            RuleFor(x => x.Address).MaximumLength(100).WithMessage("Address can't be longer than 100 characters");
 
-
-            RuleFor(x => x.Phone).NotEmpty().Matches(@"^\+?\d+$").WithMessage("Invalid phone number format");
+            RuleFor(x => x.Phone)
+                .Matches(@"^\d{10}$")
+                .WithMessage("Invalid phone number format. The phone number must contain exactly 10 digits.");
 
         }
 

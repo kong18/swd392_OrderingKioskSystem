@@ -8,7 +8,6 @@ using System.Reflection;
 using OrderingKioskSystem.Application.FileUpload;
 using SixLabors.ImageSharp;
 using SWD.OrderingKioskSystem.Domain.Repositories;
-using SWD.OrderingKioskSystem.Application.QRCode;
 
 namespace OrderingKioskSystem.Application
 {
@@ -29,11 +28,7 @@ namespace OrderingKioskSystem.Application
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services.AddScoped<IValidatorProvider, ValidatorProvider>();
             services.AddTransient<FileUploadService>();
-            services.AddHttpClient<IVietQrService, VietQrService>();
-            services.AddHttpClient<RegisterWebhook>();
 
-            // Register RegisterWebhook service
-            services.AddTransient<RegisterWebhook>();
 
             return services;
         }

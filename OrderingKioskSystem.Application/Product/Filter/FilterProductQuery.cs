@@ -7,7 +7,7 @@ namespace OrderingKioskSystem.Application.Product.Filter
     {
         public string ?Name { get; set; }
         public string ?Code { get; set; }
-        public string? SortOrder { get; set; } = "asc";
+        public bool? SortOrder { get; set; }
         public bool? Status { get; set; }
         public int? CategoryID { get; set; }
         public string ?BusinessID { get; set; }

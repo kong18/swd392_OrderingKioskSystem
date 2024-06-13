@@ -15,7 +15,7 @@ namespace OrderingKioskSystem.Application.Category.Create
                 .NotEmpty().WithMessage("Name can't be empty or null")
                 .MaximumLength(100).WithMessage("Name can't be over 100 words");
 
-            RuleFor(command => command.Url)
+            RuleFor(command => command.ImageFile)
                 .NotEmpty().WithMessage("Url can't be empty or null");
         }
     }

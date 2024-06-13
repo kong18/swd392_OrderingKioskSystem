@@ -1,12 +1,10 @@
-﻿using AutoMapper;
-using MediatR;
-using OrderingKioskSystem.Application.Business.GetAllBusiness;
+﻿using MediatR;
 using OrderingKioskSystem.Application.Common.Interfaces;
+using OrderingKioskSystem.Application.FileUpload;
 using OrderingKioskSystem.Application.User.SendEmail;
 using OrderingKioskSystem.Domain.Common.Exceptions;
 using OrderingKioskSystem.Domain.Entities;
 using OrderingKioskSystem.Domain.Repositories;
-using OrderingKioskSystem.Infrastructure.Repositories;
 
 namespace OrderingKioskSystem.Application.Business.CreateBusinessCommand
 {
@@ -16,13 +14,15 @@ namespace OrderingKioskSystem.Application.Business.CreateBusinessCommand
         private readonly ICurrentUserService _currentUserService;
         private readonly IUserRepository _userRepository;
         private readonly IEmailService _emailService;
+        private readonly FileUploadService _fileUploadService;
 
-      public CreateBusinessCommandHandler(IBusinessRepository repository, ICurrentUserService currentUserService, IUserRepository userRepository)
+        public CreateBusinessCommandHandler(IBusinessRepository repository, ICurrentUserService currentUserService, IUserRepository userRepository, FileUploadService fileUploadService)
         {
             _repository = repository;
             _currentUserService = currentUserService;
             _userRepository = userRepository;
             _emailService = new EmailService();
+            _fileUploadService = fileUploadService;
         }
 
         public async Task<string> Handle(CreateBusinessCommand request, CancellationToken cancellationToken)
@@ -57,11 +57,17 @@ namespace OrderingKioskSystem.Application.Business.CreateBusinessCommand
             await _userRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
             var email = user.Email;
 
+            string imageUrl = string.Empty;
+            using (var stream = request.ImageFile.OpenReadStream())
+            {
+                imageUrl = await _fileUploadService.UploadFileAsync(stream, $"{Guid.NewGuid()}.jpg");
+            }
+
             var business = new BusinessEntity
             {
                 Email = email,
                // NguoiTaoID = _currentUserService.UserId,
-                Url = request.Url,
+                Url = imageUrl,
                 Name = request.Name,
                 BankName = request.BankName,
                 BankAccountName = request.BankAccountName,
@@ -70,9 +76,9 @@ namespace OrderingKioskSystem.Application.Business.CreateBusinessCommand
 
             };
             _repository.Add(business);
-            await _repository.UnitOfWork.SaveChangesAsync(cancellationToken);
+            
 
-            return "Create Business successfully";
+            return await _repository.UnitOfWork.SaveChangesAsync(cancellationToken) > 0 ? "Create Business successfully!" : "Create Business Failed!";
         }
     }
 }
