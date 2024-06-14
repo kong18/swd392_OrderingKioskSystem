@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using OrderingKioskSystem.Application.Common.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -21,6 +22,7 @@ namespace OrderingKioskSystem.Application.Product.Create
             status = Status;
             categoryname = categoryName;
         }
+        
         public string name { get; set; }
         public string code { get; set; }
    

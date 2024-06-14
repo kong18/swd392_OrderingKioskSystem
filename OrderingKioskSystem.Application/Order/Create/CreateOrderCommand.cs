@@ -16,6 +16,7 @@ namespace OrderingKioskSystem.Application.Order.Create
             Products = products;
             this.Note = Note;
         }
+        
         public string KioskID { get; set; }
         public string? Note {  get; set; }
         public List<RequestItem> Products { get; set; }
