@@ -45,7 +45,7 @@ namespace OrderingKioskSystem.Application.Kiosk.Update
 
             existingKiosk.NguoiCapNhatID = userId;
             existingKiosk.Location = request.location;      
-            existingKiosk.NgayCapNhatCuoi = DateTime.Now;
+            existingKiosk.NgayCapNhatCuoi = DateTime.UtcNow.AddHours(7);
 
             _repository.Update(existingKiosk);
             await _repository.UnitOfWork.SaveChangesAsync(cancellationToken);

@@ -31,7 +31,7 @@ namespace OrderingKioskSystem.Application.Category.Delete
                 return "Category is not found or deleted";
             }
 
-            categoryExist.NgayXoa = DateTime.Now;
+            categoryExist.NgayXoa = DateTime.UtcNow.AddHours(7);
             categoryExist.NguoiXoaID = _currentUserService.UserId;
             _categoryRepository.Update(categoryExist);
 

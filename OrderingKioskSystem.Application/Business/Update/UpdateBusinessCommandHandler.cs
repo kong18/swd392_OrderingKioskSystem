@@ -57,7 +57,7 @@ namespace OrderingKioskSystem.Application.Business.Update
             existingBusiness.BankName = request.BankName ?? existingBusiness.BankName;
 
             existingBusiness.NguoiCapNhatID = userId;
-            existingBusiness.NgayCapNhatCuoi = DateTime.UtcNow;
+            existingBusiness.NgayCapNhatCuoi = DateTime.UtcNow.AddHours(7);
            
             _businessRepository.Update(existingBusiness);
             await _businessRepository.UnitOfWork.SaveChangesAsync(cancellationToken);

@@ -80,6 +80,7 @@ namespace OrderingKioskSystem.Application.Order.Filter
             {
                 Data = dtos,
                 TotalCount = totalCount,
+                PageCount = pageCount,
                 PageNumber = request.PageNumber,
                 PageSize = request.PageSize
             };

@@ -53,7 +53,7 @@ namespace OrderingKioskSystem.Application.Category.Create
                 Url = imageUrl,
 
                 NguoiTaoID = _currentUserService.UserId,
-                NgayTao = DateTime.Now
+                NgayTao = DateTime.UtcNow.AddHours(7)
             };
 
             _categoryRepository.Add(category);

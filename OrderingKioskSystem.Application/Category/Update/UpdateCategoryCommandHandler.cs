@@ -47,7 +47,7 @@ namespace OrderingKioskSystem.Application.Category.Update
             categoryExist.Url = !string.IsNullOrEmpty(imageUrl) ? imageUrl : categoryExist.Url;
 
             categoryExist.NguoiCapNhatID = _currentUserService.UserId;
-            categoryExist.NgayCapNhat = DateTime.Now;
+            categoryExist.NgayCapNhat = DateTime.UtcNow.AddHours(7);
             _categoryRepository.Update(categoryExist);
 
             return await _categoryRepository.UnitOfWork.SaveChangesAsync(cancellationToken) > 0 ? "Update Success!" : "Update Fail!";

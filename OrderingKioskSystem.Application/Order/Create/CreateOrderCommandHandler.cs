@@ -60,7 +60,7 @@ namespace OrderingKioskSystem.Application.Order.Create
                 Note = request.Note ?? "",
                 Total = request.Total,
                 NguoiTaoID = _currentUserService.UserId,
-                NgayTao = DateTime.Now
+                NgayTao = DateTime.UtcNow.AddHours(7)
             };
 
             _orderRepository.Add(order);
@@ -85,7 +85,7 @@ namespace OrderingKioskSystem.Application.Order.Create
                     UnitPrice = product.Price + bonusPrice,
                     Price = item.Quantity * (product.Price + bonusPrice),
                     Size = item.Size?.ToUpper(),
-                    OrderDate = DateTime.Now,
+                    OrderDate = DateTime.UtcNow.AddHours(7),
                     Status = true
                 };
 

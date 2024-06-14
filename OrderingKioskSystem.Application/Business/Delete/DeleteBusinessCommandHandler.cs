@@ -49,20 +49,20 @@ namespace OrderingKioskSystem.Application.Business.Delete
             foreach (var menu in relatedMenus)
             {
                 menu.NguoiXoaID = userId;
-                menu.NgayXoa = DateTime.Now;
+                menu.NgayXoa = DateTime.UtcNow.AddHours(7);
                 _menuRepository.Update(menu);
             }
             var relatedProducts = await _productRepository.FindAllAsync(p => p.BusinessID == request.Id, cancellationToken);
             foreach (var product in relatedProducts)
             {
                 product.NguoiXoaID = userId;
-                product.NgayXoa = DateTime.Now;
+                product.NgayXoa = DateTime.UtcNow.AddHours(7);
                 _productRepository.Update(product);
             }
 
 
             existbusiness.NguoiXoaID = userId;
-            existbusiness.NgayXoa = DateTime.Now;
+            existbusiness.NgayXoa = DateTime.UtcNow.AddHours(7);
             _businessRepository.Update(existbusiness);
             await _businessRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
 

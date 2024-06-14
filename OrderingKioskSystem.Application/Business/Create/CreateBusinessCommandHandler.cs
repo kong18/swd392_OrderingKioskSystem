@@ -66,13 +66,15 @@ namespace OrderingKioskSystem.Application.Business.CreateBusinessCommand
             var business = new BusinessEntity
             {
                 Email = email,
-               // NguoiTaoID = _currentUserService.UserId,
+                // NguoiTaoID = _currentUserService.UserId,
                 Url = imageUrl,
                 Name = request.Name,
                 BankName = request.BankName,
                 BankAccountName = request.BankAccountName,
                 BankAccountNumber = request.BankAccountNumber,
                 BinId = request.BinId,
+
+                NgayTao = DateTime.UtcNow.AddHours(7)
 
             };
             _repository.Add(business);
