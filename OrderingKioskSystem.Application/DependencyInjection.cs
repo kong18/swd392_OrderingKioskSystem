@@ -9,6 +9,7 @@ using OrderingKioskSystem.Application.FileUpload;
 using SixLabors.ImageSharp;
 using SWD.OrderingKioskSystem.Domain.Repositories;
 using SWD.OrderingKioskSystem.Application.QRCode;
+using SWD.OrderingKioskSystem.Application.VNPay;
 
 namespace OrderingKioskSystem.Application
 {
@@ -31,7 +32,7 @@ namespace OrderingKioskSystem.Application
             services.AddTransient<FileUploadService>();
             services.AddHttpClient<IVietQrService, VietQrService>();
             services.AddHttpClient<RegisterWebhook>();
-
+            services.AddScoped<IVnPayService, VnPayService>();
             // Register RegisterWebhook service
             services.AddTransient<RegisterWebhook>();
 

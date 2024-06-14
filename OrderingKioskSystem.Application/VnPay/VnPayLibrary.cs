@@ -1,22 +1,86 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Http;
+using System;
+using System.Collections.Generic;
 using System.Globalization;
-
+using System.Linq;
 using System.Net;
+using System.Net.Sockets;
+using System.Security.Cryptography;
 using System.Text;
 
-
-namespace SWD.OrderingKioskSystem.Application.VnPay
+namespace SWD.OrderingKioskSystem.Application.VNPay
 {
     public class VnPayLibrary
     {
-        private readonly IConfiguration _configuration;
-        public VnPayLibrary(IConfiguration configuration) {
-            _configuration = configuration;
+        private readonly SortedList<string, string> _requestData = new SortedList<string, string>(new VnPayCompare());
+        private readonly SortedList<string, string> _responseData = new SortedList<string, string>(new VnPayCompare());
+
+        public TransactionResponsePaymentDTO GetFullResponseData(IQueryCollection collection, string hashSecret)
+        {
+            var vnPay = new VnPayLibrary();
+
+            foreach (var (key, value) in collection)
+            {
+                if (!string.IsNullOrEmpty(key) && key.StartsWith("vnp_"))
+                {
+                    vnPay.AddResponseData(key, value);
+                }
+            }
+
+            var orderId = Convert.ToInt64(vnPay.GetResponseData("vnp_TxnRef"));
+            var vnPayTranId = Convert.ToInt64(vnPay.GetResponseData("vnp_TransactionNo"));
+            var vnpResponseCode = vnPay.GetResponseData("vnp_ResponseCode");
+            var vnpSecureHash = collection.FirstOrDefault(k => k.Key == "vnp_SecureHash").Value;
+            var orderInfo = vnPay.GetResponseData("vnp_OrderInfo");
+            var amount = vnPay.GetResponseData("vnp_Amount");
+
+            var checkSignature = vnPay.ValidateSignature(vnpSecureHash, hashSecret);
+
+            if (!checkSignature)
+                return new TransactionResponsePaymentDTO { Success = false };
+
+            return new TransactionResponsePaymentDTO
+            {
+                Success = true,
+                PaymentMethod = "VnPay",
+                OrderDescription = orderInfo,
+                OrderId = orderId.ToString(),
+                PaymentId = vnPayTranId.ToString(),
+                TransactionId = vnPayTranId.ToString(),
+                Token = vnpSecureHash,
+                VnPayResponseCode = vnpResponseCode,
+                Amount = Convert.ToInt32(amount)
+            };
         }
-        public const string VERSION = "2.1.0";
-        private SortedList<string, string> _requestData = new SortedList<string, string>(new VnPayCompare());
-        private SortedList<string, string> _responseData = new SortedList<string, string>(new VnPayCompare());
-        //------------------------REQUEST DATA----------------------------------------
+
+        public string GetIpAddress(HttpContext context)
+        {
+            var ipAddress = string.Empty;
+            try
+            {
+                var remoteIpAddress = context.Connection.RemoteIpAddress;
+
+                if (remoteIpAddress != null)
+                {
+                    if (remoteIpAddress.AddressFamily == AddressFamily.InterNetworkV6)
+                    {
+                        remoteIpAddress = Dns.GetHostEntry(remoteIpAddress).AddressList
+                            .FirstOrDefault(x => x.AddressFamily == AddressFamily.InterNetwork);
+                    }
+
+                    if (remoteIpAddress != null) ipAddress = remoteIpAddress.ToString();
+
+                    return ipAddress;
+                }
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+
+            return "127.0.0.1";
+        }
+
         public void AddRequestData(string key, string value)
         {
             if (!string.IsNullOrEmpty(value))
@@ -31,138 +95,101 @@ namespace SWD.OrderingKioskSystem.Application.VnPay
                 }
             }
         }
-        public string CreatePaymentUrl(string baseUrl, string vnp_HashSecret, string returnUrl)
-        {   
-            
-            _requestData.Clear(); // Clear existing data
-            var timeZoneById = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
-            var timenow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZoneById);
-            AddRequestData("vnp_Version", VERSION);
-            AddRequestData("vnp_Command", "pay");
-            AddRequestData("vnp_TmnCode", _configuration.GetSection("VNPay").GetValue<string>("TmnCode")); 
-            AddRequestData("vnp_Locale", "vn");
-            AddRequestData("vnp_CurrCode", "VND");
-            AddRequestData("vnp_CreateDate", timenow.ToString("yyyyMMddHhmmss"));
-            AddRequestData("vnp_TxnRef", DateTime.Now.Ticks.ToString());
-            AddRequestData("vnp_OrderInfo", "Payment for Order ID: " + DateTime.Now.Ticks);
-            AddRequestData("vnp_OrderType", "other");
-            AddRequestData("vnp_Amount", (1000000 * 100).ToString()); // Amount in VND
-            AddRequestData("vnp_ReturnUrl", returnUrl);
-            AddRequestData("vnp_IpAddr", "127.0.0.1");
 
-            StringBuilder data = new StringBuilder();
-            foreach (KeyValuePair<string, string> kv in _requestData)
-            {
-                if (!String.IsNullOrEmpty(kv.Value))
-                {
-                    data.Append(WebUtility.UrlEncode(kv.Key) + "=" + WebUtility.UrlEncode(kv.Value) + "&");
-                }
-            }
-            string queryString = data.ToString();
-
-            baseUrl += "?" + queryString;
-            String signData = queryString;
-            if (signData.Length > 0)
-            {
-                signData = signData.Remove(data.Length - 1, 1);
-            }
-            string vnp_SecureHash = Util.HmacSHA512(vnp_HashSecret, signData);
-            baseUrl += "vnp_SecureHash=" + vnp_SecureHash;
-
-            return baseUrl;
-        }
-
-        public string CreateRequestUrl(string baseUrl, string vnp_HashSecret)
-        {
-            _requestData.Clear(); // Clear existing data
-
-            StringBuilder data = new StringBuilder();
-            foreach (KeyValuePair<string, string> kv in _requestData)
-            {
-                if (!String.IsNullOrEmpty(kv.Value))
-                {
-                    data.Append(WebUtility.UrlEncode(kv.Key) + "=" + WebUtility.UrlEncode(kv.Value) + "&");
-                }
-            }
-            string queryString = data.ToString();
-
-            baseUrl += "?" + queryString;
-            String signData = queryString;
-            if (signData.Length > 0)
-            {
-                signData = signData.Remove(data.Length - 1, 1);
-            }
-            string vnp_SecureHash = Util.HmacSHA512(vnp_HashSecret, signData);
-            baseUrl += "vnp_SecureHash=" + vnp_SecureHash;
-
-            return baseUrl;
-        }
-
-
-
-        #region Request
-
-
-
-        #endregion
-
-        #region Response
         public void AddResponseData(string key, string value)
         {
             if (!string.IsNullOrEmpty(value))
             {
-                _responseData.Add(key, value);
+                if (_responseData.ContainsKey(key))
+                {
+                    _responseData[key] = value; // Update the value if the key already exists
+                }
+                else
+                {
+                    _responseData.Add(key, value); // Add the key-value pair if the key doesn't exist
+                }
             }
         }
 
         public string GetResponseData(string key)
         {
-            string retValue;
-            if (_responseData.TryGetValue(key, out retValue))
-            {
-                return retValue;
-            }
-            else
-            {
-                return string.Empty;
-            }
+            return _responseData.TryGetValue(key, out var retValue) ? retValue : string.Empty;
         }
+
+        public string CreateRequestUrl(string baseUrl, string vnpHashSecret)
+        {
+            var data = new StringBuilder();
+
+            foreach (var (key, value) in _requestData.Where(kv => !string.IsNullOrEmpty(kv.Value)))
+            {
+                data.Append(WebUtility.UrlEncode(key) + "=" + WebUtility.UrlEncode(value) + "&");
+            }
+
+            var querystring = data.ToString();
+
+            baseUrl += "?" + querystring;
+            var signData = querystring;
+            if (signData.Length > 0)
+            {
+                signData = signData.Remove(data.Length - 1, 1);
+            }
+
+            var vnpSecureHash = HmacSha512(vnpHashSecret, signData);
+            baseUrl += "vnp_SecureHash=" + vnpSecureHash;
+
+            return baseUrl;
+        }
+
         public bool ValidateSignature(string inputHash, string secretKey)
         {
-            string rspRaw = GetResponseData();
-            string myChecksum = Util.HmacSHA512(secretKey, rspRaw);
+            var rspRaw = GetResponseData();
+            var myChecksum = HmacSha512(secretKey, rspRaw);
             return myChecksum.Equals(inputHash, StringComparison.InvariantCultureIgnoreCase);
         }
+
+        private string HmacSha512(string key, string inputData)
+        {
+            var hash = new StringBuilder();
+            var keyBytes = Encoding.UTF8.GetBytes(key);
+            var inputBytes = Encoding.UTF8.GetBytes(inputData);
+            using (var hmac = new HMACSHA512(keyBytes))
+            {
+                var hashValue = hmac.ComputeHash(inputBytes);
+                foreach (var theByte in hashValue)
+                {
+                    hash.Append(theByte.ToString("x2"));
+                }
+            }
+
+            return hash.ToString();
+        }
+
         private string GetResponseData()
         {
-
-            StringBuilder data = new StringBuilder();
+            var data = new StringBuilder();
             if (_responseData.ContainsKey("vnp_SecureHashType"))
             {
                 _responseData.Remove("vnp_SecureHashType");
             }
+
             if (_responseData.ContainsKey("vnp_SecureHash"))
             {
                 _responseData.Remove("vnp_SecureHash");
             }
-            foreach (KeyValuePair<string, string> kv in _responseData)
+
+            foreach (var (key, value) in _responseData.Where(kv => !string.IsNullOrEmpty(kv.Value)))
             {
-                if (!string.IsNullOrEmpty(kv.Value))
-                {
-                    data.Append(WebUtility.UrlEncode(kv.Key) + "=" + WebUtility.UrlEncode(kv.Value) + "&");
-                }
+                data.Append(WebUtility.UrlEncode(key) + "=" + WebUtility.UrlEncode(value) + "&");
             }
+
             //remove last '&'
             if (data.Length > 0)
             {
                 data.Remove(data.Length - 1, 1);
             }
+
             return data.ToString();
         }
-
-
-
-        #endregion
     }
 
     public class VnPayCompare : IComparer<string>
