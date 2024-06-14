@@ -30,7 +30,7 @@ namespace OrderingKioskSystem.Application.Product.Create
 
         public async Task<string> Handle(CreateProductCommand request, CancellationToken cancellationToken)
         {
-            var categoryExist = await _categoryRepository.FindAsync(x => x.Name == request.CategoryName && !x.NgayXoa.HasValue, cancellationToken);
+            var categoryExist = await _categoryRepository.FindAsync(x => x.Name == request.categoryname && !x.NgayXoa.HasValue, cancellationToken);
 
             if (categoryExist is null)
             {
@@ -47,7 +47,7 @@ namespace OrderingKioskSystem.Application.Product.Create
             }
 
             bool productExists = await _productRepository.AnyAsync(
-                x => x.Name == request.Name && x.BusinessID ==  businessID && !x.NgayXoa.HasValue, cancellationToken);
+                x => x.Name == request.name && x.BusinessID ==  businessID && !x.NgayXoa.HasValue, cancellationToken);
 
             if (productExists)
             {
@@ -56,9 +56,9 @@ namespace OrderingKioskSystem.Application.Product.Create
 
             // Upload the image and get the URL
             string imageUrl = string.Empty;
-            if (request.ImageFile != null)
+            if (request.imagefile != null)
             {
-                using (var stream = request.ImageFile.OpenReadStream())
+                using (var stream = request.imagefile.OpenReadStream())
                 {
                     imageUrl = await _fileUploadService.UploadFileAsync(stream, $"{Guid.NewGuid()}.jpg");
                 }
@@ -66,12 +66,12 @@ namespace OrderingKioskSystem.Application.Product.Create
 
             var p = new ProductEntity
             {
-                Name = request.Name,
+                Name = request.name,
                 Url = imageUrl, // Set the URL to the uploaded image URL
-                Description = request.Description,
-                Code = request.Code,
-                Price = request.Price,
-                Status = request.Status,
+                Description = request.description,
+                Code = request.code,
+                Price = request.price,
+                Status = request.status,
                 CategoryID = categoryExist.ID,
                 BusinessID = businessID,
                 NgayTao = DateTime.UtcNow.AddHours(7)

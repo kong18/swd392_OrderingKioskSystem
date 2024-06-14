@@ -12,25 +12,25 @@ namespace OrderingKioskSystem.Application.Product.Update
     public class UpdateProductCommand : IRequest<string>, ICommand
     {
         public UpdateProductCommand() { }
-        public UpdateProductCommand(string id, string name, string code, string url, string description, decimal price, bool status, int categoryID,FormFile imageFile)
+        public UpdateProductCommand(string Id, string Name, string Code, string Url, string Description, decimal Price, bool Status, int CategoryID,FormFile ImageFile)
         {
-            ID = id;
-            Name = name;
-            Code = code;
-            Description = description;
-            Price = price;
-            Status = status;
-            CategoryID = categoryID;
-            ImageFile = imageFile;
+            id = Id;
+            name = Name;
+            code = Code;
+            description = Description;
+            price = Price;
+            status = Status;
+            categoryid = CategoryID;
+            imagefile = ImageFile;
         }
 
-        public string ID { get; set; }
-        public string? Name { get; set; }
-        public string? Code { get; set; }
-        public IFormFile? ImageFile { get; set; }
-        public string? Description { get; set; }
-        public decimal? Price { get; set; }
-        public bool? Status { get; set; }
-        public int? CategoryID { get; set; }
+        public string id { get; set; }
+        public string? name { get; set; }
+        public string? code { get; set; }
+        public IFormFile? imagefile { get; set; }
+        public string? description { get; set; }
+        public decimal? price { get; set; }
+        public bool? status { get; set; }
+        public int? categoryid { get; set; }
     }
 }

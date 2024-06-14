@@ -12,6 +12,7 @@ namespace OrderingKioskSystem.Domain.Entities
     [Table("Product")]
     public class ProductEntity : Entity
     {
+        
         public required string Code { get; set; }
         public required string Url {  get; set; }
         [MaxLength(100)]

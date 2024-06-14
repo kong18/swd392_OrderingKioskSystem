@@ -9,13 +9,13 @@ namespace OrderingKioskSystem.Application.Category.Create
 {
     public class CreateCategoryCommand : IRequest<string>
     {
-        public CreateCategoryCommand(string url, string name)
+        public CreateCategoryCommand(string Url, string Name)
         {
-            Url = url;
-            Name = name;
+            url = Url;
+            name = Name;
         }
 
-        public string Url { get; set; }
-        public string Name { get; set; }
+        public string url { get; set; }
+        public string name { get; set; }
     }
 }

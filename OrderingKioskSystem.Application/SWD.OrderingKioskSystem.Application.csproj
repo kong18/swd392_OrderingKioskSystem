@@ -27,6 +27,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
     <PackageReference Include="NinjaNye.SearchExtensions" Version="3.0.1" />
     <PackageReference Include="SixLabors.ImageSharp" Version="3.1.4" />
+    <PackageReference Include="System.Net.Http" Version="4.3.4" />
   </ItemGroup>
 
   <ItemGroup>
@@ -37,6 +38,7 @@
   <ItemGroup>
     <Folder Include="OrderDetail\NewFolder\" />
     <Folder Include="PaymentGateway\" />
+    <Folder Include="Payment\Util\" />
   </ItemGroup>
 
 </Project>

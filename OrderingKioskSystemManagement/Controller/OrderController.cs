@@ -7,9 +7,6 @@ using OrderingKioskSystem.Application.Order.GetById;
 using OrderingKioskSystem.Application.Order;
 using OrderingKioskSystem.Application.Order.Update;
 using OrderingKioskSystem.Application.Order.Delete;
-using OrderingKioskSystem.Application.Order.GetAll;
-using OrderingKioskSystem.Application.Common.Pagination;
-using OrderingKioskSystem.Application.Order.GetByPagnition;
 using OrderingKioskSystem.Application.Order.Filter;
 using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
@@ -65,19 +62,6 @@ namespace OrderingKioskSystemManagement.Api.Controllers
             return Ok(new JsonResponse<OrderDTO>(result));
         }
 
-        [HttpGet("pagination")]
-        [Produces(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(typeof(JsonResponse<PagedResult<OrderDTO>>), StatusCodes.Status201Created)]
-        [ProducesResponseType(typeof(JsonResponse<PagedResult<OrderDTO>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<JsonResponse<PagedResult<OrderDTO>>>> GetPagination([FromQuery] GetOrderByPagnitionQuery query, CancellationToken cancellationToken = default)
-        {
-            var result = await _mediator.Send(query, cancellationToken);
-            return Ok(result);
-        }
 
         [HttpPut("{id}")]
         [Produces(MediaTypeNames.Application.Json)]
@@ -109,33 +93,9 @@ namespace OrderingKioskSystemManagement.Api.Controllers
             return Ok(new JsonResponse<string>(result));
         }
 
-        [HttpGet]
-        [Produces(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<List<ProductDTO>>> GetAllOrders(
-           CancellationToken cancellationToken = default)
-        {
-            var result = await _mediator.Send(new GetOrderQuery(), cancellationToken);
-            return Ok(new JsonResponse<List<OrderDTO>>(result));
-        }
+        
 
-        [HttpGet("filter")]
-        [Produces(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(typeof(JsonResponse<PagedResult<ProductDTO>>), StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<JsonResponse<PagedResult<ProductDTO>>>> FilterOrders(
-         [FromQuery] FilterOrderQuery query,
-         CancellationToken cancellationToken = default)
-        {
-            var result = await _mediator.Send(query, cancellationToken);
-            return Ok(new JsonResponse<PagedResult<OrderDTO>>(result));
-        }
+       
 
         [HttpPost("webhook")]
         public async Task<IActionResult> PaymentWebhook([FromBody] VietQRPaymentStatusUpdate update)

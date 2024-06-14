@@ -1,49 +1,29 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using OrderingKioskSystem.Application.Category;
-using OrderingKioskSystem.Application.Common.Models;
-using OrderingKioskSystem.Application.DashboardCategory.GetPopularCategories;
-using OrderingKioskSystem.Application.DashboardCategory;
-using OrderingKioskSystem.Application.Overview;
-using System.Net.Mime;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Collections.Generic;
 using OrderingKioskSystemManagement.Api.Controller;
+using SWD.OrderingKioskSystem.Application.Dashboard;
+using System.Net.Mime;
 
-namespace OrderingKioskSystemManagement.Api.Controllers
+[ApiController]
+[Route("api/v1/sales")]
+public class SalesController : ControllerBase
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class DashBoardController : ControllerBase
+    private readonly ISender _mediator;
+
+    public SalesController(ISender mediator)
     {
-        private readonly ISender _mediator;
+        _mediator = mediator;
+    }
 
-        public DashBoardController(ISender mediator)
-        {
-            _mediator = mediator;
-        }
-
-        [HttpGet("overview")]
-        [Produces(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<ActionResult<JsonResponse<List<OverviewDTO>>>> GetOverview(CancellationToken cancellationToken)
-        {
-            var overviewData = await _mediator.Send(new GetOverviewQuery(), cancellationToken);
-            return Ok(new JsonResponse<List<OverviewDTO>>(overviewData));
-        }
-
-        [HttpGet("popular")]
-        [Produces(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<ActionResult<JsonResponse<List<PopularCategoryDTO>>>> GetPopularCategories(CancellationToken cancellationToken)
-        {
-            var result = await _mediator.Send(new GetPopularCategoriesQuery(), cancellationToken);
-            return Ok(new JsonResponse<List<PopularCategoryDTO>>(result));
-        }
+    [HttpGet]
+    [Produces(MediaTypeNames.Application.Json)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<JsonResponse<SalesDataDTO>>> GetSalesData(CancellationToken cancellationToken = default)
+    {
+        var result = await _mediator.Send(new GetSalesDataQuery(), cancellationToken);
+        return Ok(new JsonResponse<SalesDataDTO>(result));
     }
 }

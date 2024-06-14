@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using MediatR;
-using OrderingKioskSystem.Application.Business.GetAllBusiness;
 using OrderingKioskSystem.Application.Common.Interfaces;
 using OrderingKioskSystem.Application.User.SendEmail;
 using OrderingKioskSystem.Domain.Common.Exceptions;

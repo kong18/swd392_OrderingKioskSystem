@@ -3,7 +3,6 @@ using Azure.Core;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using OrderingKioskSystem.Application.Common.Pagination;
-using OrderingKioskSystem.Application.Order.GetByPagnition;
 using OrderingKioskSystem.Application.Product;
 using OrderingKioskSystem.Domain.Repositories;
 using OrderingKioskSystem.Infrastructure.Persistence;
@@ -64,6 +63,8 @@ namespace OrderingKioskSystem.Application.Order.Filter
             {
                 query = query.Where(p => p.Shipper.Name.Contains(request.ShipperName));
             }
+            query = query.Where(p => p.NgayXoa == null);
+
 
             // Pagination
             var totalCount = await query.CountAsync(cancellationToken);
