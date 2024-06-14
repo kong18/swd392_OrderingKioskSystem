@@ -7,7 +7,7 @@ using System.Net.Mime;
 namespace OrderingKioskSystemManagement.Api.Controller
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/v1/users")]
     public class UserController : ControllerBase
     {
         private readonly IMediator _mediator;

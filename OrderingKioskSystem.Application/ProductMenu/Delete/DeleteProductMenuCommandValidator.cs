@@ -11,8 +11,24 @@ namespace OrderingKioskSystem.Application.ProductMenu.Delete
     {
         public DeleteProductMenuCommandValidator()
         {
-            RuleFor(command => command.ID)
-                .NotEmpty().WithMessage("ProductMenuID can't be null or empty");
+            RuleFor(command => command.MenuID)
+                .NotEmpty().WithMessage("MenuID can't be null or empty");
+
+            RuleFor(command => command.Products)
+                .NotEmpty().WithMessage("Product's list can't be empty or null")
+                .Must(items => items != null && items.Count > 0).WithMessage("Items list must contain at least one item");
+
+            RuleForEach(command => command.Products)
+                .SetValidator(new RequestItemValidator());
+        }
+
+        public class RequestItemValidator : AbstractValidator<RequestItem>
+        {
+            public RequestItemValidator()
+            {
+                RuleFor(item => item.ProductID)
+                    .NotEmpty().WithMessage("ProductID can't be empty or null");
+            }
         }
     }
 }

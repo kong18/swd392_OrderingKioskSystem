@@ -1,7 +1,6 @@
 ﻿using MediatR;
-using OrderingKioskSystem.Application.Common.Interfaces;
-using OrderingKioskSystem.Application.ProductMenu.Update;
 using OrderingKioskSystem.Domain.Repositories;
+using OrderingKioskSystem.Domain.Common.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,27 +12,45 @@ namespace OrderingKioskSystem.Application.ProductMenu.Delete
     public class DeleteProductMenuCommandHandler : IRequestHandler<DeleteProductMenuCommand, string>
     {
         private readonly IProductMenuRepository _productMenuRepository;
-        private readonly ICurrentUserService _currentUserService;
+        private readonly IMenuRepository _menuRepository;
+        private readonly IProductRepository _productRepository;
 
-        public DeleteProductMenuCommandHandler(IProductMenuRepository productMenuRepository, ICurrentUserService currentUserService)
+        public DeleteProductMenuCommandHandler(IProductMenuRepository productMenuRepository, IMenuRepository menuRepository, IProductRepository productRepository)
         {
             _productMenuRepository = productMenuRepository;
-            _currentUserService = currentUserService;
+            _menuRepository = menuRepository;
+            _productRepository = productRepository;
         }
 
         public async Task<string> Handle(DeleteProductMenuCommand request, CancellationToken cancellationToken)
         {
-            var productMenuExist = await _productMenuRepository.FindAsync(x => x.ID == request.ID && !x.NgayXoa.HasValue, cancellationToken);
-            if (productMenuExist == null)
+            var menuExist = await _menuRepository.FindAsync(x => x.ID == request.MenuID && !x.NgayXoa.HasValue, cancellationToken);
+            if (menuExist is null)
             {
-                return "Product is not found or deleted";
+                throw new NotFoundException( "Menu is not found or deleted");
             }
 
-            productMenuExist.NgayXoa = DateTime.Now;
-            productMenuExist.NguoiXoaID = _currentUserService.UserId;
+            foreach (var item in request.Products)
+            {
+                bool productExist = await _productRepository.AnyAsync(x => x.ID == item.ProductID && !x.NgayXoa.HasValue, cancellationToken);
 
-            _productMenuRepository.Update(productMenuExist);
+                if (!productExist)
+                {
+                    throw new NotFoundException($"Product with ID {item.ProductID} is not found or deleted");
+                }
+            }
 
+            foreach (var item in request.Products)
+            {
+                var productMenuExist = await _productMenuRepository.FindAsync(x => x.MenuID == request.MenuID && x.ProductID == item.ProductID, cancellationToken);
+
+                if (productMenuExist is null)
+                {
+                    throw new NotFoundException("Product in Menu not found");
+                }
+
+                _productMenuRepository.Remove(productMenuExist);
+            }
             return await _productMenuRepository.UnitOfWork.SaveChangesAsync(cancellationToken) > 0 ? "Delete Success!" : "Delete Fail!";
         }
     }

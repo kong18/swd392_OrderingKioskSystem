@@ -8,6 +8,9 @@ using OrderingKioskSystem.Application.Menu.Filter;
 using OrderingKioskSystem.Application.Menu.GetById;
 using OrderingKioskSystem.Application.Menu.Update;
 using OrderingKioskSystem.Application.Product;
+using OrderingKioskSystem.Application.Product.Create;
+using OrderingKioskSystem.Application.ProductMenu.Create;
+using OrderingKioskSystem.Application.ProductMenu.Delete;
 using OrderingKioskSystemManagement.Api.Controller;
 using SWD.OrderingKioskSystem.Application.Menu.GetProductsByMenuId;
 using System.Net.Mime;
@@ -108,6 +111,34 @@ namespace OrderingKioskSystemManagement.Api.Controllers
         {
             var result = await _mediator.Send(new GetProductsByMenuIdQuery(id), cancellationToken);
             return Ok(new JsonResponse<List<ProductDTO>>(result));
+        }
+
+        [HttpPost("products")]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<List<ProductDTO>>> AddProductsByMenuID(
+           [FromBody] CreateProductMenuCommand command,
+           CancellationToken cancellationToken = default)
+        {
+            var result = await _mediator.Send(command, cancellationToken);
+            return Ok(new JsonResponse<string>(result));
+        }
+
+        [HttpDelete("products")]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<List<ProductDTO>>> DeleteProductsByMenuID(
+           [FromBody] DeleteProductMenuCommand command,
+           CancellationToken cancellationToken = default)
+        {
+            var result = await _mediator.Send(command, cancellationToken);
+            return Ok(new JsonResponse<string>(result));
         }
     }
 }

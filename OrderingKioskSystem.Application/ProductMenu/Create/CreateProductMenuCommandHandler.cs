@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using OrderingKioskSystem.Domain.Entities;
 using OrderingKioskSystem.Domain.Repositories;
+using OrderingKioskSystem.Domain.Common.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,7 +29,7 @@ namespace OrderingKioskSystem.Application.ProductMenu.Create
             var menuExist = await _menuRepository.FindAsync(x => x.ID == request.MenuID && !x.NgayXoa.HasValue, cancellationToken);
             if (menuExist is null)
             {
-                return "Menu is not found or deleted";
+                throw new NotFoundException("Menu is not found or deleted");
             }
 
             foreach (var item in request.Products)
@@ -37,13 +38,12 @@ namespace OrderingKioskSystem.Application.ProductMenu.Create
 
                 if (!productExist)
                 {
-                    return $"Product with ID {item.ProductID} is not found or deleted";
+                    throw new NotFoundException($"Product with ID {item.ProductID} is not found or deleted");
                 }
             }
 
             foreach (var item in request.Products)
             {
-
                 var productMenu = new ProductMenuEntity
                 {
                     ProductID = item.ProductID,

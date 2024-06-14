@@ -17,7 +17,7 @@ using SWD.OrderingKioskSystem.Application.User.Authenticate;
 namespace OrderingKioskSystemManagement.Api.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/v1/users")]
     public class UserController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -41,23 +41,12 @@ namespace OrderingKioskSystemManagement.Api.Controllers
             return Ok(new JsonResponse<string>(token));
         }
 
-        [HttpPost("login-with-google/check-authen")]
+        [HttpPost("login-with-google")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(typeof(JsonResponse<string>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> LoginGoogleAuthen([FromBody] LoginGoogleCheckAuthenQuery query, CancellationToken cancellationToken)
-        {
-            var result = await _mediator.Send(query, cancellationToken);
-            return Ok(new JsonResponse<bool>(result));
-        }
-
-        [HttpPost("login-with-google/check-author")]
-        [Produces(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(typeof(JsonResponse<string>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Login([FromBody] LoginGoogleCheckAuthorQuery query, CancellationToken cancellationToken)
+        public async Task<IActionResult> Login([FromBody] LoginGoogleQuery query, CancellationToken cancellationToken)
         {
             var result = await _mediator.Send(query, cancellationToken);
             var token = _jwtService.CreateToken(result.EntityId, result.Role, result.Email);
