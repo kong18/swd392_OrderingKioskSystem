@@ -1,4 +1,4 @@
-﻿
+﻿using Microsoft.Extensions.Configuration;
 using System.Globalization;
 
 using System.Net;
@@ -9,6 +9,10 @@ namespace SWD.OrderingKioskSystem.Application.VnPay
 {
     public class VnPayLibrary
     {
+        private readonly IConfiguration _configuration;
+        public VnPayLibrary(IConfiguration configuration) {
+            _configuration = configuration;
+        }
         public const string VERSION = "2.1.0";
         private SortedList<string, string> _requestData = new SortedList<string, string>(new VnPayCompare());
         private SortedList<string, string> _responseData = new SortedList<string, string>(new VnPayCompare());
@@ -29,13 +33,16 @@ namespace SWD.OrderingKioskSystem.Application.VnPay
         }
         public string CreatePaymentUrl(string baseUrl, string vnp_HashSecret, string returnUrl)
         {
+            
             _requestData.Clear(); // Clear existing data
-
+            var timeZoneById = TimeZoneInfo.FindSystemTimeZoneById(_configuration.GetSection("TimeZoneId").ToString());
+            var timenow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZoneById);
             AddRequestData("vnp_Version", VERSION);
             AddRequestData("vnp_Command", "pay");
-            AddRequestData("vnp_TmnCode", "Your_TmnCode");
+            AddRequestData("vnp_TmnCode", _configuration.GetSection("VNPay").GetValue<string>("TmnCode")); 
             AddRequestData("vnp_Locale", "vn");
             AddRequestData("vnp_CurrCode", "VND");
+            AddRequestData("vnp_CreateDate", timenow.ToString("yyyyMMddHhmmss"));
             AddRequestData("vnp_TxnRef", DateTime.Now.Ticks.ToString());
             AddRequestData("vnp_OrderInfo", "Payment for Order ID: " + DateTime.Now.Ticks);
             AddRequestData("vnp_OrderType", "other");

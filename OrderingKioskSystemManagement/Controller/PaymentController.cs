@@ -26,7 +26,7 @@ namespace SWD.OrderingKioskSystemManagement.Api.Controller
             string vnp_TmnCode = _configuration["VNPay:TmnCode"];
             string vnp_HashSecret = _configuration["VNPay:HashSecret"];
 
-            var vnPayLibrary = new VnPayLibrary();
+            var vnPayLibrary = new VnPayLibrary(_configuration);
             vnPayLibrary.AddRequestData("vnp_TmnCode", vnp_TmnCode);
             vnPayLibrary.AddRequestData("vnp_Amount", (1000000 * 100).ToString()); // Amount in VND
             vnPayLibrary.AddRequestData("vnp_Command", "pay");
