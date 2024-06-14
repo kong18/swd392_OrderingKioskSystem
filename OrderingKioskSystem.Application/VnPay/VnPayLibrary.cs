@@ -32,10 +32,10 @@ namespace SWD.OrderingKioskSystem.Application.VnPay
             }
         }
         public string CreatePaymentUrl(string baseUrl, string vnp_HashSecret, string returnUrl)
-        {
+        {   
             
             _requestData.Clear(); // Clear existing data
-            var timeZoneById = TimeZoneInfo.FindSystemTimeZoneById(_configuration.GetSection("TimeZoneId").ToString());
+            var timeZoneById = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
             var timenow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZoneById);
             AddRequestData("vnp_Version", VERSION);
             AddRequestData("vnp_Command", "pay");

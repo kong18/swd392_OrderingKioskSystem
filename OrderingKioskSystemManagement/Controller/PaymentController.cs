@@ -21,23 +21,11 @@ namespace SWD.OrderingKioskSystemManagement.Api.Controller
         [HttpGet("create-payment")]
         public IActionResult CreatePayment()
         {
-            string vnp_Returnurl = _configuration["VNPay:ReturnUrl"];
-            string vnp_Url = _configuration["VNPay:Url"];
-            string vnp_TmnCode = _configuration["VNPay:TmnCode"];
-            string vnp_HashSecret = _configuration["VNPay:HashSecret"];
+            string vnp_Returnurl = _configuration.GetSection("VNPay").GetValue<string>("ReturnUrl");
+            string vnp_Url = _configuration.GetSection("VNPay").GetValue<string>("Url");
+            string vnp_HashSecret = _configuration.GetSection("VNPay").GetValue<string>("HashSecret");
 
             var vnPayLibrary = new VnPayLibrary(_configuration);
-            vnPayLibrary.AddRequestData("vnp_TmnCode", vnp_TmnCode);
-            vnPayLibrary.AddRequestData("vnp_Amount", (1000000 * 100).ToString()); // Amount in VND
-            vnPayLibrary.AddRequestData("vnp_Command", "pay");
-            vnPayLibrary.AddRequestData("vnp_CreateDate", DateTime.Now.ToString("yyyyMMddHHmmss"));
-            vnPayLibrary.AddRequestData("vnp_CurrCode", "VND");
-            vnPayLibrary.AddRequestData("vnp_IpAddr", Util.GetIpAddress(HttpContext));
-            vnPayLibrary.AddRequestData("vnp_Locale", "vn");
-            vnPayLibrary.AddRequestData("vnp_OrderInfo", "Payment for Order ID: " + DateTime.Now.Ticks);
-            vnPayLibrary.AddRequestData("vnp_OrderType", "other");
-            vnPayLibrary.AddRequestData("vnp_ReturnUrl", vnp_Returnurl);
-            vnPayLibrary.AddRequestData("vnp_TxnRef", DateTime.Now.Ticks.ToString());
 
             string paymentUrl = vnPayLibrary.CreatePaymentUrl(vnp_Url, vnp_HashSecret, vnp_Returnurl);
             return Ok(new { paymentUrl });
@@ -46,7 +34,7 @@ namespace SWD.OrderingKioskSystemManagement.Api.Controller
         [HttpGet("payment-return")]
         public IActionResult PaymentReturn()
         {
-            var vnPayLibrary = new VnPayLibrary();
+            var vnPayLibrary = new VnPayLibrary(_configuration);
             foreach (var (key, value) in Request.Query)
             {
                 vnPayLibrary.AddResponseData(key, value);
