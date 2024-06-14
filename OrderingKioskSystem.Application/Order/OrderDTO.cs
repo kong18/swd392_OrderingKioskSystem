@@ -1,29 +1,41 @@
 ﻿using AutoMapper;
-using OrderingKioskSystem.Application.Category;
+using Microsoft.AspNetCore.Mvc;
 using OrderingKioskSystem.Application.Common.Mappings;
-using OrderingKioskSystem.Application.Kiosk;
-using OrderingKioskSystem.Application.Order.Create;
-using OrderingKioskSystem.Application.OrderDetail;
 using OrderingKioskSystem.Domain.Entities;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OrderingKioskSystem.Application.Order
 {
     public class OrderDTO : IMapFrom<OrderEntity>
     {
+        [BindProperty(Name = "id")]
         public string ID { get; set; }
+
+        [BindProperty(Name = "kiosk-id")]
         public string KioskID { get; set; }
+
+        [BindProperty(Name = "location")]
         public string Location { get; set; }
-        public decimal Total {  get; set; }
+
+        [BindProperty(Name = "total")]
+        public decimal Total { get; set; }
+
+        [BindProperty(Name = "note")]
         public string Note { get; set; }
+
+        [BindProperty(Name = "status")]
         public string Status { get; set; }
+
+        [BindProperty(Name = "ngay-tao")]
         public DateTime NgayTao { get; set; }
+
+        [BindProperty(Name = "shipper-name")]
         public string? ShipperName { get; set; }
+
+        [BindProperty(Name = "products")]
         public List<ResponseItem> Products { get; set; } = new List<ResponseItem>();
+
         public void Mapping(Profile profile)
         {
             profile.CreateMap<OrderEntity, OrderDTO>()
@@ -43,11 +55,22 @@ namespace OrderingKioskSystem.Application.Order
 
     public class ResponseItem
     {
+        [BindProperty(Name = "product-id")]
         public string ProductID { get; set; }
+
+        [BindProperty(Name = "name")]
         public string Name { get; set; }
+
+        [BindProperty(Name = "unit-price")]
         public decimal UnitPrice { get; set; }
+
+        [BindProperty(Name = "quantity")]
         public int Quantity { get; set; }
+
+        [BindProperty(Name = "price")]
         public decimal Price { get; set; }
+
+        [BindProperty(Name = "size")]
         public string? Size { get; set; }
     }
 }
