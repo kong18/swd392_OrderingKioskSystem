@@ -1,6 +1,4 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Authentication.Google;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using OrderingKioskSystem.Application.Common.Interfaces;
 using OrderingKioskSystem.Application.User.Authenticate;
