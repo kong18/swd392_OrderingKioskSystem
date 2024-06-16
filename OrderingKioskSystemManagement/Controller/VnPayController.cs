@@ -1,17 +1,12 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
 using SWD.OrderingKioskSystem.Application.VNPay;
-using OrderingKioskSystem.Infrastructure.Persistence;
 using System.Threading.Tasks;
 using OrderingKioskSystem.Application.Order.Create;
-using OrderingKioskSystem.Application.Order;
-using OrderingKioskSystemManagement.Api.Controller;
 using System.Net.Mime;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
-using OrderingKioskSystem.Application.Order.GetById;
 using OrderingKioskSystem.Domain.Repositories;
+using OrderingKioskSystem.Domain.Common.Exceptions;
 
 namespace SWD.OrderingKioskSystemManagement.Api.Controller
 {
@@ -22,14 +17,12 @@ namespace SWD.OrderingKioskSystemManagement.Api.Controller
         private readonly IVnPayService _vnPayService;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IOrderRepository _orderRepository;
-        private readonly IMapper _mapper;
         private readonly ISender _mediator;
 
-        public VNPayController(IVnPayService vnPayService, IHttpContextAccessor httpContextAccessor, IOrderRepository orderRepository, IMapper mapper, ISender mediator)
+        public VNPayController(IVnPayService vnPayService, IHttpContextAccessor httpContextAccessor, IOrderRepository orderRepository, ISender mediator)
         {
             _vnPayService = vnPayService;
             _httpContextAccessor = httpContextAccessor;
-            _mapper = mapper;
             _mediator = mediator;
             _orderRepository = orderRepository;
         }
@@ -53,14 +46,19 @@ namespace SWD.OrderingKioskSystemManagement.Api.Controller
             {
                 // Process the payment success logic here (e.g., update database)
                 var orderId = Request.Query["vnp_TxnRef"].ToString();
-                var order = await _orderRepository.FindAsync(o => o.ID == orderId);
+                var order = await _orderRepository.FindAsync(o => o.ID == orderId && !o.NgayXoa.HasValue);
 
                 if (order != null)
                 {
                     order.Status = "Paid";
                     _orderRepository.Update(order);
                     await _orderRepository.UnitOfWork.SaveChangesAsync();
+                } else
+                {
+                    return BadRequest(new { message = "Payment failed! Order is not found or expired." });
                 }
+
+                response.Amount /= 100;
 
                 return Ok(new { message = "Payment successful!", response });
             }

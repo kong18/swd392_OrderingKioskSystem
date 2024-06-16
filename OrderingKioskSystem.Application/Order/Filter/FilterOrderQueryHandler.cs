@@ -39,17 +39,6 @@ namespace OrderingKioskSystem.Application.Order.Filter
                 query = query.Where(p => p.Kiosk.Location.Contains(request.Location));
             }
 
-            if (request.MinTotal.HasValue)
-            {
-                query = query.Where(p => p.Total >= request.MinTotal.Value);
-            }
-
-            if (request.MaxTotal.HasValue)
-            {
-                query = query.Where(p => p.Total <= request.MaxTotal.Value);
-            }
-
-
             if (!string.IsNullOrEmpty(request.Status))
             {
                 query = query.Where(p => p.Status.Contains(request.Status));
@@ -64,19 +53,21 @@ namespace OrderingKioskSystem.Application.Order.Filter
             {
                 query = query.Where(p => p.Shipper.Name.Contains(request.ShipperName));
             }
-            query = query.Where(p => p.NgayXoa == null);
 
+            if (request.SortOrder.HasValue)
+            {
+                // Apply sorting by total
+                query = request.SortOrder.Value == true
+                ? query.OrderByDescending(p => p.Total)
+                : query.OrderBy(p => p.Total);
+            }
 
             // Pagination
             var totalCount = await query.CountAsync(cancellationToken);
             var items = await query.Skip((request.PageNumber - 1) * request.PageSize)
                                    .Take(request.PageSize)
                                    .ToListAsync(cancellationToken);
-            var pageCount = totalCount / request.PageSize;
-            if (pageCount % request.PageSize >= 1 || pageCount == 0)
-            {
-                pageCount++;
-            }
+            var pageCount = (int)Math.Ceiling((double)totalCount / request.PageSize);
 
             var dtos = _mapper.Map<List<OrderDTO>>(items);
 
