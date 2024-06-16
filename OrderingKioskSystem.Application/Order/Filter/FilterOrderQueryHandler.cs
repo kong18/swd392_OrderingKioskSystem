@@ -25,6 +25,8 @@ namespace OrderingKioskSystem.Application.Order.Filter
         {
             var query = _context.Orders.AsQueryable();
 
+            query.Where(p => !p.NgayXoa.HasValue);
+
             query.OrderByDescending(p => p.NgayTao);
 
             if (!string.IsNullOrEmpty(request.KioskID))

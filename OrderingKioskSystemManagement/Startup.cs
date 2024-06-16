@@ -1,20 +1,14 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using OrderingKioskSystemManagement.Api.Configuration;
+﻿using OrderingKioskSystemManagement.Api.Configuration;
 using OrderingKioskSystemManagement.Api.Filters;
 using Serilog;
 using OrderingKioskSystem.Application;
 using OrderingKioskSystem.Infrastructure;
 using OrderingKioskSystem.Application.Order;
-using FirebaseAdmin;
-using Google.Apis.Auth.OAuth2;
 using OrderingKioskSystemManagement.Application;
 using OrderingKioskSystem.Application.FileUpload;
 using System.IO;
-using SWD.OrderingKioskSystem.Domain.Repositories;
 using System.Text.Json;
+using SWD.OrderingKioskSystem.Application.Order;
 
 
 namespace OrderingKioskSystemManagement.Api
@@ -40,6 +34,7 @@ namespace OrderingKioskSystemManagement.Api
             services.ConfigureApiVersioning();
             services.AddInfrastructure(Configuration);
             services.ConfigureSwagger(Configuration);
+            services.AddHostedService<PendingOrderCleanupService>();
             services.AddCors(options =>
             {
                 options.AddPolicy("CorsPolicy",

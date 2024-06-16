@@ -4,6 +4,14 @@ using Microsoft.AspNetCore.Http;
 using SWD.OrderingKioskSystem.Application.VNPay;
 using OrderingKioskSystem.Infrastructure.Persistence;
 using System.Threading.Tasks;
+using OrderingKioskSystem.Application.Order.Create;
+using OrderingKioskSystem.Application.Order;
+using OrderingKioskSystemManagement.Api.Controller;
+using System.Net.Mime;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using OrderingKioskSystem.Application.Order.GetById;
+using OrderingKioskSystem.Domain.Repositories;
 
 namespace SWD.OrderingKioskSystemManagement.Api.Controller
 {
@@ -13,21 +21,27 @@ namespace SWD.OrderingKioskSystemManagement.Api.Controller
     {
         private readonly IVnPayService _vnPayService;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly ApplicationDbContext _context;
+        private readonly IOrderRepository _orderRepository;
         private readonly IMapper _mapper;
+        private readonly ISender _mediator;
 
-        public VNPayController(IVnPayService vnPayService, IHttpContextAccessor httpContextAccessor, ApplicationDbContext context, IMapper mapper)
+        public VNPayController(IVnPayService vnPayService, IHttpContextAccessor httpContextAccessor, IOrderRepository orderRepository, IMapper mapper, ISender mediator)
         {
             _vnPayService = vnPayService;
             _httpContextAccessor = httpContextAccessor;
-            _context = context;
             _mapper = mapper;
+            _mediator = mediator;
+            _orderRepository = orderRepository;
         }
 
         [HttpPost]
-        public IActionResult CreatePaymentUrl(TransactionsRequestPaymentDTO model)
+        public async Task<ActionResult> CreatePaymentUrl(
+            [FromBody] CreateOrderCommand command,
+            CancellationToken cancellationToken = default)
         {
-            var url = _vnPayService.CreatePaymentUrl(model, _httpContextAccessor.HttpContext);
+            var result = await _mediator.Send(command, cancellationToken);
+
+            var url = _vnPayService.CreatePaymentUrl(result, _httpContextAccessor.HttpContext);
             return Ok(new { url });
         }
 
@@ -38,7 +52,16 @@ namespace SWD.OrderingKioskSystemManagement.Api.Controller
             if (response.Success && response.VnPayResponseCode == "00")
             {
                 // Process the payment success logic here (e.g., update database)
-                await _context.SaveChangesAsync();
+                var orderId = Request.Query["vnp_TxnRef"].ToString();
+                var order = await _orderRepository.FindAsync(o => o.ID == orderId);
+
+                if (order != null)
+                {
+                    order.Status = "Paid";
+                    _orderRepository.Update(order);
+                    await _orderRepository.UnitOfWork.SaveChangesAsync();
+                }
+
                 return Ok(new { message = "Payment successful!", response });
             }
 

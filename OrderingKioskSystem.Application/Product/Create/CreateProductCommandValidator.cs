@@ -29,6 +29,9 @@ namespace OrderingKioskSystem.Application.Product.Create
 
             RuleFor(command => command.CategoryName)
                 .NotEmpty().WithMessage("CategoryID can't be empty or null");
+
+            RuleFor(x => x.ImageFile)
+                .NotEmpty().WithMessage("URL can't be empty");
         }
     }
 }

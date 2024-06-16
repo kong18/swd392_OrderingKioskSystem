@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using OrderingKioskSystem.Application.Order;
 using System;
 using System.Globalization;
 
@@ -14,7 +15,7 @@ namespace SWD.OrderingKioskSystem.Application.VNPay
             _configuration = configuration;
         }
 
-        public string CreatePaymentUrl(TransactionsRequestPaymentDTO model, HttpContext context)
+        public string CreatePaymentUrl(OrderDTO model, HttpContext context)
         {
             var timeZoneById = TimeZoneInfo.FindSystemTimeZoneById(_configuration["TimeZoneId"]);
             var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZoneById);
@@ -25,7 +26,7 @@ namespace SWD.OrderingKioskSystem.Application.VNPay
             pay.AddRequestData("vnp_Version", _configuration["Vnpay:Version"]);
             pay.AddRequestData("vnp_Command", _configuration["Vnpay:Command"]);
             pay.AddRequestData("vnp_TmnCode", _configuration["Vnpay:TmnCode"]);
-            pay.AddRequestData("vnp_Amount", (model.Amount * 100).ToString());
+            pay.AddRequestData("vnp_Amount", (model.Total * 100).ToString());
             pay.AddRequestData("vnp_CreateDate", timeNow.ToString("yyyyMMddHHmmss", CultureInfo.InvariantCulture));
             pay.AddRequestData("vnp_CurrCode", _configuration["Vnpay:CurrCode"]);
             pay.AddRequestData("vnp_IpAddr", pay.GetIpAddress(context));
@@ -33,7 +34,7 @@ namespace SWD.OrderingKioskSystem.Application.VNPay
             pay.AddRequestData("vnp_OrderInfo", "Payment for Order");
             pay.AddRequestData("vnp_OrderType", "billpayment");
             pay.AddRequestData("vnp_ReturnUrl", urlCallBack);
-            pay.AddRequestData("vnp_TxnRef", tick);
+            pay.AddRequestData("vnp_TxnRef", model.ID);
 
             // Optional: Add vnp_ExpireDate if needed
             var expireDate = timeNow.AddMinutes(15); // Example: 15 minutes expiration
