@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using OrderingKioskSystem.Application.Common.Mappings;
 using OrderingKioskSystem.Domain.Entities;
 
@@ -24,16 +25,37 @@ namespace OrderingKioskSystem.Application.Product
             };
         }
 
+        [BindProperty(Name = "id")]
         public string ID { get; set; }
+
+        [BindProperty(Name = "name")]
         public string Name { get; set; }
+
+        [BindProperty(Name = "code")]
         public string Code { get; set; }
+
+        [BindProperty(Name = "url")]
         public string Url { get; set; }
+
+        [BindProperty(Name = "description")]
         public string Description { get; set; }
+
+        [BindProperty(Name = "price")]
         public decimal Price { get; set; }
+
+        [BindProperty(Name = "status")]
         public bool Status { get; set; }
+
+        [BindProperty(Name = "category-id")]
         public int CategoryID { get; set; }
-        public string CategoryName {  get; set; }
+
+        [BindProperty(Name = "category-name")]
+        public string CategoryName { get; set; }
+
+        [BindProperty(Name = "business-id")]
         public string BusinessID { get; set; }
+
+        [BindProperty(Name = "business-name")]
         public string BusinessName { get; set; }
 
         public void Mapping(Profile profile)

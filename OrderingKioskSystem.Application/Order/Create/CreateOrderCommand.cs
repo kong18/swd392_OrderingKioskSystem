@@ -17,6 +17,7 @@ namespace OrderingKioskSystem.Application.Order.Create
             Products = products;
             this.Note = Note;
         }
+        
         public string KioskID { get; set; }
         public string? Note {  get; set; }
         public decimal Total { get; set; } = 0;

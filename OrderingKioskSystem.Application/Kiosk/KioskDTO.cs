@@ -1,23 +1,23 @@
 ﻿using AutoMapper;
-using OrderingKioskSystem.Application.Category;
+using Microsoft.AspNetCore.Mvc;
 using OrderingKioskSystem.Application.Common.Mappings;
 using OrderingKioskSystem.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
 
 namespace OrderingKioskSystem.Application.Kiosk
 {
     public class KioskDTO : IMapFrom<KioskEntity>
     {
-        public string ID { get;set;}
-        public required string location { get; set; }
+        [BindProperty(Name = "id")]
+        public string ID { get; set; }
+
+        [BindProperty(Name = "location")]
+        [Required]
+        public string Location { get; set; }
+
         public void Mapping(Profile profile)
         {
             profile.CreateMap<KioskEntity, KioskDTO>();
-
         }
     }
 }

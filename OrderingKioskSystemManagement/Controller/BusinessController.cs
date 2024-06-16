@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using OrderingKioskSystem.Application.Business;
 using OrderingKioskSystem.Application.Business.CreateBusinessCommand;
 using OrderingKioskSystem.Application.Business.Delete;
-using OrderingKioskSystem.Application.Business.GetAllBusiness;
+
 using OrderingKioskSystem.Application.Business.GetBusinessById;
 using OrderingKioskSystem.Application.Business.Update;
 using OrderingKioskSystem.Application.Common.Pagination;
@@ -11,6 +11,7 @@ using OrderingKioskSystem.Application.Product.Filter;
 using OrderingKioskSystem.Application.Product;
 using OrderingKioskSystemManagement.Api.Controller;
 using System.Net.Mime;
+using OrderingKioskSystem.Application.Business.GetBusinessByFilter;
 
 namespace OrderingKioskSystemManagement.Api.Controllers
 {
@@ -67,6 +68,7 @@ namespace OrderingKioskSystemManagement.Api.Controllers
             return Ok(new JsonResponse<string>(result));
         }
 
+
         [HttpGet]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(typeof(JsonResponse<PagedResult<BusinessDTO>>), StatusCodes.Status201Created)]
@@ -81,7 +83,6 @@ namespace OrderingKioskSystemManagement.Api.Controllers
             var result = await _mediator.Send(query, cancellationToken);
             return Ok(new JsonResponse<PagedResult<BusinessDTO>>(result));
         }
-
         [HttpGet("{id}")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

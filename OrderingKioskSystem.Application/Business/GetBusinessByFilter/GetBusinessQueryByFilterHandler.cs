@@ -10,7 +10,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace OrderingKioskSystem.Application.Business.GetAllBusiness
+namespace OrderingKioskSystem.Application.Business.GetBusinessByFilter
 {
     public class GetBusinessQueryByFilterHandler : IRequestHandler<GetBusinessByFilterQuery, PagedResult<BusinessDTO>>
     {
@@ -27,6 +27,7 @@ namespace OrderingKioskSystem.Application.Business.GetAllBusiness
         {
             var query = _context.Business.AsQueryable();
 
+            // Apply filtering
             if (!string.IsNullOrEmpty(request.Name))
             {
                 query = query.Where(p => p.Name.Contains(request.Name));

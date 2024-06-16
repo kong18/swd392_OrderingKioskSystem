@@ -8,6 +8,8 @@ using System.Reflection;
 using OrderingKioskSystem.Application.FileUpload;
 using SixLabors.ImageSharp;
 using SWD.OrderingKioskSystem.Domain.Repositories;
+using SWD.OrderingKioskSystem.Application.QRCode;
+using SWD.OrderingKioskSystem.Application.VNPay;
 
 namespace OrderingKioskSystem.Application
 {
@@ -28,7 +30,7 @@ namespace OrderingKioskSystem.Application
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services.AddScoped<IValidatorProvider, ValidatorProvider>();
             services.AddTransient<FileUploadService>();
-
+            services.AddScoped<IVnPayService, VnPayService>();
 
             return services;
         }

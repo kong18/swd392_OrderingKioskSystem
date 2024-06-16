@@ -54,6 +54,7 @@ namespace OrderingKioskSystem.Application.Menu.Filter
             {
                 query = query.Where(p => p.Business.Name.Contains(request.BusinessName));
             }
+            query = query.Where(p => p.NgayXoa == null);
 
             // Pagination
             var totalCount = await query.CountAsync(cancellationToken);

@@ -29,7 +29,8 @@ namespace OrderingKioskSystemManagement.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers(opt => opt.Filters.Add<ExceptionFilter>());
+            services.AddControllers(opt => opt.Filters.Add(typeof(ExceptionFilter)))
+                    .AddJsonOptions(opt => opt.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.KebabCaseLower);
             services.AddSignalR();
             services.AddScoped<OrderService>();
             services.AddApplication(Configuration);

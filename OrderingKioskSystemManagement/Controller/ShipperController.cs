@@ -6,11 +6,11 @@ using OrderingKioskSystem.Application.Common.Pagination;
 using OrderingKioskSystem.Application.Shipper;
 using OrderingKioskSystem.Application.Shipper.CreateShipper;
 using OrderingKioskSystem.Application.Shipper.DeleteShipper;
-using OrderingKioskSystem.Application.Shipper.GetAllShipper;
 using OrderingKioskSystem.Application.Shipper.GetShipperById;
 using OrderingKioskSystem.Application.Shipper.UpdateShipper;
 using OrderingKioskSystemManagement.Api.Controller;
 using System.Net.Mime;
+using SWD.OrderingKioskSystem.Application.Shipper.FilterShipper;
 
 namespace OrderingKioskSystemManagement.Api.Controllers
 {
@@ -94,6 +94,20 @@ namespace OrderingKioskSystemManagement.Api.Controllers
         {
             var result = await _mediator.Send(new GetShipperByIdQuery(id), cancellationToken);
             return Ok(new JsonResponse<ShipperDTO>(result));
+        }
+        [HttpGet]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(typeof(JsonResponse<PagedResult<ShipperDTO>>), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<JsonResponse<PagedResult<ShipperDTO>>>> FilterProduct(
+           [FromQuery] FilterShipperQuery query,
+        CancellationToken cancellationToken = default)
+        {
+            var result = await _mediator.Send(query, cancellationToken);
+            return Ok(new JsonResponse<PagedResult<ShipperDTO>>(result));
         }
     }
 }

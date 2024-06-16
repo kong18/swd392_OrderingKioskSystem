@@ -11,7 +11,7 @@ namespace OrderingKioskSystem.Application.Product.Delete
     {
         public DeleteProductCommandValidator()
         {
-            RuleFor(command => command.ID)
+            RuleFor(command => command.id)
                 .NotEmpty().WithMessage("ID can't be empty or null");
         }
     }

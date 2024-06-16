@@ -62,6 +62,8 @@ namespace OrderingKioskSystem.Application.Order.Filter
             {
                 query = query.Where(p => p.Shipper.Name.Contains(request.ShipperName));
             }
+            query = query.Where(p => p.NgayXoa == null);
+
 
             // Pagination
             var totalCount = await query.CountAsync(cancellationToken);

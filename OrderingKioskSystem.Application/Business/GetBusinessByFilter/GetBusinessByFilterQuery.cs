@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OrderingKioskSystem.Application.Business.GetAllBusiness
+namespace OrderingKioskSystem.Application.Business.GetBusinessByFilter
 {
     public class GetBusinessByFilterQuery : IRequest<PagedResult<BusinessDTO>>
     {

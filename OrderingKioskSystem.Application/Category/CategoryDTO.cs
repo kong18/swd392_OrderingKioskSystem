@@ -1,12 +1,9 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using OrderingKioskSystem.Application.Common.Mappings;
 using OrderingKioskSystem.Application.Product;
 using OrderingKioskSystem.Domain.Entities;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OrderingKioskSystem.Application.Category
 {
@@ -22,8 +19,13 @@ namespace OrderingKioskSystem.Application.Category
             };
         }
 
+        [BindProperty(Name = "id")]
         public int ID { get; set; }
+
+        [BindProperty(Name = "name")]
         public string Name { get; set; }
+
+        [BindProperty(Name = "url")]
         public string Url { get; set; }
 
         public void Mapping(Profile profile)

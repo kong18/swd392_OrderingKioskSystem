@@ -11,9 +11,9 @@ namespace OrderingKioskSystem.Application.Product.Delete
     {
         public DeleteProductCommand(string Id)
         {
-            ID = Id;
+            id = Id;
         }
 
-        public string ID { get; set; }
+        public string id { get; set; }
     }
 }

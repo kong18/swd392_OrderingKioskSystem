@@ -1,27 +1,37 @@
 ﻿using AutoMapper;
-using OrderingKioskSystem.Application.Business;
+using Microsoft.AspNetCore.Mvc;
 using OrderingKioskSystem.Application.Common.Mappings;
-using OrderingKioskSystem.Application.Order;
 using OrderingKioskSystem.Domain.Entities;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OrderingKioskSystem.Application.Menu
 {
     public class MenuDTO : IMapFrom<MenuEntity>
     {
+        [BindProperty(Name = "id")]
         public string ID { get; set; }
+
+        [BindProperty(Name = "title")]
         public string Title { get; set; }
+
+        [BindProperty(Name = "name")]
         public string Name { get; set; }
+
+        [BindProperty(Name = "status")]
         public bool Status { get; set; }
+
+        [BindProperty(Name = "type")]
         public string Type { get; set; }
-        public string BusinessID {  get; set; }
+
+        [BindProperty(Name = "business-id")]
+        public string BusinessID { get; set; }
+
+        [BindProperty(Name = "business-name")]
         public string BusinessName { get; set; }
 
+        [BindProperty(Name = "products")]
         public List<ResponseItem> Products { get; set; } = new List<ResponseItem>();
+
         public void Mapping(Profile profile)
         {
             profile.CreateMap<MenuEntity, MenuDTO>()
@@ -38,9 +48,16 @@ namespace OrderingKioskSystem.Application.Menu
 
     public class ResponseItem
     {
+        [BindProperty(Name = "product-id")]
         public string ProductID { get; set; }
+
+        [BindProperty(Name = "name")]
         public string Name { get; set; }
+
+        [BindProperty(Name = "url")]
         public string Url { get; set; }
+
+        [BindProperty(Name = "price")]
         public decimal Price { get; set; }
     }
 }

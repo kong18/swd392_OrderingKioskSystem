@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using OrderingKioskSystem.Application.Common.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -12,14 +13,14 @@ namespace OrderingKioskSystem.Application.Product.Create
     public class CreateProductCommand : IRequest<string>, ICommand
     {
         public CreateProductCommand() { }
-        public CreateProductCommand(string code,  string name, string description, decimal price, bool status, string categoryName)
+        public CreateProductCommand(string Code,  string Name, string Description, decimal Price, bool Status, string categoryName)
         {
-            Code = code;
-            Name = name;
-            Description = description;
-            Price = price;
-            Status = status;
-            CategoryName = categoryName;
+            code = Code;
+            name = Name;
+            description = Description;
+            price = Price;
+            status = Status;
+            categoryname = categoryName;
         }
         public string Name { get; set; }
         public string Code { get; set; }
