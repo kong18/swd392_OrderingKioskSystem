@@ -34,7 +34,7 @@ namespace SWD.OrderingKioskSystem.Application.Order
                     _logger.LogError(ex, "An error occurred while cleaning up pending orders.");
                 }
 
-                // Wait for 1 minutes before checking again
+                // Wait for 2 minutes before checking again
                 await Task.Delay(TimeSpan.FromMinutes(2), stoppingToken);
             }
         }

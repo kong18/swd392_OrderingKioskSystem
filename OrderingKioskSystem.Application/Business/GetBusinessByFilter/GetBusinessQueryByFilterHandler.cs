@@ -56,12 +56,8 @@ namespace OrderingKioskSystem.Application.Business.GetBusinessByFilter
             var items = await query.Skip((request.PageNumber - 1) * request.PageSize)
                                    .Take(request.PageSize)
                                    .ToListAsync(cancellationToken);
-            var pageCount = totalCount / request.PageSize;
+            var pageCount = (int)Math.Ceiling((double)totalCount / request.PageSize);
 
-            if (pageCount % request.PageSize >= 1 || pageCount == 0)
-            {
-                pageCount++;
-            }
             var dtos = _mapper.Map<List<BusinessDTO>>(items);
 
             return new PagedResult<BusinessDTO>
