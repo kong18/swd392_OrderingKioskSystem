@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using OrderingKioskSystem.Application.Order;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace SWD.OrderingKioskSystem.Application.VNPay
 {
     public interface IVnPayService
     {
-        public string CreatePaymentUrl(TransactionsRequestPaymentDTO model, HttpContext context);
+        public string CreatePaymentUrl(OrderDTO model, HttpContext context);
         public TransactionResponsePaymentDTO PaymentExecute(IQueryCollection collections);
     }
 }
