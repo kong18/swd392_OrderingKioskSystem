@@ -22,15 +22,13 @@ namespace OrderingKioskSystem.Application.Product.Create
             status = Status;
             categoryname = categoryName;
         }
-        
-        public string name { get; set; }
-        public string code { get; set; }
-   
-        public string description { get; set; }
-        public decimal price { get; set; }
-        public bool status { get; set; } = true;
-        public string categoryname {  get; set; }
-        public IFormFile imagefile { get; set; }
+        public string Name { get; set; }
+        public string Code { get; set; }
+        public string Description { get; set; }
+        public decimal Price { get; set; }
+        public bool Status { get; set; } = true;
+        public string CategoryName {  get; set; }
+        public IFormFile ImageFile { get; set; }
 
     }
 }

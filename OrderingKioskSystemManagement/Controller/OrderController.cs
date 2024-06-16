@@ -7,11 +7,9 @@ using OrderingKioskSystem.Application.Order.GetById;
 using OrderingKioskSystem.Application.Order;
 using OrderingKioskSystem.Application.Order.Update;
 using OrderingKioskSystem.Application.Order.Delete;
+using OrderingKioskSystem.Application.Common.Pagination;
 using OrderingKioskSystem.Application.Order.Filter;
-using Microsoft.AspNetCore.SignalR;
-using Newtonsoft.Json;
 using System.Text;
-using SWD.OrderingKioskSystem.Application.QRCode;
 using System.Threading;
 using OrderingKioskSystemManagement.Api.Controller;
 
@@ -22,15 +20,11 @@ namespace OrderingKioskSystemManagement.Api.Controllers
     public class OrderController : ControllerBase
     {
         private readonly ISender _mediator;
-        private readonly OrderService _orderService;
-        private readonly RegisterWebhook _registerWebhook;
         private readonly ILogger<OrderController> _logger;
 
-        public OrderController(ISender mediator, OrderService orderService, RegisterWebhook registerWebhook, ILogger<OrderController> logger)
+        public OrderController(ISender mediator, ILogger<OrderController> logger)
         {
             _mediator = mediator;
-            _orderService = orderService;
-            _registerWebhook = registerWebhook;
             _logger = logger;
         }
 
@@ -62,19 +56,16 @@ namespace OrderingKioskSystemManagement.Api.Controllers
             return Ok(new JsonResponse<OrderDTO>(result));
         }
 
-
-        [HttpPut("{id}")]
+        [HttpPut]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> UpdateOrder(
-            [FromRoute] string id,
             [FromBody] UpdateOrderCommand command,
             CancellationToken cancellationToken = default)
         {
-            command.ID = id; // Ensure the command has the id
             var result = await _mediator.Send(command, cancellationToken);
             return Ok(new JsonResponse<string>(result));
         }
@@ -93,61 +84,19 @@ namespace OrderingKioskSystemManagement.Api.Controllers
             return Ok(new JsonResponse<string>(result));
         }
 
-        
-
-       
-
-        [HttpPost("webhook")]
-        public async Task<IActionResult> PaymentWebhook([FromBody] VietQRPaymentStatusUpdate update)
+        [HttpGet]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(typeof(JsonResponse<PagedResult<ProductDTO>>), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<JsonResponse<PagedResult<ProductDTO>>>> FilterOrders(
+         [FromQuery] FilterOrderQuery query,
+         CancellationToken cancellationToken = default)
         {
-            try
-            {
-                if (update.Status == "success")
-                {
-                    await _orderService.NotifyNewOrder(update.OrderId);
-                    return Ok(new { message = "Payment success notification sent to frontend." });
-                }
-
-                return BadRequest(new { message = "Invalid status." });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "An error occurred while processing the webhook.");
-                return StatusCode(500, new { message = "An internal server error occurred.", detail = ex.Message });
-            }
+            var result = await _mediator.Send(query, cancellationToken);
+            return Ok(new JsonResponse<PagedResult<OrderDTO>>(result));
         }
-
-        [HttpPost("register-webhook")]
-        public async Task<IActionResult> RegisterWebhook([FromBody] RegisterWebhookRequest request)
-        {
-            try
-            {
-                var result = await _registerWebhook.RegiterWebHook(request);
-
-                if (result == "Success")
-                {
-                    return Ok(new { message = "Webhook registered successfully." });
-                }
-                else
-                {
-                    return StatusCode(500, new { message = "Failed to register webhook." });
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "An error occurred while registering webhook.");
-                return StatusCode(500, new { message = "An internal server error occurred.", detail = ex.Message });
-            }
-        }
-    }
-
-    public class VietQRPaymentStatusUpdate
-    {
-        public string Status { get; set; }
-        public string OrderId { get; set; }
-        public int Amount { get; set; }
-        public string Currency { get; set; }
-        public string TransactionId { get; set; }
-        public DateTime Timestamp { get; set; }
     }
 }

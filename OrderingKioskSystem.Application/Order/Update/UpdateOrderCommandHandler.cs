@@ -48,7 +48,7 @@ namespace OrderingKioskSystem.Application.Order.Update
             orderExist.ShipperID = request.ShipperID ?? orderExist.ShipperID;
 
             orderExist.NguoiCapNhatID = _currentUserService.UserId;
-            orderExist.NgayCapNhatCuoi = DateTime.Now;
+            orderExist.NgayCapNhatCuoi = DateTime.UtcNow.AddHours(7);
             _orderRepository.Update(orderExist);
 
             return await _orderRepository.UnitOfWork.SaveChangesAsync(cancellationToken) > 0 ? "Update Success!" : "Update Fail!";

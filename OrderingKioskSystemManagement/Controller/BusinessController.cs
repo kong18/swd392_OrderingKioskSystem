@@ -7,10 +7,9 @@ using OrderingKioskSystem.Application.Business.Delete;
 using OrderingKioskSystem.Application.Business.GetBusinessById;
 using OrderingKioskSystem.Application.Business.Update;
 using OrderingKioskSystem.Application.Common.Pagination;
-using OrderingKioskSystem.Application.Menu.Filter;
-using OrderingKioskSystem.Application.Menu;
+using OrderingKioskSystem.Application.Product.Filter;
+using OrderingKioskSystem.Application.Product;
 using OrderingKioskSystemManagement.Api.Controller;
-using SWD.OrderingKioskSystem.Application.Payment;
 using System.Net.Mime;
 using OrderingKioskSystem.Application.Business.GetBusinessByFilter;
 
@@ -34,25 +33,23 @@ namespace OrderingKioskSystemManagement.Api.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> CreateBusiness(
-          [FromBody] CreateBusinessCommand command,
+          [FromForm] CreateBusinessCommand command,
           CancellationToken cancellationToken = default)
         {
             var result = await _mediator.Send(command, cancellationToken);
             return Ok(new JsonResponse<string>(result));
         }
 
-        [HttpPut("{id}")]
+        [HttpPut]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> UpdateBusiness(
-            [FromRoute] string id,
-            [FromBody] UpdateBusinessCommand command,
+            [FromForm] UpdateBusinessCommand command,
             CancellationToken cancellationToken = default)
         {
-            command.Id = id; // Ensure the command has the id
             var result = await _mediator.Send(command, cancellationToken);
             return Ok(new JsonResponse<string>(result));
         }
@@ -80,8 +77,8 @@ namespace OrderingKioskSystemManagement.Api.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<JsonResponse<PagedResult<BusinessDTO>>>> FilterBusiness(
-        [FromQuery] GetBusinessByFilterQuery query,
-        CancellationToken cancellationToken = default)
+            [FromQuery] GetBusinessByFilterQuery query,
+         CancellationToken cancellationToken = default)
         {
             var result = await _mediator.Send(query, cancellationToken);
             return Ok(new JsonResponse<PagedResult<BusinessDTO>>(result));

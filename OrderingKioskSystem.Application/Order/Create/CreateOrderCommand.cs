@@ -3,6 +3,7 @@ using OrderingKioskSystem.Application.Common.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,6 +20,7 @@ namespace OrderingKioskSystem.Application.Order.Create
         
         public string KioskID { get; set; }
         public string? Note {  get; set; }
+        public decimal Total { get; set; } = 0;
         public List<RequestItem> Products { get; set; }
     }
 

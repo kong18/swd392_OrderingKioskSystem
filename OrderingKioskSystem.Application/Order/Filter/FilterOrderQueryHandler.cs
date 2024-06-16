@@ -1,10 +1,7 @@
 ﻿using AutoMapper;
-using Azure.Core;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using OrderingKioskSystem.Application.Common.Pagination;
-using OrderingKioskSystem.Application.Product;
-using OrderingKioskSystem.Domain.Repositories;
 using OrderingKioskSystem.Infrastructure.Persistence;
 using System;
 using System.Collections.Generic;
@@ -27,6 +24,8 @@ namespace OrderingKioskSystem.Application.Order.Filter
         public async Task<PagedResult<OrderDTO>> Handle(FilterOrderQuery request, CancellationToken cancellationToken)
         {
             var query = _context.Orders.AsQueryable();
+
+            query.OrderByDescending(p => p.NgayTao);
 
             if (!string.IsNullOrEmpty(request.KioskID))
             {
@@ -71,6 +70,11 @@ namespace OrderingKioskSystem.Application.Order.Filter
             var items = await query.Skip((request.PageNumber - 1) * request.PageSize)
                                    .Take(request.PageSize)
                                    .ToListAsync(cancellationToken);
+            var pageCount = totalCount / request.PageSize;
+            if (pageCount % request.PageSize >= 1 || pageCount == 0)
+            {
+                pageCount++;
+            }
 
             var dtos = _mapper.Map<List<OrderDTO>>(items);
 
@@ -78,6 +82,7 @@ namespace OrderingKioskSystem.Application.Order.Filter
             {
                 Data = dtos,
                 TotalCount = totalCount,
+                PageCount = pageCount,
                 PageNumber = request.PageNumber,
                 PageSize = request.PageSize
             };

@@ -22,6 +22,7 @@ namespace OrderingKioskSystem.Application.Business
         public string Name { get; set; }
 
         [BindProperty(Name = "bank-account-number")]
+        public string Email { get; set; }
         public string BankAccountNumber { get; set; }
 
         [BindProperty(Name = "bank-account-name")]

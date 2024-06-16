@@ -35,6 +35,7 @@ namespace OrderingKioskSystem.Application.Kiosk.Create
             var kiosk = new KioskEntity
             {
                 NguoiTaoID = _currentUserService.UserId,
+                NgayTao = DateTime.UtcNow.AddHours(7),
                 Location = request.location
             };
 

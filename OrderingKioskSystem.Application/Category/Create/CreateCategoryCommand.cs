@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,13 +10,14 @@ namespace OrderingKioskSystem.Application.Category.Create
 {
     public class CreateCategoryCommand : IRequest<string>
     {
-        public CreateCategoryCommand(string Url, string Name)
+        public CreateCategoryCommand() { }
+        public CreateCategoryCommand(IFormFile imageFile, string name)
         {
-            url = Url;
-            name = Name;
+            ImageFile = imageFile;
+            Name = name;
         }
 
-        public string url { get; set; }
-        public string name { get; set; }
+        public IFormFile ImageFile { get; set; }
+        public string Name { get; set; }
     }
 }

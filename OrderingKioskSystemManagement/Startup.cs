@@ -14,7 +14,7 @@ using OrderingKioskSystemManagement.Application;
 using OrderingKioskSystem.Application.FileUpload;
 using System.IO;
 using SWD.OrderingKioskSystem.Domain.Repositories;
-using SWD.OrderingKioskSystem.Application.QRCode;
+using System.Text.Json;
 
 
 namespace OrderingKioskSystemManagement.Api
@@ -37,8 +37,6 @@ namespace OrderingKioskSystemManagement.Api
             services.AddApplication(Configuration);
             services.ConfigureApplicationSecurity(Configuration);
             services.ConfigureProblemDetails();
-            services.AddHttpClient<IVietQrService, VietQrService>();
-            services.Configure<VietQrOptions>(Configuration.GetSection("VietQr"));
             services.ConfigureApiVersioning();
             services.AddInfrastructure(Configuration);
             services.ConfigureSwagger(Configuration);

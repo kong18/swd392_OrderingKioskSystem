@@ -43,18 +43,16 @@ namespace OrderingKioskSystemManagement.Api.Controller
             return Ok(new JsonResponse<string>(result));
         }
 
-        [HttpPut("{id}")]
+        [HttpPut]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> UpdateKiosk(
-            [FromRoute] string id,
             [FromBody] UpdateKioskCommand command,
             CancellationToken cancellationToken = default)
         {
-            command.Id = id; // Ensure the command has the id
             var result = await _mediator.Send(command, cancellationToken);
             return Ok(new JsonResponse<string>(result));
         }

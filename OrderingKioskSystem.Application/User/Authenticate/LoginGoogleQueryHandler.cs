@@ -1,47 +1,51 @@
 ﻿using AutoMapper;
 using MediatR;
 using OrderingKioskSystem.Application.Common.Interfaces;
+using OrderingKioskSystem.Application.User;
+using OrderingKioskSystem.Application.User.Authenticate;
 using OrderingKioskSystem.Domain.Common.Exceptions;
-using OrderingKioskSystem.Domain.Entities;
 using OrderingKioskSystem.Domain.Repositories;
-using System.Threading;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
-namespace OrderingKioskSystem.Application.User.Authenticate
+namespace SWD.OrderingKioskSystem.Application.User.Authenticate
 {
-    public class LoginQueryHandler : IRequestHandler<LoginQuery, UserLoginDTO>
+    public class LoginGoogleQueryHandler : IRequestHandler<LoginGoogleQuery, UserLoginDTO>
     {
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
 
-        public LoginQueryHandler(IUserRepository userRepository, IMapper mapper)
+        public LoginGoogleQueryHandler(IUserRepository userRepository, IMapper mapper)
         {
             _userRepository = userRepository;
             _mapper = mapper;
         }
 
-        public async Task<UserLoginDTO> Handle(LoginQuery request, CancellationToken cancellationToken)
+        public async Task<UserLoginDTO> Handle(LoginGoogleQuery request, CancellationToken cancellationToken)
         {
             var user = await _userRepository.FindAsync(x => x.Email == request.Email);
 
-            if (user == null || !_userRepository.VerifyPassword(request.Password, user.Password))
+            if (user == null)
             {
-                throw new NotFoundException($"No user found with email - {request.Email} or incorrect password.");
+                throw new NotFoundException("User does not exist!");
             }
 
             var userLoginDto = _mapper.Map<UserLoginDTO>(user);
 
-            if (user.Business != null)
+            if (user?.Business != null)
             {
                 userLoginDto.EntityId = user.Business.ID;
                 userLoginDto.Role = "Business";
             }
-            else if (user.Manager != null)
+            else if (user?.Manager != null)
             {
                 userLoginDto.EntityId = user.Manager.ID;
                 userLoginDto.Role = "Manager";
             }
-            else if (user.Shipper != null)
+            else if (user?.Shipper != null)
             {
                 userLoginDto.EntityId = user.Shipper.ID;
                 userLoginDto.Role = "Shipper";

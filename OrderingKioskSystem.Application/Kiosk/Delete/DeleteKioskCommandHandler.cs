@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using MediatR;
+﻿using MediatR;
 using OrderingKioskSystem.Application.Common.Interfaces;
 using OrderingKioskSystem.Domain.Common.Exceptions;
 using OrderingKioskSystem.Domain.Repositories;
@@ -14,13 +13,11 @@ namespace OrderingKioskSystem.Application.Kiosk.Delete
     public class DeleteKioskCommandHandler : IRequestHandler<DeleteKioskCommand, string>
     {
         private readonly IKioskRepository _repo;
-        private readonly IMapper _mapper;
         private readonly ICurrentUserService _currentUserService;
 
-        public DeleteKioskCommandHandler(IKioskRepository repo, IMapper mapper, ICurrentUserService currentUserService)
+        public DeleteKioskCommandHandler(IKioskRepository repo, ICurrentUserService currentUserService)
         {
             _repo = repo;
-            _mapper = mapper;
             _currentUserService = currentUserService;
         }
 
@@ -45,7 +42,7 @@ namespace OrderingKioskSystem.Application.Kiosk.Delete
             }
 
             entity.NguoiXoaID = userId;
-            entity.NgayXoa = DateTime.Now;
+            entity.NgayXoa = DateTime.UtcNow.AddHours(7);
             _repo.Update(entity);
             await _repo.UnitOfWork.SaveChangesAsync(cancellationToken);
 

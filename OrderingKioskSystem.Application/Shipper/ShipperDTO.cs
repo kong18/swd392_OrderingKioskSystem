@@ -18,6 +18,7 @@ namespace OrderingKioskSystem.Application.Shipper
 
         [BindProperty(Name = "phone")]
         public string Phone { get; set; }
+        public string Email { get; set; }
 
         public void Mapping(Profile profile)
         {

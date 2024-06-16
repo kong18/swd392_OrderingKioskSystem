@@ -2,6 +2,7 @@
 using MediatR;
 using OrderingKioskSystem.Application.Common.Interfaces;
 using OrderingKioskSystem.Application.User.SendEmail;
+using OrderingKioskSystem.Domain.Common.Exceptions;
 using OrderingKioskSystem.Domain.Entities;
 using OrderingKioskSystem.Domain.Repositories;
 using System;
@@ -33,7 +34,7 @@ namespace OrderingKioskSystem.Application.Shipper.CreateShipper
 
             if (userExist)
             {
-                return "User's email exists!";
+                throw new DuplicationException("User's email exists!");
             }
 
             SendMailModel model = new SendMailModel
@@ -60,15 +61,13 @@ namespace OrderingKioskSystem.Application.Shipper.CreateShipper
             {
                 Email = email,
                 NguoiTaoID = _currentUserService.UserId,
-                Name = request.ShipperName,
+                Name = request.Name,
                 Phone = request.Phone,
-                Address = request.Address,
-                User = user
+                Address = request.Address
             };
             _shipperRepository.Add(shipper);
-            await _shipperRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
 
-            return "Create Shipper successfully";
+            return await _shipperRepository.UnitOfWork.SaveChangesAsync(cancellationToken) > 0 ? "Create Shipper successfully" : "Create Shipper Failed!";
         }
     }
 }

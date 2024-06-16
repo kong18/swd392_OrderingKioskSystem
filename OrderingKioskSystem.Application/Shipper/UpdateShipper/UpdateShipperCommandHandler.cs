@@ -40,9 +40,9 @@ namespace OrderingKioskSystem.Application.Shipper.UpdateShipper
                 throw new NotFoundException($"Shipper with Id {request.Id} not found.");
             }
             existingShipper.NguoiCapNhatID = userId;
-            existingShipper.Name = request.ShipperName;
-            existingShipper.Phone = request.Phone;
-            existingShipper.Address = request.Address;
+            existingShipper.Name = request.Name ?? existingShipper.Name;
+            existingShipper.Phone = request.Phone ?? existingShipper.Phone;
+            existingShipper.Address = request.Address ?? existingShipper.Address;
             
            
             existingShipper.NgayCapNhatCuoi = DateTime.UtcNow;

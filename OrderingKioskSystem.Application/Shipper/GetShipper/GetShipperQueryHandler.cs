@@ -1,33 +1,30 @@
 ﻿using AutoMapper;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
-using OrderingKioskSystem.Application.Common.Pagination;
-using OrderingKioskSystem.Application.Product;
-using OrderingKioskSystem.Domain.Repositories;
-using OrderingKioskSystem.Infrastructure.Persistence;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
+using System.Text;
 using System.Threading.Tasks;
+using OrderingKioskSystem.Application.Common.Pagination;
+using Microsoft.EntityFrameworkCore;
+using OrderingKioskSystem.Infrastructure.Persistence;
 
-namespace OrderingKioskSystem.Application.Business.GetBusinessByFilter
+namespace OrderingKioskSystem.Application.Shipper.GetAllShipper
 {
-    public class GetBusinessQueryByFilterHandler : IRequestHandler<GetBusinessByFilterQuery, PagedResult<BusinessDTO>>
+    public class GetAllShipperQueryHandler : IRequestHandler<GetShipperQuery, PagedResult<ShipperDTO>>
     {
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
-
-        public GetBusinessQueryByFilterHandler(ApplicationDbContext context, IMapper mapper)
+        public GetAllShipperQueryHandler(ApplicationDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
         }
 
-        public async Task<PagedResult<BusinessDTO>> Handle(GetBusinessByFilterQuery request, CancellationToken cancellationToken)
+        public async Task<PagedResult<ShipperDTO>> Handle(GetShipperQuery request, CancellationToken cancellationToken)
         {
-            var query = _context.Business.AsQueryable();
+            var query = _context.Shippers.AsQueryable();
 
-            // Apply filtering
             if (!string.IsNullOrEmpty(request.Name))
             {
                 query = query.Where(p => p.Name.Contains(request.Name));
@@ -38,9 +35,14 @@ namespace OrderingKioskSystem.Application.Business.GetBusinessByFilter
                 query = query.Where(p => p.Email.Contains(request.Email));
             }
 
-            if (!string.IsNullOrEmpty(request.BankName))
+            if (!string.IsNullOrEmpty(request.Address))
             {
-                query = query.Where(p => p.BankName.Contains(request.BankName));
+                query = query.Where(p => p.Address.Contains(request.Address));
+            }
+
+            if (!string.IsNullOrEmpty(request.Phone))
+            {
+                query = query.Where(p => p.Phone.Contains(request.Phone));
             }
 
             if (request.SortOrder.HasValue)
@@ -62,9 +64,9 @@ namespace OrderingKioskSystem.Application.Business.GetBusinessByFilter
             {
                 pageCount++;
             }
-            var dtos = _mapper.Map<List<BusinessDTO>>(items);
+            var dtos = _mapper.Map<List<ShipperDTO>>(items);
 
-            return new PagedResult<BusinessDTO>
+            return new PagedResult<ShipperDTO>
             {
                 Data = dtos,
                 TotalCount = totalCount,

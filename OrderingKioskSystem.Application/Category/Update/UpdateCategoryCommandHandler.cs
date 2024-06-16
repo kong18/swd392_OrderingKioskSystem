@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using OrderingKioskSystem.Application.Category.Create;
 using OrderingKioskSystem.Application.Common.Interfaces;
+using OrderingKioskSystem.Application.FileUpload;
 using OrderingKioskSystem.Domain.Entities;
 using OrderingKioskSystem.Domain.Repositories;
 using System;
@@ -15,11 +16,13 @@ namespace OrderingKioskSystem.Application.Category.Update
     {
         private readonly ICategoryRepository _categoryRepository;
         private readonly ICurrentUserService _currentUserService;
+        private readonly FileUploadService _fileUploadService;
 
-        public UpdateCategoryCommandHandler(ICategoryRepository categoryRepository, ICurrentUserService currentUserService)
+        public UpdateCategoryCommandHandler(ICategoryRepository categoryRepository, ICurrentUserService currentUserService, FileUploadService fileUploadService)
         {
             _categoryRepository = categoryRepository;
             _currentUserService = currentUserService;
+            _fileUploadService = fileUploadService;
         }
 
         public async Task<string> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
@@ -31,11 +34,20 @@ namespace OrderingKioskSystem.Application.Category.Update
                 return "Category is not found or deleted";
             }
 
+            string imageUrl = string.Empty;
+            if (request.ImageFile != null)
+            {
+                using (var stream = request.ImageFile.OpenReadStream())
+                {
+                    imageUrl = await _fileUploadService.UploadFileAsync(stream, $"{Guid.NewGuid()}.jpg");
+                }
+            }
+
             categoryExist.Name = request.Name ?? categoryExist.Name;
-            categoryExist.Url = request.Url ?? categoryExist.Url;
+            categoryExist.Url = !string.IsNullOrEmpty(imageUrl) ? imageUrl : categoryExist.Url;
 
             categoryExist.NguoiCapNhatID = _currentUserService.UserId;
-            categoryExist.NgayCapNhat = DateTime.Now;
+            categoryExist.NgayCapNhat = DateTime.UtcNow.AddHours(7);
             _categoryRepository.Update(categoryExist);
 
             return await _categoryRepository.UnitOfWork.SaveChangesAsync(cancellationToken) > 0 ? "Update Success!" : "Update Fail!";

@@ -38,18 +38,16 @@ namespace OrderingKioskSystemManagement.Api.Controllers
             return Ok(new JsonResponse<string>(result));
         }
 
-        [HttpPut("{id}")]
+        [HttpPut]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> UpdateProduct(
-            [FromRoute] string id,
             [FromForm] UpdateProductCommand command,
             CancellationToken cancellationToken = default)
         {
-            command.id = id; // Ensure the command has the id
             var result = await _mediator.Send(command, cancellationToken);
             return Ok(new JsonResponse<string>(result));
         }
@@ -68,8 +66,6 @@ namespace OrderingKioskSystemManagement.Api.Controllers
             return Ok(new JsonResponse<string>(result));
         }
 
-      
-
         [HttpGet("{id}")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -83,7 +79,6 @@ namespace OrderingKioskSystemManagement.Api.Controllers
             var result = await _mediator.Send(new GetProductByIdQuery(id), cancellationToken);
             return Ok(new JsonResponse<ProductDTO>(result));
         }
-
 
         [HttpGet]
         [Produces(MediaTypeNames.Application.Json)]

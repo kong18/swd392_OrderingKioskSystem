@@ -40,7 +40,7 @@ namespace OrderingKioskSystem.Application.Order.Delete
                 await _orderDetailRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
             }
 
-            orderExist.NgayXoa = DateTime.Now;
+            orderExist.NgayXoa = DateTime.UtcNow.AddHours(7);
             orderExist.NguoiXoaID = _currentUserService.UserId;
 
             _orderRepository.Update(orderExist);

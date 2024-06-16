@@ -9,10 +9,17 @@ namespace OrderingKioskSystem.Application.ProductMenu.Delete
 {
     public class DeleteProductMenuCommand : IRequest<string>
     {
-        public DeleteProductMenuCommand(string id)
+        public DeleteProductMenuCommand(string menuID, List<RequestItem> products)
         { 
-            ID = id;
+            MenuID = menuID;
+            Products = products;
         }
-        public string ID { get; set; }
+        public string MenuID { get; set; }
+        public List<RequestItem> Products { get; set; }
+    }
+
+    public class RequestItem
+    {
+        public string ProductID { get; set; }
     }
 }

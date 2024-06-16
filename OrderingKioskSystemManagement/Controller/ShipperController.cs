@@ -1,8 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using OrderingKioskSystem.Application.Business.GetAllBusiness;
+using OrderingKioskSystem.Application.Business;
 using OrderingKioskSystem.Application.Common.Pagination;
-using OrderingKioskSystem.Application.Product.Filter;
-using OrderingKioskSystem.Application.Product;
 using OrderingKioskSystem.Application.Shipper;
 using OrderingKioskSystem.Application.Shipper.CreateShipper;
 using OrderingKioskSystem.Application.Shipper.DeleteShipper;
@@ -39,18 +39,16 @@ namespace OrderingKioskSystemManagement.Api.Controllers
             return Ok(new JsonResponse<string>(result));
         }
 
-        [HttpPut("{id}")]
+        [HttpPut]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> UpdateShipper(
-           [FromRoute] string id,
            [FromBody] UpdateShipperCommand command,
            CancellationToken cancellationToken = default)
         {
-            command.Id = id; // Ensure the command has the id
             var result = await _mediator.Send(command, cancellationToken);
             return Ok(new JsonResponse<string>(result));
         }
@@ -69,7 +67,20 @@ namespace OrderingKioskSystemManagement.Api.Controllers
             return Ok(new JsonResponse<string>(result));
         }
 
-     
+        [HttpGet]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(typeof(JsonResponse<PagedResult<ShipperDTO>>), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<JsonResponse<PagedResult<ShipperDTO>>>> FilterShipper(
+            [FromQuery] GetShipperQuery query,
+         CancellationToken cancellationToken = default)
+        {
+            var result = await _mediator.Send(query, cancellationToken);
+            return Ok(new JsonResponse<PagedResult<ShipperDTO>>(result));
+        }
 
         [HttpGet("{id}")]
         [Produces(MediaTypeNames.Application.Json)]
