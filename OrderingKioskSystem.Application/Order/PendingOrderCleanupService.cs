@@ -35,7 +35,7 @@ namespace SWD.OrderingKioskSystem.Application.Order
                 }
 
                 // Wait for 1 minutes before checking again
-                await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
+                await Task.Delay(TimeSpan.FromMinutes(2), stoppingToken);
             }
         }
 
@@ -44,7 +44,7 @@ namespace SWD.OrderingKioskSystem.Application.Order
             using (var scope = _serviceScopeFactory.CreateScope())
             {
                 var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-                var expirationTime = DateTime.UtcNow.AddHours(7).AddMinutes(-2);
+                var expirationTime = DateTime.UtcNow.AddHours(7).AddMinutes(-5);
 
                 var pendingOrders = context.Orders
                     .Where(o => o.Status == "Pending" && o.NgayTao < expirationTime)
