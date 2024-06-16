@@ -38,7 +38,7 @@ namespace SWD.OrderingKioskSystem.Application.PaymentGateway.Create
 
             var p = new PaymentGatewayEntity
             {
-                Name = request.Name,
+                Name = request.Name.ToLower(),
             };
 
             _paymentGatewayRepository.Add(p);

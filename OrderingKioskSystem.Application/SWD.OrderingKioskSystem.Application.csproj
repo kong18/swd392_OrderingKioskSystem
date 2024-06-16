@@ -8,6 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Payment\Util\**" />
+    <EmbeddedResource Remove="Payment\Util\**" />
+    <None Remove="Payment\Util\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="FirebaseAdmin" Version="3.0.0" />
@@ -38,7 +44,6 @@
 
   <ItemGroup>
     <Folder Include="OrderDetail\NewFolder\" />
-    <Folder Include="Payment\Util\" />
   </ItemGroup>
 
 </Project>

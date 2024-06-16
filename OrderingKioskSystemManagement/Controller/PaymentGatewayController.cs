@@ -1,27 +1,31 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using OrderingKioskSystem.Application.Business;
-using OrderingKioskSystem.Application.Business.CreateBusinessCommand;
-using OrderingKioskSystem.Application.Business.Delete;
-
-using OrderingKioskSystem.Application.Business.GetBusinessById;
-using OrderingKioskSystem.Application.Business.Update;
-using OrderingKioskSystem.Application.Common.Pagination;
-using OrderingKioskSystem.Application.Product.Filter;
-using OrderingKioskSystem.Application.Product;
+using OrderingKioskSystem.Application.Category.Create;
+using OrderingKioskSystem.Application.Category.Delete;
+using OrderingKioskSystem.Application.Category.GetAll;
+using OrderingKioskSystem.Application.Category.GetById;
+using OrderingKioskSystem.Application.Category.Update;
+using OrderingKioskSystem.Application.Category;
 using OrderingKioskSystemManagement.Api.Controller;
 using System.Net.Mime;
 using OrderingKioskSystem.Application.Business.GetBusinessByFilter;
+using OrderingKioskSystem.Application.Business;
+using OrderingKioskSystem.Application.Common.Pagination;
+using SWD.OrderingKioskSystem.Application.PaymentGateway.Create;
+using SWD.OrderingKioskSystem.Application.PaymentGateway.Update;
+using SWD.OrderingKioskSystem.Application.PaymentGateway.Delete;
+using SWD.OrderingKioskSystem.Application.PaymentGateway;
+using SWD.OrderingKioskSystem.Application.PaymentGateway.Filter;
 
-namespace OrderingKioskSystemManagement.Api.Controllers
+namespace SWD.OrderingKioskSystemManagement.Api.Controller
 {
     [ApiController]
-    [Route("api/v1/businesses")]
-    public class BusinessController : ControllerBase
+    [Route("api/v1/payment-gateway")]
+    public class PaymentGatewayController : ControllerBase
     {
         private readonly ISender _mediator;
 
-        public BusinessController(ISender mediator)
+        public PaymentGatewayController(ISender mediator)
         {
             _mediator = mediator;
         }
@@ -32,9 +36,9 @@ namespace OrderingKioskSystemManagement.Api.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> CreateBusiness(
-          [FromForm] CreateBusinessCommand command,
-          CancellationToken cancellationToken = default)
+        public async Task<ActionResult> CreatePaymentGateway(
+           [FromForm] CreatePaymentGatewayCommand command,
+           CancellationToken cancellationToken = default)
         {
             var result = await _mediator.Send(command, cancellationToken);
             return Ok(new JsonResponse<string>(result));
@@ -46,8 +50,8 @@ namespace OrderingKioskSystemManagement.Api.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> UpdateBusiness(
-            [FromForm] UpdateBusinessCommand command,
+        public async Task<ActionResult> UpdatePaymentGateway(
+            [FromForm] UpdatePaymentGatewayCommand command,
             CancellationToken cancellationToken = default)
         {
             var result = await _mediator.Send(command, cancellationToken);
@@ -60,14 +64,13 @@ namespace OrderingKioskSystemManagement.Api.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> DeleteBusiness(
-            [FromRoute] string id,
+        public async Task<ActionResult> DeletePaymentGateway(
+            [FromRoute] int id,
             CancellationToken cancellationToken = default)
         {
-            var result = await _mediator.Send(new DeleteBusinessCommand(id), cancellationToken);
+            var result = await _mediator.Send(new DeletePaymentGatewayCommand(id), cancellationToken);
             return Ok(new JsonResponse<string>(result));
         }
-
 
         [HttpGet]
         [Produces(MediaTypeNames.Application.Json)]
@@ -76,28 +79,12 @@ namespace OrderingKioskSystemManagement.Api.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<JsonResponse<PagedResult<BusinessDTO>>>> FilterBusiness(
-            [FromQuery] GetBusinessByFilterQuery query,
-         CancellationToken cancellationToken = default)
-        {
-            var result = await _mediator.Send(query, cancellationToken);
-            return Ok(new JsonResponse<PagedResult<BusinessDTO>>(result));
-        }
-
-        [HttpGet("{id}")]
-        [Produces(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<BusinessDTO>> GetBusinessById(
-            [FromRoute] string id,
+        public async Task<ActionResult<JsonResponse<PagedResult<PaymentGatewayDTO>>>> FilterPaymentGateway(
+            [FromQuery] FilterPaymentGatewayQuery query,
             CancellationToken cancellationToken = default)
         {
-            var result = await _mediator.Send(new GetBusinessByIdQuery(id), cancellationToken);
-            return Ok(new JsonResponse<BusinessDTO>(result));
+            var result = await _mediator.Send(query, cancellationToken);
+            return Ok(new JsonResponse<PagedResult<PaymentGatewayDTO>>(result));
         }
-
-        
     }
 }
