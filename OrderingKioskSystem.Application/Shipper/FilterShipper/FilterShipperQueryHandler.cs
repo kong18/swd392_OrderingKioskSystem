@@ -44,13 +44,19 @@ namespace SWD.OrderingKioskSystem.Application.Shipper.FilterShipper
             var items = query.Skip((request.PageNumber - 1) * request.PageSize)
                              .Take(request.PageSize)
                              .ToList();
+            var pageCount = totalCount / request.PageSize;
 
+            if (pageCount % request.PageSize >= 1 || pageCount == 0)
+            {
+                pageCount++;
+            }
             var dtos = _mapper.Map<List<ShipperDTO>>(items);
 
             return new PagedResult<ShipperDTO>
             {
                 Data = dtos,
                 TotalCount = totalCount,
+                PageCount = pageCount,
                 PageNumber = request.PageNumber,
                 PageSize = request.PageSize
             };

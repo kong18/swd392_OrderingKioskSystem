@@ -11,7 +11,7 @@ namespace OrderingKioskSystem.Application.Category.Create
     {
         public CreateCategoryCommandValidator()
         {
-            RuleFor(command => command.name)
+            RuleFor(command => command.Name)
                 .NotEmpty().WithMessage("Name can't be empty or null")
                 .MaximumLength(100).WithMessage("Name can't be over 100 words");
 

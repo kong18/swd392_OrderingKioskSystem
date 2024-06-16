@@ -25,29 +25,29 @@ namespace OrderingKioskSystem.Application.Product.Filter
         {
             var query = _context.Products.AsQueryable();
 
-            if (!string.IsNullOrEmpty(request.name))
+            if (!string.IsNullOrEmpty(request.Name))
             {
-                query = query.Where(p => p.Name.Contains(request.name));
+                query = query.Where(p => p.Name.Contains(request.Name));
             }
 
-            if (!string.IsNullOrEmpty(request.code))
+            if (!string.IsNullOrEmpty(request.Code))
             {
-                query = query.Where(p => p.Code.Contains(request.code));
+                query = query.Where(p => p.Code.Contains(request.Code));
             }
 
-            if (request.status.HasValue)
+            if (request.Status.HasValue)
             {
-                query = query.Where(p => p.Status == request.status.Value);
+                query = query.Where(p => p.Status == request.Status.Value);
             }
 
-            if (request.categoryid.HasValue)
+            if (request.CategoryID.HasValue)
             {
-                query = query.Where(p => p.CategoryID == request.categoryid.Value);
+                query = query.Where(p => p.CategoryID == request.CategoryID.Value);
             }
 
-            if (!string.IsNullOrEmpty(request.businessid))
+            if (!string.IsNullOrEmpty(request.BusinessID))
             {
-                query = query.Where(p => p.BusinessID == request.businessid);
+                query = query.Where(p => p.BusinessID == request.BusinessID);
             }
 
             if (request.SortOrder.HasValue)
@@ -60,8 +60,8 @@ namespace OrderingKioskSystem.Application.Product.Filter
 
             // Pagination
             var totalCount = await query.CountAsync(cancellationToken);
-            var items = await query.Skip((request.pagenumber - 1) * request.pagesize)
-                                   .Take(request.pagesize)
+            var items = await query.Skip((request.PageNumber - 1) * request.PageSize)
+                                   .Take(request.PageSize)
                                    .ToListAsync(cancellationToken);
             var pageCount = totalCount / request.PageSize;
             if (pageCount % request.PageSize >= 1 || pageCount == 0)

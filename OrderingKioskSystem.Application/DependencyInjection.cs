@@ -7,7 +7,6 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using OrderingKioskSystem.Application.FileUpload;
 using SWD.OrderingKioskSystem.Domain.Repositories;
-using SWD.OrderingKioskSystem.Application.QRCode;
 using SWD.OrderingKioskSystem.Application.VNPay;
 
 namespace OrderingKioskSystem.Application

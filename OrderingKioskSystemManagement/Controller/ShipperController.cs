@@ -1,7 +1,5 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using OrderingKioskSystem.Application.Business.GetAllBusiness;
-using OrderingKioskSystem.Application.Business;
 using OrderingKioskSystem.Application.Common.Pagination;
 using OrderingKioskSystem.Application.Shipper;
 using OrderingKioskSystem.Application.Shipper.CreateShipper;
@@ -65,21 +63,6 @@ namespace OrderingKioskSystemManagement.Api.Controllers
         {
             var result = await _mediator.Send(new DeleteShipperCommand(id), cancellationToken);
             return Ok(new JsonResponse<string>(result));
-        }
-
-        [HttpGet]
-        [Produces(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(typeof(JsonResponse<PagedResult<ShipperDTO>>), StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<JsonResponse<PagedResult<ShipperDTO>>>> FilterShipper(
-            [FromQuery] GetShipperQuery query,
-         CancellationToken cancellationToken = default)
-        {
-            var result = await _mediator.Send(query, cancellationToken);
-            return Ok(new JsonResponse<PagedResult<ShipperDTO>>(result));
         }
 
         [HttpGet("{id}")]

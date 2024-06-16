@@ -28,7 +28,7 @@ namespace OrderingKioskSystem.Application.Category.Create
 
         public async Task<string> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
         {
-            bool categoryExist = await _categoryRepository.AnyAsync(x => x.Name == request.name, cancellationToken);
+            bool categoryExist = await _categoryRepository.AnyAsync(x => x.Name == request.Name, cancellationToken);
 
             if (categoryExist)
             {

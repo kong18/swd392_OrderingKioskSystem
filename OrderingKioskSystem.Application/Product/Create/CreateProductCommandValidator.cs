@@ -11,23 +11,23 @@ namespace OrderingKioskSystem.Application.Product.Create
     {
         public CreateProductCommandValidator() 
         {
-            RuleFor(command => command.name)
+            RuleFor(command => command.Name)
                 .NotEmpty().WithMessage("Name can't be empty or null")
                 .MaximumLength(100).WithMessage("Name can't be over 100 words");
 
-            RuleFor(command => command.code)
+            RuleFor(command => command.Code)
                 .NotEmpty().WithMessage("Code can't be empty or null");
 
           
-            RuleFor(command => command.description)
+            RuleFor(command => command.Description)
                 .NotEmpty().WithMessage("Description can't be empty or null")
                 .MaximumLength(150).WithMessage("Description can't be over 150 words");
 
-            RuleFor(command => command.price)
+            RuleFor(command => command.Price)
                 .NotEmpty().WithMessage("Price can't be empty or null")
                 .GreaterThan(0).WithMessage("Price must be greater than 0");
 
-            RuleFor(command => command.categoryname)
+            RuleFor(command => command.CategoryName)
                 .NotEmpty().WithMessage("CategoryID can't be empty or null");
         }
     }
