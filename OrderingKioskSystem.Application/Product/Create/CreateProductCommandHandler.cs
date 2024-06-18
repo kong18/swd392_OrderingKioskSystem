@@ -37,7 +37,7 @@ namespace OrderingKioskSystem.Application.Product.Create
                 throw new NotFoundException("Category does not exist");
             }
 
-            var businessID = "2a1a9d847bcd4eefb9b03a97be71675d";
+            var businessID = _currentUserService.UserId;
 
             bool businessExist = await _businessRepository.AnyAsync(x => x.ID == businessID  &&  !x.NgayXoa.HasValue, cancellationToken);
 

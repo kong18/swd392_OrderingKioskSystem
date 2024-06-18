@@ -59,6 +59,21 @@ public class ApplicationDbContext : DbContext, IUnitOfWork
     private void ConfigureModel(ModelBuilder modelBuilder)
     {
 
+        var user = new UserEntity
+        {
+            Email = "hhson365@gmail.com",
+            Password = BCrypt.Net.BCrypt.HashPassword("123456"),
+            Role = "Manager"
+        };
 
+        var manager = new ManagerEntity
+        {
+            Name = "Robin Son",
+            Phone = "1234567890",
+            Email = "hhson365@gmail.com" // Same email as user
+        };
+
+        modelBuilder.Entity<UserEntity>().HasData(user);
+        modelBuilder.Entity<ManagerEntity>().HasData(manager);
     }
 }

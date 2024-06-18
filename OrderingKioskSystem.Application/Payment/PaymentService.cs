@@ -46,7 +46,7 @@ namespace SWD.OrderingKioskSystem.Application.Payment
                 ID = response.PaymentId,
                 TransactionId = response.TransactionId,
                 OrderID = response.OrderId,
-                Amount = response.Amount,
+                Amount = response.Amount/100,
                 PaymentGatewayID = paymentGateway.ID,
                 Token = response.Token,
                 PaymentDate = DateTime.UtcNow

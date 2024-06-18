@@ -12,7 +12,6 @@ namespace OrderingKioskSystem.Domain.Entities
     [Table("Manager/Staff")]
     public class ManagerEntity : Entity
     {
-       
         public string Name { get; set; }
         public string Phone { get; set; }
         public required string Email { get; set; }
