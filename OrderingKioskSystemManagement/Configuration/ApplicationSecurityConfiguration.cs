@@ -35,9 +35,9 @@ namespace OrderingKioskSystemManagement.Api.Configuration
                     ValidateIssuer = false,
                     ValidateIssuerSigningKey = true,
                     ValidateLifetime = true,
-                    ValidIssuer = configuration.GetSection("Security.Bearer:Authority").Get<string>(),
-                    ValidAudience = configuration.GetSection("Security.Bearer:Audience").Get<string>(),
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("this is my custom Secret key for authentication")),
+                    ValidIssuer = configuration["JwtSettings:Issuer"],
+                    ValidAudience = configuration["JwtSettings:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("from sonhohuu deptrai6mui with love")),
                 };
             })
             .AddGoogle(options =>
@@ -57,7 +57,11 @@ namespace OrderingKioskSystemManagement.Api.Configuration
         {
             // Configure policies and other authorization options here. For example:
             // options.AddPolicy("EmployeeOnly", policy => policy.RequireClaim("role", "employee"));
-            // options.AddPolicy("AdminOnly", policy => policy.RequireClaim("role", "Admin"));
+            options.AddPolicy("Business", policy =>
+            {
+                policy.RequireAuthenticatedUser();
+                policy.RequireClaim("role", "Business");
+            });
         }
     }
 }
