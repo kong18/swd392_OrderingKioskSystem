@@ -12,6 +12,7 @@ using OrderingKioskSystem.Application.Product;
 using OrderingKioskSystemManagement.Api.Controller;
 using System.Net.Mime;
 using OrderingKioskSystem.Application.Business.GetBusinessByFilter;
+using Microsoft.AspNetCore.Authorization;
 
 namespace OrderingKioskSystemManagement.Api.Controllers
 {
@@ -26,7 +27,9 @@ namespace OrderingKioskSystemManagement.Api.Controllers
             _mediator = mediator;
         }
 
+        
         [HttpPost]
+        [Authorize(Roles = "Business")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]

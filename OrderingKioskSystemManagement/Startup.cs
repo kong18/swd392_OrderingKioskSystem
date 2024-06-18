@@ -10,7 +10,6 @@ using System.IO;
 using System.Text.Json;
 using SWD.OrderingKioskSystem.Application.Order;
 
-
 namespace OrderingKioskSystemManagement.Api
 {
     public class Startup
@@ -59,10 +58,6 @@ namespace OrderingKioskSystemManagement.Api
             {
                 throw new ArgumentNullException(nameof(firebaseConfig), "FirebaseConfig section is missing in configuration.");
             }
-
-           
-           
-
 
             services.AddSingleton(firebaseConfig);
             services.AddSingleton<FileUploadService>();

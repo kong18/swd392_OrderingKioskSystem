@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OrderingKioskSystem.Application.Common.Pagination;
 using OrderingKioskSystem.Application.Product;
@@ -25,6 +26,8 @@ namespace OrderingKioskSystemManagement.Api.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Business")]
+
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]

@@ -18,7 +18,7 @@ namespace OrderingKioskSystemManagement.Api.Services
                 new(ClaimTypes.Role, role)
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("this is my custom Secret key for authentication"));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("from sonhohuu deptrai6mui with love"));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
@@ -37,7 +37,7 @@ namespace OrderingKioskSystemManagement.Api.Services
                 new(ClaimTypes.Role, roles)
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("this is my custom Secret key for authentication"));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("from sonhohuu deptrai6mui with love"));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
