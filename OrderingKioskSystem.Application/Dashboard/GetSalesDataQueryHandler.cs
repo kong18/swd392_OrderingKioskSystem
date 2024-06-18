@@ -2,10 +2,8 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using OrderingKioskSystem.Infrastructure.Persistence;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SWD.OrderingKioskSystem.Application.Dashboard
@@ -24,24 +22,34 @@ namespace SWD.OrderingKioskSystem.Application.Dashboard
         public async Task<SalesDataDTO> Handle(GetSalesDataQuery request, CancellationToken cancellationToken)
         {
             // Fetching menus and calculating total sales
-            var menus = await _context.Menus
-                .Include(m => m.ProductMenus)
-                    .ThenInclude(pm => pm.Product)
-                        .ThenInclude(p => p.OrderDetails)
-                .Select(m => new MenuSalesDTO
+            var menuSales = await _context.Menus
+                .Select(m => new
                 {
-                    Label = m.Name,
-                    Value = m.ProductMenus.Sum(pm => pm.Product.OrderDetails.Sum(od => od.Quantity * od.Price))
+                    m.Name,
+                    TotalSales = m.ProductMenus
+                        .SelectMany(pm => pm.Product.OrderDetails)
+                        .Sum(od => od.Quantity * od.Price)
                 }).ToListAsync(cancellationToken);
 
+            var menus = menuSales.Select(ms => new MenuSalesDTO
+            {
+                Label = ms.Name,
+                Value = ms.TotalSales
+            }).ToList();
+
             // Fetching products and calculating total amount sold
-            var products = await _context.Products
-                .Include(p => p.OrderDetails)
-                .Select(p => new ProductSalesDTO
+            var productSales = await _context.Products
+                .Select(p => new
                 {
-                    Label = p.Name,
-                    Value = p.OrderDetails.Sum(od => od.Quantity)
+                    p.Name,
+                    TotalAmountSold = p.OrderDetails.Sum(od => od.Quantity)
                 }).ToListAsync(cancellationToken);
+
+            var products = productSales.Select(ps => new ProductSalesDTO
+            {
+                Label = ps.Name,
+                Value = ps.TotalAmountSold
+            }).ToList();
 
             return new SalesDataDTO
             {
