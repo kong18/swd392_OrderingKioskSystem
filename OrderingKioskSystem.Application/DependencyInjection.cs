@@ -8,6 +8,7 @@ using System.Reflection;
 using OrderingKioskSystem.Application.FileUpload;
 using SWD.OrderingKioskSystem.Domain.Repositories;
 using SWD.OrderingKioskSystem.Application.VNPay;
+using SWD.OrderingKioskSystem.Application.Payment;
 
 namespace OrderingKioskSystem.Application
 {
@@ -29,6 +30,7 @@ namespace OrderingKioskSystem.Application
             services.AddScoped<IValidatorProvider, ValidatorProvider>();
             services.AddTransient<FileUploadService>();
             services.AddScoped<IVnPayService, VnPayService>();
+            services.AddScoped<IPaymentService, PaymentService>();
 
             return services;
         }

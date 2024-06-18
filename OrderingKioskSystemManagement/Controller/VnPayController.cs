@@ -1,12 +1,11 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using SWD.OrderingKioskSystem.Application.VNPay;
 using System.Threading.Tasks;
 using OrderingKioskSystem.Application.Order.Create;
 using System.Net.Mime;
 using MediatR;
 using OrderingKioskSystem.Domain.Repositories;
-using OrderingKioskSystem.Domain.Common.Exceptions;
+using SWD.OrderingKioskSystem.Application.Payment;
 
 namespace SWD.OrderingKioskSystemManagement.Api.Controller
 {
@@ -18,13 +17,15 @@ namespace SWD.OrderingKioskSystemManagement.Api.Controller
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IOrderRepository _orderRepository;
         private readonly ISender _mediator;
+        private readonly IPaymentService _paymentService;
 
-        public VNPayController(IVnPayService vnPayService, IHttpContextAccessor httpContextAccessor, IOrderRepository orderRepository, ISender mediator)
+        public VNPayController(IVnPayService vnPayService, IHttpContextAccessor httpContextAccessor, IOrderRepository orderRepository, ISender mediator, IPaymentService paymentService)
         {
             _vnPayService = vnPayService;
             _httpContextAccessor = httpContextAccessor;
             _mediator = mediator;
             _orderRepository = orderRepository;
+            _paymentService = paymentService;
         }
 
         [HttpPost]
@@ -57,6 +58,8 @@ namespace SWD.OrderingKioskSystemManagement.Api.Controller
                 {
                     return BadRequest(new { message = "Payment failed! Order is not found or expired." });
                 }
+
+                await _paymentService.SavePaymentAsync(response);
 
                 response.Amount /= 100;
 
