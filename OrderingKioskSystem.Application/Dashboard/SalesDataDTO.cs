@@ -8,7 +8,8 @@ namespace SWD.OrderingKioskSystem.Application.Dashboard
 {
     public class SalesDataDTO
     {
-        public List<MenuSalesDTO> Menus { get; set; }
-        public List<ProductSalesDTO> Products { get; set; }
+        public List<MenuSalesDTO> DailySales { get; set; }
+        public List<PopularCategorySalesDTO> PopularCategorySales { get; set; }
+        public List<ProductSalesDTO> ProductSales { get; set; }
     }
 }

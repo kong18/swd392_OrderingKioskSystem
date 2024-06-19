@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace SWD.OrderingKioskSystem.Application.Dashboard
 {
-    public class ProductSalesDTO
+    public class PopularCategorySalesDTO
     {
-        public string Name { get; set; }
+        public string Category { get; set; }
         public decimal TotalSales { get; set; }
-        public int TotalOrders { get; set; }
     }
 }

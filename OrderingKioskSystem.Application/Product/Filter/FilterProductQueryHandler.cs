@@ -23,7 +23,9 @@ namespace OrderingKioskSystem.Application.Product.Filter
 
         public async Task<PagedResult<ProductDTO>> Handle(FilterProductQuery request, CancellationToken cancellationToken)
         {
-            var query = _context.Products.AsQueryable();
+            var query = _context.Products
+                  .Include(p => p.Business)
+                  .AsQueryable();
 
             if (!string.IsNullOrEmpty(request.Name))
             {
