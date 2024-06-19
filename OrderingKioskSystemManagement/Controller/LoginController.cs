@@ -36,7 +36,11 @@ namespace OrderingKioskSystemManagement.Api.Controllers
         {
             var result = await _mediator.Send(query, cancellationToken);
             var token = _jwtService.CreateToken(result.EntityId, result.Role, result.Email);
-            return Ok(new JsonResponse<string>(token));
+            return Ok(new JsonResponse<object>(new
+            {
+                token = token,
+                role = result.Role
+            }));
         }
 
         [HttpPost("login-with-google")]
@@ -48,7 +52,10 @@ namespace OrderingKioskSystemManagement.Api.Controllers
         {
             var result = await _mediator.Send(query, cancellationToken);
             var token = _jwtService.CreateToken(result.EntityId, result.Role, result.Email);
-            return Ok(new JsonResponse<string>(token));
+            return Ok(new JsonResponse<object>(new { 
+                token = token,
+                role = result.Role
+            }));
         }
 
 
