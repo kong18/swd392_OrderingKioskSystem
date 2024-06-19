@@ -29,6 +29,7 @@ namespace OrderingKioskSystemManagement.Api.Services
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
+       
         public string CreateToken(string email, string roles)
         {
             var claims = new List<Claim>
@@ -43,6 +44,19 @@ namespace OrderingKioskSystemManagement.Api.Services
             var token = new JwtSecurityToken(
                 claims: claims,
                 expires: DateTime.Now.AddDays(1),
+                signingCredentials: creds);
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        public string CreateToken(string Id)
+        {
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("this is my custom Secret key for authentication"));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+
+                expires: DateTime.Now.AddDays(60),
                 signingCredentials: creds);
 
             return new JwtSecurityTokenHandler().WriteToken(token);

@@ -39,7 +39,7 @@ namespace OrderingKioskSystem.Application.Product.Create
 
             var businessID = _currentUserService.UserId;
 
-            bool businessExist = await _businessRepository.AnyAsync(x => x.ID == businessID  &&  !x.NgayXoa.HasValue, cancellationToken);
+            bool businessExist = await _businessRepository.AnyAsync(x => x.ID == businessID && !x.NgayXoa.HasValue, cancellationToken);
 
             if (!businessExist)
             {
@@ -47,7 +47,7 @@ namespace OrderingKioskSystem.Application.Product.Create
             }
 
             bool productExists = await _productRepository.AnyAsync(
-                x => x.Name == request.Name && x.BusinessID ==  businessID && !x.NgayXoa.HasValue, cancellationToken);
+                x => x.Name == request.Name && x.BusinessID == businessID && !x.NgayXoa.HasValue, cancellationToken);
 
             if (productExists)
             {
@@ -64,12 +64,15 @@ namespace OrderingKioskSystem.Application.Product.Create
                 }
             }
 
+            // Generate the product code based on the category
+            string productCode = GenerateProductCode(categoryExist.Name);
+
             var p = new ProductEntity
             {
                 Name = request.Name,
                 Url = imageUrl, // Set the URL to the uploaded image URL
                 Description = request.Description,
-                Code = request.Code,
+                Code = productCode,
                 Price = request.Price,
                 Status = request.Status,
                 CategoryID = categoryExist.ID,
@@ -80,6 +83,22 @@ namespace OrderingKioskSystem.Application.Product.Create
             _productRepository.Add(p);
 
             return await _productRepository.UnitOfWork.SaveChangesAsync(cancellationToken) > 0 ? "Create Success!" : "Create Fail!";
+        }
+
+        private string GenerateProductCode(string categoryName)
+        {
+            string prefix = categoryName.ToLower() switch
+            {
+                "food" => "F",
+                "drink" => "D",
+                _ => "X" // Default prefix if the category is not recognized
+            };
+
+            // Generate a random 5-digit number
+            Random random = new Random();
+            int randomNumber = random.Next(10000, 99999);
+
+            return $"{prefix}{randomNumber}";
         }
     }
 }

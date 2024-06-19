@@ -46,7 +46,6 @@ namespace OrderingKioskSystem.Application.User.Commands
                     var business = new BusinessEntity
                     {
                         Email = request.Email,
-                        BinId =0000000,
                         Name = "Default Business Name",
                         BankAccountNumber = "0000000000",
                         BankAccountName = "Default Bank Account",

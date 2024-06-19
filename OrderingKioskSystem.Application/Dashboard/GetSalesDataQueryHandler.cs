@@ -2,10 +2,8 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using OrderingKioskSystem.Infrastructure.Persistence;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SWD.OrderingKioskSystem.Application.Dashboard
@@ -23,30 +21,55 @@ namespace SWD.OrderingKioskSystem.Application.Dashboard
 
         public async Task<SalesDataDTO> Handle(GetSalesDataQuery request, CancellationToken cancellationToken)
         {
-            // Fetching menus and calculating total sales
-            var menus = await _context.Menus
-                .Include(m => m.ProductMenus)
-                    .ThenInclude(pm => pm.Product)
-                        .ThenInclude(p => p.OrderDetails)
-                .Select(m => new MenuSalesDTO
+            // Fetching menu sales data
+            var menuSales = await _context.Menus
+                .Select(m => new
                 {
-                    Label = m.Name,
-                    Value = m.ProductMenus.Sum(pm => pm.Product.OrderDetails.Sum(od => od.Quantity * od.Price))
+                    m.Name,
+                    TotalSales = m.ProductMenus
+                        .SelectMany(pm => pm.Product.OrderDetails)
+                        .Select(od => od.Quantity * od.UnitPrice)
+                        .Sum()
                 }).ToListAsync(cancellationToken);
 
-            // Fetching products and calculating total amount sold
-            var products = await _context.Products
-                .Include(p => p.OrderDetails)
-                .Select(p => new ProductSalesDTO
+            var dailySales = menuSales.Select(ms => new MenuSalesDTO
+            {
+                Label = ms.Name,
+                Value = ms.TotalSales
+            }).ToList();
+
+            // Fetching popular category sales
+            var popularCategorySales = await _context.Products
+                .GroupBy(p => p.Category.Name)
+                .Select(g => new PopularCategorySalesDTO
                 {
-                    Label = p.Name,
-                    Value = p.OrderDetails.Sum(od => od.Quantity)
+                    Category = g.Key,
+                    TotalSales = g.SelectMany(p => p.OrderDetails)
+                                  .Select(od => od.Quantity * od.UnitPrice)
+                                  .Sum()
                 }).ToListAsync(cancellationToken);
+
+            // Fetching product sales data
+            var productSales = await _context.Products
+                .Select(p => new
+                {
+                    p.Name,
+                    TotalSales = p.OrderDetails.Sum(od => od.Quantity * od.UnitPrice),
+                    TotalOrders = p.OrderDetails.Sum(od => od.Quantity)
+                }).ToListAsync(cancellationToken);
+
+            var products = productSales.Select(ps => new ProductSalesDTO
+            {
+                Name = ps.Name,
+                TotalSales = ps.TotalSales,
+                TotalOrders = ps.TotalOrders
+            }).ToList();
 
             return new SalesDataDTO
             {
-                Menus = menus,
-                Products = products
+                DailySales = dailySales,
+                PopularCategorySales = popularCategorySales,
+                ProductSales = products
             };
         }
     }

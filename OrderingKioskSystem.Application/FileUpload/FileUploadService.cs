@@ -3,10 +3,7 @@ using Google.Apis.Auth.OAuth2;
 using OrderingKioskSystemManagement.Application;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Jpeg;
-using SixLabors.ImageSharp.Processing;
-using System;
-using System.IO;
-using System.Threading.Tasks;
+
 
 namespace OrderingKioskSystem.Application.FileUpload
 {
