@@ -11,6 +11,7 @@ using System.Net.Mime;
 using Microsoft.AspNetCore.Authorization;
 using Serilog;
 using SWD.OrderingKioskSystem.Application.User.Authenticate;
+using SWD.OrderingKioskSystem.Application.Kiosk.Login;
 
 namespace OrderingKioskSystemManagement.Api.Controllers
 {
@@ -57,6 +58,15 @@ namespace OrderingKioskSystemManagement.Api.Controllers
                 role = result.Role
             }));
         }
+
+        [HttpPost("login-kiosk")]
+        public async Task<IActionResult> Login([FromBody] KioskLoginCommand command)
+        {
+            var token = await _mediator.Send(command);
+            return Ok(new { Token = token });
+        }
+
+
 
 
         //[HttpGet]
