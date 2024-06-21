@@ -15,6 +15,10 @@ namespace OrderingKioskSystem.Application.Kiosk
         [Required]
         public string Location { get; set; }
 
+        public string Code { get; set; }
+
+        public int PIN { get; set; }
+
         public void Mapping(Profile profile)
         {
             profile.CreateMap<KioskEntity, KioskDTO>();

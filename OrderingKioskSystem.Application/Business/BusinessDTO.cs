@@ -15,15 +15,12 @@ namespace OrderingKioskSystem.Application.Business
         [BindProperty(Name = "url")]
         public string Url { get; set; }
 
-        [BindProperty(Name = "bin-id")]
-        public string BinId { get; set; }
-
         [BindProperty(Name = "name")]
         public string Name { get; set; }
 
         [BindProperty(Name = "bank-account-number")]
         public string Email { get; set; }
-        public string BankAccountNumber { get; set; }
+        public int BankAccountNumber { get; set; }
 
         [BindProperty(Name = "bank-account-name")]
         public string BankAccountName { get; set; }

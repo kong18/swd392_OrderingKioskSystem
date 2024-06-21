@@ -11,8 +11,18 @@ namespace OrderingKioskSystem.Application.Kiosk.Update
 {
     public class UpdateKioskCommand : IRequest<string>, ICommand
     {
+        public UpdateKioskCommand(string id, string? location, string? code, int? pin)
+        {
+            Id = id;
+            Location = location;
+            Code = code;
+            PIN = pin;
+        }
+
         public string Id { get; set; } // Use this as the primary key
-        public string location { get; set; }  
+        public string? Location { get; set; }  
+        public string? Code { get; set; }
+        public int? PIN { get; set; }
         
     }
 }

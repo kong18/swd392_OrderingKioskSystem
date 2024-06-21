@@ -11,9 +11,6 @@ namespace OrderingKioskSystem.Application.Business.CreateBusinessCommand
                 .NotEmpty().WithMessage("Email can't be empty or null")
                 .EmailAddress().WithMessage("Not type of Email");
 
-            RuleFor(x => x.BinId)
-                .GreaterThan(0).WithMessage("BinID must be greater than zero");
-
             RuleFor(x => x.ImageFile)
                 .NotEmpty().WithMessage("URL can't be empty");
 
@@ -23,7 +20,7 @@ namespace OrderingKioskSystem.Application.Business.CreateBusinessCommand
 
             RuleFor(x => x.BankAccountNumber)
                 .NotEmpty().WithMessage("Bank Account Number can't be empty")
-                .Matches(@"^\d+$").WithMessage("Bank Account Number must be numeric");
+                .GreaterThan(0).WithMessage("Bank Account Number must be a numberic");
 
             RuleFor(x => x.BankAccountName)
                 .NotEmpty().WithMessage("Bank Account Name can't be empty")

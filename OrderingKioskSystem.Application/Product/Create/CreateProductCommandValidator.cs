@@ -27,7 +27,7 @@ namespace OrderingKioskSystem.Application.Product.Create
                 .NotEmpty().WithMessage("Price can't be empty or null")
                 .GreaterThan(0).WithMessage("Price must be greater than 0");
 
-            RuleFor(command => command.CategoryName)
+            RuleFor(command => command.CategoryID)
                 .NotEmpty().WithMessage("CategoryID can't be empty or null");
 
             RuleFor(x => x.ImageFile)

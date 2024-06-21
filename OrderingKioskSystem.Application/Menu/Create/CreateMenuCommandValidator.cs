@@ -10,7 +10,7 @@ namespace OrderingKioskSystem.Application.Menu.Create
 {
     public class CreateMenuCommandValidator : AbstractValidator<CreateMenuCommand>
     {
-        private readonly string[] validTypes = { "Morning", "Aternoon", "Evening" };
+        private readonly string[] validTypes = { "Morning", "Afternoon", "Evening" };
         public CreateMenuCommandValidator() 
         {
                 RuleFor(command => command.Name)

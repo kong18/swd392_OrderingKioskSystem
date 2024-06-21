@@ -13,8 +13,18 @@ namespace OrderingKioskSystem.Application.Kiosk.Create
         public CreateKioskValidator()
         {
 
-            RuleFor(command => command.location)
-                .NotEmpty().WithMessage("Location is required.");
+            RuleFor(command => command.Location)
+                .NotEmpty().WithMessage("Location is required.")
+                .Matches("^[a-zA-Z0-9]*$").WithMessage("Location must be alphanumeric.");
+
+            RuleFor(command => command.Code)
+                .NotEmpty().WithMessage("Code is required.")
+                .MinimumLength(5).WithMessage("Code must be at least 5 characters long.")
+                .Matches("^[a-zA-Z0-9]*$").WithMessage("Code must be alphanumeric.");
+
+            RuleFor(command => command.PIN)
+                .NotEmpty().WithMessage("PIN is required")
+                .Must(pin => pin >= 100000 && pin <= 999999).WithMessage("PIN must be a 6-digit number.");
 
         }
     }
