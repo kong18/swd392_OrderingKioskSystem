@@ -12,6 +12,8 @@ namespace OrderingKioskSystem.Domain.Entities
     public class KioskEntity : Entity
     {
         public required string Location { get; set; }
+        public required string Code { get; set; }
+        public required int PIN { get; set; }
         public virtual ICollection<OrderEntity> Order { get; set; }
     }
 }

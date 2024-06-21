@@ -58,12 +58,18 @@ public class ApplicationDbContext : DbContext, IUnitOfWork
     }
     private void ConfigureModel(ModelBuilder modelBuilder)
     {
-
         var user = new UserEntity
         {
             Email = "hhson365@gmail.com",
             Password = BCrypt.Net.BCrypt.HashPassword("123456"),
             Role = "Manager"
+        };
+
+        var user1 = new UserEntity
+        {
+            Email = "sonhhse172307@fpt.edu.vn",
+            Password = BCrypt.Net.BCrypt.HashPassword("123456"),
+            Role = "Business"
         };
 
         var manager = new ManagerEntity
@@ -73,7 +79,27 @@ public class ApplicationDbContext : DbContext, IUnitOfWork
             Email = "hhson365@gmail.com" // Same email as user
         };
 
+        var business = new BusinessEntity
+        {
+            Name = "Son Of The ...",
+            Url = "https://firebasestorage.googleapis.com/v0/b/oderingkiosksystem.appspot.com/o/uploads%2F5dc9a5e5-ee95-4b31-9ca5-cb8b4cb1c120.jpg?alt=media&token=9b6f02db-62fd-488a-9234-efbcf3070265",
+            BankAccountName = "Ho Huu Son",
+            BankAccountNumber = 123456,
+            BankName = "Techcombank",
+            Email = "sonhhse172307@fpt.edu.vn" // Same email as user
+        };
+
+        var categories = new List<CategoryEntity>
+        {
+            new CategoryEntity { ID = 1, Name = "Soft Drinks", Url = "https://firebasestorage.googleapis.com/v0/b/oderingkiosksystem.appspot.com/o/uploads%2F40b64192-e4de-438f-9f6b-23b37888bf01.jpg?alt=media&token=5869429c-83c1-4fd8-b6be-e962dea9e1cc" },
+            new CategoryEntity { ID = 2, Name = "Tea & Coffee", Url = "https://firebasestorage.googleapis.com/v0/b/oderingkiosksystem.appspot.com/o/uploads%2F40b64192-e4de-438f-9f6b-23b37888bf01.jpg?alt=media&token=5869429c-83c1-4fd8-b6be-e962dea9e1cc" },
+            new CategoryEntity { ID = 3, Name = "Sports & Energy Drinks", Url = "https://firebasestorage.googleapis.com/v0/b/oderingkiosksystem.appspot.com/o/uploads%2F40b64192-e4de-438f-9f6b-23b37888bf01.jpg?alt=media&token=5869429c-83c1-4fd8-b6be-e962dea9e1cc" },
+        };
+
         modelBuilder.Entity<UserEntity>().HasData(user);
+        modelBuilder.Entity<UserEntity>().HasData(user1);
         modelBuilder.Entity<ManagerEntity>().HasData(manager);
+        modelBuilder.Entity<BusinessEntity>().HasData(business);
+        modelBuilder.Entity<CategoryEntity>().HasData(categories.ToArray());
     }
 }

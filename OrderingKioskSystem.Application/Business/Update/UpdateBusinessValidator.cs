@@ -13,7 +13,7 @@ namespace OrderingKioskSystem.Application.Business.Update
                 .MaximumLength(100).WithMessage("Name can't be longer than 100 characters");
 
             RuleFor(x => x.BankAccountNumber)
-                .Matches(@"^\d+$").WithMessage("Bank Account Number must be numeric");
+                .GreaterThan(0).WithMessage("Bank Account Number must be numeric");
 
             RuleFor(x => x.BankAccountName)
                 .MaximumLength(100).WithMessage("Bank Account Name can't be longer than 100 characters");

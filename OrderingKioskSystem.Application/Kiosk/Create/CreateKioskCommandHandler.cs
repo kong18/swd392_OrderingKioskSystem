@@ -14,12 +14,10 @@ namespace OrderingKioskSystem.Application.Kiosk.Create
 {
     public class CreateKioskCommandHandler : IRequestHandler<CreateKioskCommand, string>
     {
-        private readonly IMapper _mapper;
         private readonly IKioskRepository _repository;
         private readonly ICurrentUserService _currentUserService;
-        public CreateKioskCommandHandler(IMapper mapper, IKioskRepository repository, ICurrentUserService currentUserService)
+        public CreateKioskCommandHandler(IKioskRepository repository, ICurrentUserService currentUserService)
         {
-            _mapper = mapper;
             _repository = repository;
             _currentUserService = currentUserService;
         }
@@ -36,7 +34,10 @@ namespace OrderingKioskSystem.Application.Kiosk.Create
             {
                 NguoiTaoID = _currentUserService.UserId,
                 NgayTao = DateTime.UtcNow.AddHours(7),
-                Location = request.location
+
+                Location = request.Location,
+                Code = request.Code,
+                PIN = request.PIN
             };
 
             _repository.Add(kiosk);

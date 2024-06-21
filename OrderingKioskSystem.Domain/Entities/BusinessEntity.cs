@@ -13,7 +13,7 @@ namespace OrderingKioskSystem.Domain.Entities
     {
         public required string Url { get; set; }
         public required string Name { get; set; }
-        public required string BankAccountNumber { get; set; }
+        public required int BankAccountNumber { get; set; }
         public required string BankAccountName { get; set; }
         public required string BankName { get; set; }
         public virtual ICollection<MenuEntity> Menus { get; set; }

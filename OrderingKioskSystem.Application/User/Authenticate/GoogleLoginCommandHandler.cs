@@ -47,7 +47,7 @@ namespace OrderingKioskSystem.Application.User.Commands
                     {
                         Email = request.Email,
                         Name = "Default Business Name",
-                        BankAccountNumber = "0000000000",
+                        BankAccountNumber = 000000000,
                         BankAccountName = "Default Bank Account",
                         BankName = "Default Bank",
                         Url = "http://default.url"
