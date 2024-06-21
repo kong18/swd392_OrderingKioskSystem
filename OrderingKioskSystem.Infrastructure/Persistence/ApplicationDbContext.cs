@@ -96,6 +96,7 @@ public class ApplicationDbContext : DbContext, IUnitOfWork
             new CategoryEntity { ID = 3, Name = "Sports & Energy Drinks", Url = "https://firebasestorage.googleapis.com/v0/b/oderingkiosksystem.appspot.com/o/uploads%2F40b64192-e4de-438f-9f6b-23b37888bf01.jpg?alt=media&token=5869429c-83c1-4fd8-b6be-e962dea9e1cc" },
         };
 
+
         modelBuilder.Entity<UserEntity>().HasData(user);
         modelBuilder.Entity<UserEntity>().HasData(user1);
         modelBuilder.Entity<ManagerEntity>().HasData(manager);

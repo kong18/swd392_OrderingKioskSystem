@@ -30,7 +30,7 @@ namespace SWD.OrderingKioskSystem.Application.VNPay
             pay.AddRequestData("vnp_CurrCode", _configuration["Vnpay:CurrCode"]);
             pay.AddRequestData("vnp_IpAddr", pay.GetIpAddress(context));
             pay.AddRequestData("vnp_Locale", _configuration["Vnpay:Locale"]);
-            pay.AddRequestData("vnp_OrderInfo", "Payment for Order");
+            pay.AddRequestData("vnp_OrderInfo", model.Note);
             pay.AddRequestData("vnp_OrderType", "billpayment");
             pay.AddRequestData("vnp_ReturnUrl", urlCallBack);
             pay.AddRequestData("vnp_TxnRef", model.ID);

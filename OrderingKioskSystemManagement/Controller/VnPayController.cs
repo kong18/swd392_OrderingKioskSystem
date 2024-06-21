@@ -9,7 +9,7 @@ using SWD.OrderingKioskSystem.Application.Payment;
 
 namespace SWD.OrderingKioskSystemManagement.Api.Controller
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/vnpay")]
     [ApiController]
     public class VNPayController : ControllerBase
     {
