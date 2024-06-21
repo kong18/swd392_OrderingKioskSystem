@@ -30,7 +30,7 @@ namespace OrderingKioskSystem.Application.Product.Create
 
         public async Task<string> Handle(CreateProductCommand request, CancellationToken cancellationToken)
         {
-            var categoryExist = await _categoryRepository.FindAsync(x => x.Name == request.CategoryName && !x.NgayXoa.HasValue, cancellationToken);
+            var categoryExist = await _categoryRepository.FindAsync(x => x.ID == request.CategoryID && !x.NgayXoa.HasValue, cancellationToken);
 
             if (categoryExist is null)
             {

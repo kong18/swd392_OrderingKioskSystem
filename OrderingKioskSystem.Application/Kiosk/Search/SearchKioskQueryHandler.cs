@@ -27,6 +27,10 @@ namespace OrderingKioskSystem.Application.Kiosk.Get
         {
             var query = _context.Kiosk.AsQueryable();
 
+            query.Where(query => !query.NgayTao.HasValue);
+
+            query.OrderByDescending(p => p.NgayTao);
+
             if (!string.IsNullOrEmpty(request.Location))
             {
                 query = query.Where(k => k.Location.Contains(request.Location));

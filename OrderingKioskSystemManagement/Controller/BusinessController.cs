@@ -29,7 +29,7 @@ namespace OrderingKioskSystemManagement.Api.Controllers
 
         
         [HttpPost]
-        [Authorize(Roles = "Business")]
+        [Authorize(Roles = "Manager")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
