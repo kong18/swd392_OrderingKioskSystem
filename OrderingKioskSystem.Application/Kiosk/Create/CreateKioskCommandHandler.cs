@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using MediatR;
 using OrderingKioskSystem.Application.Common.Interfaces;
 using OrderingKioskSystem.Domain.Common.Exceptions;
