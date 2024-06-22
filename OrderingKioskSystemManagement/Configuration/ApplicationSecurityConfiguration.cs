@@ -67,6 +67,11 @@ namespace OrderingKioskSystemManagement.Api.Configuration
                 policy.RequireAuthenticatedUser();
                 policy.RequireClaim("role", "Manager");
             });
+            options.AddPolicy("Kiosk", policy =>
+            {
+                policy.RequireAuthenticatedUser();
+                policy.RequireClaim("role", "Kiosk");
+            });
         }
     }
 }

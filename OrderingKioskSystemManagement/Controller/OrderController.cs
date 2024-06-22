@@ -12,6 +12,7 @@ using OrderingKioskSystem.Application.Order.Filter;
 using System.Text;
 using System.Threading;
 using OrderingKioskSystemManagement.Api.Controller;
+using Microsoft.AspNetCore.Authorization;
 
 namespace OrderingKioskSystemManagement.Api.Controllers
 {
@@ -29,6 +30,7 @@ namespace OrderingKioskSystemManagement.Api.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Kiosk")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]

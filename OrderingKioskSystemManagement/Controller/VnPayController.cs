@@ -6,10 +6,11 @@ using System.Net.Mime;
 using MediatR;
 using OrderingKioskSystem.Domain.Repositories;
 using SWD.OrderingKioskSystem.Application.Payment;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SWD.OrderingKioskSystemManagement.Api.Controller
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/vnpay")]
     [ApiController]
     public class VNPayController : ControllerBase
     {
@@ -29,6 +30,7 @@ namespace SWD.OrderingKioskSystemManagement.Api.Controller
         }
 
         [HttpPost]
+        [Authorize(Roles = "Kiosk")]
         public async Task<ActionResult> CreatePaymentUrl(
             [FromBody] CreateOrderCommand command,
             CancellationToken cancellationToken = default)
