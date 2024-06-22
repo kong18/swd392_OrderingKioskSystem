@@ -60,14 +60,14 @@ public class ApplicationDbContext : DbContext, IUnitOfWork
     {
         var user = new UserEntity
         {
-            Email = "hhson365@gmail.com",
+            Email = "manager@gmail.com",
             Password = BCrypt.Net.BCrypt.HashPassword("123456"),
             Role = "Manager"
         };
 
         var user1 = new UserEntity
         {
-            Email = "sonhhse172307@fpt.edu.vn",
+            Email = "business@gmail.com",
             Password = BCrypt.Net.BCrypt.HashPassword("123456"),
             Role = "Business"
         };
@@ -76,17 +76,18 @@ public class ApplicationDbContext : DbContext, IUnitOfWork
         {
             Name = "Robin Son",
             Phone = "1234567890",
-            Email = "hhson365@gmail.com" // Same email as user
+            Email = "manager@gmail.com" // Same email as user
         };
 
         var business = new BusinessEntity
         {
+            ID = "string",
             Name = "Son Of The ...",
             Url = "https://firebasestorage.googleapis.com/v0/b/oderingkiosksystem.appspot.com/o/uploads%2F5dc9a5e5-ee95-4b31-9ca5-cb8b4cb1c120.jpg?alt=media&token=9b6f02db-62fd-488a-9234-efbcf3070265",
             BankAccountName = "Ho Huu Son",
             BankAccountNumber = 123456,
             BankName = "Techcombank",
-            Email = "sonhhse172307@fpt.edu.vn" // Same email as user
+            Email = "business@gmail.com" // Same email as user
         };
 
         var categories = new List<CategoryEntity>
@@ -96,11 +97,31 @@ public class ApplicationDbContext : DbContext, IUnitOfWork
             new CategoryEntity { ID = 3, Name = "Sports & Energy Drinks", Url = "https://firebasestorage.googleapis.com/v0/b/oderingkiosksystem.appspot.com/o/uploads%2F40b64192-e4de-438f-9f6b-23b37888bf01.jpg?alt=media&token=5869429c-83c1-4fd8-b6be-e962dea9e1cc" },
         };
 
+        var kiosk = new KioskEntity
+        {
+            Location = "Floor 1",
+            Code = "Floor1-001",
+            PIN = 123456
+        };
+
+        var product = new ProductEntity
+        {
+            Name = "7 Up",
+            Code = "7UP",
+            Description = "good for drinking",
+            Price = 5000,
+            Status = true,
+            CategoryID = 1,
+            BusinessID = "string",
+            Url = "https://firebasestorage.googleapis.com/v0/b/oderingkiosksystem.appspot.com/o/uploads%2F89c55794-12aa-4cc3-a6c4-955e4e203a1d.jpg?alt=media&token=e8a3c62c-ac40-43e7-be4a-30cd653aea9e"
+        };
 
         modelBuilder.Entity<UserEntity>().HasData(user);
         modelBuilder.Entity<UserEntity>().HasData(user1);
         modelBuilder.Entity<ManagerEntity>().HasData(manager);
         modelBuilder.Entity<BusinessEntity>().HasData(business);
         modelBuilder.Entity<CategoryEntity>().HasData(categories.ToArray());
+        modelBuilder.Entity<KioskEntity>().HasData(kiosk);
+        modelBuilder.Entity<ProductEntity>().HasData(product);
     }
 }

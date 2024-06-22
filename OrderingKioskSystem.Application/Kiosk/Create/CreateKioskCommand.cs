@@ -10,16 +10,11 @@ namespace OrderingKioskSystem.Application.Kiosk.Create
 {
     public class CreateKioskCommand : IRequest<string>, ICommand
     {
-        public CreateKioskCommand(string location, string code, int pin)
+        public CreateKioskCommand(string location)
         {
             Location = location;
-            Code = code;
-            PIN = pin;
         }
-
         public string Location { get; set; }
-        public string Code { get; set; }
-        public int PIN { get; set; }
 
 
     }

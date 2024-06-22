@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using OrderingKioskSystem.Application.Common.Interfaces;
+using OrderingKioskSystem.Application.Kiosk.GetById;
 using OrderingKioskSystem.Domain.Common.Exceptions;
 using OrderingKioskSystem.Domain.Entities;
 using OrderingKioskSystem.Domain.Repositories;
@@ -34,10 +35,11 @@ namespace OrderingKioskSystem.Application.Order.Create
 
         public async Task<OrderDTO> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
         {
+            var kioskCode = _currentUserService.UserId;
             // Check if the kiosk exists
-            bool kioskExist = await _kioskRepository.AnyAsync(x => x.ID == request.KioskID && !x.NgayXoa.HasValue, cancellationToken);
+            var kioskExist = await _kioskRepository.FindAsync(x => x.Code == kioskCode && !x.NgayXoa.HasValue, cancellationToken);
 
-            if (!kioskExist)
+            if (kioskExist is null)
             {
                 throw new NotFoundException("Kiosk does not exist");
             }
@@ -55,7 +57,7 @@ namespace OrderingKioskSystem.Application.Order.Create
 
             var order = new OrderEntity
             {
-                KioskID = request.KioskID,
+                KioskID = kioskExist.Code,
                 Status = "Pending",
                 Note = request.Note ?? "",
                 Total = request.Total,

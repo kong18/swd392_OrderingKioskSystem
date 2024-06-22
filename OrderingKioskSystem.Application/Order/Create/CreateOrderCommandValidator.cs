@@ -11,12 +11,6 @@ namespace OrderingKioskSystem.Application.Order.Create
     {
         public CreateOrderCommandValidator() 
         {
-            RuleFor(command => command.KioskID)
-                .NotEmpty().WithMessage("KioskID can't be empty or null");
-
-            RuleFor(command => command.KioskID)
-                .NotEmpty().WithMessage("KioskID can't be empty or null");
-
             RuleFor(command => command.Products)
                 .NotEmpty().WithMessage("Product's list can't be empty or null")
                 .Must(items => items != null && items.Count > 0).WithMessage("Items list must contain at least one item");
