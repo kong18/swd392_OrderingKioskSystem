@@ -23,9 +23,6 @@ namespace OrderingKioskSystem.Application.Menu.Create
                     .Must(type => Array.Exists(validTypes, s => s.Equals(type, StringComparison.OrdinalIgnoreCase)))
                     .WithMessage("Type must be one of the predefined values: Morning, Afternoon, Evening");
 
-                RuleFor(command => command.BusinessID)
-                    .NotEmpty().WithMessage("BusinessID can't be empty or null");
-
                 RuleFor(command => command.Status)
                     .NotEmpty().WithMessage("Status can't be empty or null");
 

@@ -14,10 +14,6 @@ namespace OrderingKioskSystem.Application.Product.Create
             RuleFor(command => command.Name)
                 .NotEmpty().WithMessage("Name can't be empty or null")
                 .MaximumLength(100).WithMessage("Name can't be over 100 words");
-
-            RuleFor(command => command.Code)
-                .NotEmpty().WithMessage("Code can't be empty or null");
-
           
             RuleFor(command => command.Description)
                 .NotEmpty().WithMessage("Description can't be empty or null")

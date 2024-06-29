@@ -26,6 +26,7 @@ namespace OrderingKioskSystem.Application.Product.Filter
             var query = _context.Products
                   .Include(p => p.Business)
                   .AsQueryable();
+            query = query.OrderByDescending(x => x.NgayTao);
 
             if (!string.IsNullOrEmpty(request.Name))
             {
