@@ -6,6 +6,7 @@ using OrderingKioskSystem.Domain.Entities;
 using OrderingKioskSystem.Domain.Repositories;
 using System;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -65,7 +66,7 @@ namespace OrderingKioskSystem.Application.Product.Create
             }
 
             // Generate the product code based on the category
-            string productCode = GenerateProductCode(categoryExist.Name);
+            string productCode = GenerateProductCode(categoryExist.Name.ToLower());
 
             var p = new ProductEntity
             {
@@ -87,17 +88,21 @@ namespace OrderingKioskSystem.Application.Product.Create
 
         private string GenerateProductCode(string categoryName)
         {
-            string prefix = categoryName.ToLower() switch
+            // Split the category name into words
+            var words = categoryName.Split(new[] { ' ', '&' }, StringSplitOptions.RemoveEmptyEntries);
+
+            // Take the first letter of each word and concatenate them
+            var prefix = new StringBuilder();
+            foreach (var word in words)
             {
-                "food" => "F",
-                "drink" => "D",
-                _ => "X" // Default prefix if the category is not recognized
-            };
+                prefix.Append(char.ToUpper(word[0]));
+            }
 
             // Generate a random 5-digit number
-            Random random = new Random();
+            var random = new Random();
             int randomNumber = random.Next(10000, 99999);
 
+            // Combine the prefix and the random number to create the product code
             return $"{prefix}{randomNumber}";
         }
     }

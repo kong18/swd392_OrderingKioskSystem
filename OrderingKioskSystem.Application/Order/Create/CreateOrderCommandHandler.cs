@@ -57,7 +57,7 @@ namespace OrderingKioskSystem.Application.Order.Create
 
             var order = new OrderEntity
             {
-                KioskID = kioskExist.Code,
+                KioskID = kioskExist.ID,
                 Status = "Pending",
                 Note = request.Note ?? "",
                 Total = request.Total,

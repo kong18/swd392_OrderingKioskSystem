@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using OrderingKioskSystem.Application.Common.Interfaces;
+using OrderingKioskSystem.Domain.Common.Exceptions;
 using OrderingKioskSystem.Domain.Entities;
 using OrderingKioskSystem.Domain.Repositories;
 using System;
@@ -28,21 +29,20 @@ namespace OrderingKioskSystem.Application.Menu.Update
 
             if (menuExist == null)
             {
-                return "Menu is not found or deleted";
+                throw new NotFoundException("Menu is not found or deleted");
             }
 
-            bool businessExist = await _businessRepository.AnyAsync(x => x.ID == request.BusinessID && !x.NgayXoa.HasValue, cancellationToken);
+            bool menuExistwithType = await _menuRepository.AnyAsync(x => x.BusinessID == _currentUserService.UserId && x.Type == request.Type && !x.NgayXoa.HasValue, cancellationToken);
 
-            if (!businessExist)
+            if (menuExistwithType)
             {
-                return "Business does not exist";
+                throw new DuplicationException("Business can't not update menu with Type already exist!");
             }
 
-            menuExist.Name = request.Name;
-            menuExist.Type = request.Type;
-            menuExist.Status = request.Status;
-            menuExist.Title = request.Title;
-            menuExist.BusinessID = request.BusinessID ?? menuExist.BusinessID;
+            menuExist.Name = request.Name ?? menuExist.Name;
+            menuExist.Type = request.Type ?? menuExist.Type;
+            menuExist.Status = request.Status ?? menuExist.Status;
+            menuExist.Title = request.Title ?? menuExist.Title;
 
             menuExist.NgayCapNhatCuoi = DateTime.Now;
             menuExist.NguoiCapNhatID = _currentUserService.UserId;

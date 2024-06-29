@@ -1,8 +1,8 @@
 ﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
 using OrderingKioskSystem.Application.Common.Interfaces;
 using OrderingKioskSystem.Domain.Entities;
 using OrderingKioskSystem.Domain.Repositories;
+using OrderingKioskSystem.Domain.Common.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,11 +29,20 @@ namespace OrderingKioskSystem.Application.Menu.Create
 
         public async Task<string> Handle(CreateMenuCommand request, CancellationToken cancellationToken)
         {
-            bool businessExist = await _businessRepository.AnyAsync(x => x.ID == request.BusinessID && !x.NgayXoa.HasValue, cancellationToken);
+            var businessID = _currentUserService.UserId;
+
+            bool businessExist = await _businessRepository.AnyAsync(x => x.ID == businessID && !x.NgayXoa.HasValue, cancellationToken);
 
             if (!businessExist)
             {
-                return "Business does not exist";
+                throw new NotFoundException("Business does not exist");
+            }
+
+            var existingMenus = await _menuRepository.FindAllAsync(x => x.BusinessID == businessID && x.Type == request.Type && !x.NgayXoa.HasValue, cancellationToken);
+
+            if (existingMenus.Any())
+            {
+                return $"Business already has a {request.Type} menu";
             }
 
             foreach (var item in request.Products)
@@ -42,7 +51,7 @@ namespace OrderingKioskSystem.Application.Menu.Create
 
                 if (!productExist)
                 {
-                    return $"Product with ID {item.ProductID} is not found or deleted";
+                    throw new NotFoundException($"Product with ID {item.ProductID} is not found or deleted");
                 }
             }
 
@@ -53,7 +62,7 @@ namespace OrderingKioskSystem.Application.Menu.Create
                 Title = request.Title,
                 Type = request.Type,
                 Status = request.Status,
-                BusinessID = request.BusinessID,
+                BusinessID = businessID ?? "",
                 NguoiTaoID = _currentUserService.UserId,
                 NgayTao = DateTime.Now
             };
