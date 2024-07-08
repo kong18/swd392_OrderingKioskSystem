@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using Microsoft.EntityFrameworkCore.Query.Internal;
+using Microsoft.Extensions.Caching.Memory;
 using OrderingKioskSystem.Application.Common.Interfaces;
 using OrderingKioskSystem.Application.FileUpload;
 using OrderingKioskSystem.Application.Product.Create;
@@ -20,14 +20,22 @@ namespace OrderingKioskSystem.Application.Product.Update
         private readonly IBusinessRepository _businessRepository;
         private readonly ICurrentUserService _currentUserService;
         private readonly FileUploadService _fileUploadService;
+        private readonly IMemoryCache _cache;
 
-        public UpdateProductCommandHandler(IProductRepository productRepository, ICategoryRepository categoryRepository, IBusinessRepository businessRepository, ICurrentUserService currentUserService, FileUploadService fileUploadService)
+        public UpdateProductCommandHandler(
+            IProductRepository productRepository,
+            ICategoryRepository categoryRepository,
+            IBusinessRepository businessRepository,
+            ICurrentUserService currentUserService,
+            FileUploadService fileUploadService,
+            IMemoryCache cache)
         {
             _productRepository = productRepository;
             _categoryRepository = categoryRepository;
             _businessRepository = businessRepository;
             _currentUserService = currentUserService;
             _fileUploadService = fileUploadService;
+            _cache = cache;
         }
 
         public async Task<string> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
@@ -50,7 +58,7 @@ namespace OrderingKioskSystem.Application.Product.Update
             }
 
             var businessID = _currentUserService.UserId;
-            
+
             bool businessExist = await _businessRepository.AnyAsync(x => x.ID == businessID, cancellationToken);
 
             if (!businessExist)
@@ -74,12 +82,26 @@ namespace OrderingKioskSystem.Application.Product.Update
             productExist.Price = request.price ?? productExist.Price;
             productExist.Status = request.status ?? productExist.Status;
             productExist.CategoryID = request.categoryid ?? productExist.CategoryID;
-            
+
             productExist.NguoiCapNhatID = businessID;
             productExist.NgayCapNhatCuoi = DateTime.Now;
             _productRepository.Update(productExist);
 
-            return await _productRepository.UnitOfWork.SaveChangesAsync(cancellationToken) > 0 ? "Update Success!" : "Update Fail!";
+            if (await _productRepository.UnitOfWork.SaveChangesAsync(cancellationToken) > 0)
+            {
+                // Update the cache
+                _cache.Set(productExist.ID, productExist, new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5),
+                    SlidingExpiration = TimeSpan.FromMinutes(2)
+                });
+
+                return "Update Success!";
+            }
+            else
+            {
+                return "Update Fail!";
+            }
         }
     }
 }

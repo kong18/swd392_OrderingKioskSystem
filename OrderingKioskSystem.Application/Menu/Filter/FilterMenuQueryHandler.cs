@@ -87,8 +87,8 @@ namespace OrderingKioskSystem.Application.Menu.Filter
                 // Set cache options
                 var cacheEntryOptions = new MemoryCacheEntryOptions
                 {
-                    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(15)
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5),
+                    SlidingExpiration = TimeSpan.FromMinutes(2)
                 };
 
                 // Cache the result
