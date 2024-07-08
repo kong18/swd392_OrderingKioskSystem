@@ -31,7 +31,7 @@ namespace OrderingKioskSystem.Application
             services.AddTransient<FileUploadService>();
             services.AddScoped<IVnPayService, VnPayService>();
             services.AddScoped<IPaymentService, PaymentService>();
-
+            services.AddMemoryCache();
             return services;
         }
     }

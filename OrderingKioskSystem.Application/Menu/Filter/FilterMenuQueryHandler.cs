@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace OrderingKioskSystem.Application.Menu.Filter
 {
@@ -15,64 +16,86 @@ namespace OrderingKioskSystem.Application.Menu.Filter
     {
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
-        public FilterMenuQueryHandler(ApplicationDbContext context, IMapper mapper)
+        private readonly IMemoryCache _memoryCache;
+        private readonly string _cacheKey = "FilterMenuQuery";
+
+        public FilterMenuQueryHandler(ApplicationDbContext context, IMapper mapper, IMemoryCache memoryCache)
         {
             _mapper = mapper;
             _context = context;
+            _memoryCache = memoryCache;
         }
 
         public async Task<PagedResult<MenuDTO>> Handle(FilterMenuQuery request, CancellationToken cancellationToken)
         {
-            var query = _context.Menus.AsQueryable();
+            string cacheKey = $"{_cacheKey}_{request.PageNumber}_{request.PageSize}_{request.Name}_{request.Title}_{request.Type}_{request.Status}_{request.BusinessID}_{request.BusinessName}";
 
-            if (!string.IsNullOrEmpty(request.Name))
+            if (!_memoryCache.TryGetValue(cacheKey, out PagedResult<MenuDTO> cachedResult))
             {
-                query = query.Where(p => p.Name.ToLower().Contains(request.Name.ToLower()));
+                var query = _context.Menus.AsQueryable();
+
+                if (!string.IsNullOrEmpty(request.Name))
+                {
+                    query = query.Where(p => p.Name.ToLower().Contains(request.Name.ToLower()));
+                }
+
+                if (!string.IsNullOrEmpty(request.Title))
+                {
+                    query = query.Where(p => p.Title.ToLower().Contains(request.Title.ToLower()));
+                }
+
+                if (!string.IsNullOrEmpty(request.Type))
+                {
+                    query = query.Where(p => p.Type.ToLower().Contains(request.Type.ToLower()));
+                }
+
+                if (request.Status != null)
+                {
+                    query = query.Where(p => p.Status.Equals(request.Status));
+                }
+
+                if (!string.IsNullOrEmpty(request.BusinessID))
+                {
+                    query = query.Where(p => p.BusinessID.Contains(request.BusinessID));
+                }
+
+                if (!string.IsNullOrEmpty(request.BusinessName))
+                {
+                    query = query.Where(p => p.Business.Name.Contains(request.BusinessName));
+                }
+
+                query = query.Where(p => p.NgayXoa == null);
+
+                // Pagination
+                var totalCount = await query.CountAsync(cancellationToken);
+                var items = await query.Skip((request.PageNumber - 1) * request.PageSize)
+                                       .Take(request.PageSize)
+                                       .ToListAsync(cancellationToken);
+                var pageCount = (int)Math.Ceiling((double)totalCount / request.PageSize);
+
+                var dtos = _mapper.Map<List<MenuDTO>>(items);
+
+                cachedResult = new PagedResult<MenuDTO>
+                {
+                    Data = dtos,
+                    TotalCount = totalCount,
+                    PageCount = pageCount,
+                    PageNumber = request.PageNumber,
+                    PageSize = request.PageSize
+                };
+
+                // Set cache options
+                var cacheEntryOptions = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(60),
+                    SlidingExpiration = TimeSpan.FromMinutes(15)
+                };
+
+                // Cache the result
+                _memoryCache.Set(cacheKey, cachedResult, cacheEntryOptions);
             }
 
-            if (!string.IsNullOrEmpty(request.Title))
-            {
-                query = query.Where(p => p.Title.ToLower().Contains(request.Title.ToLower()));
-            }
-
-            if (!string.IsNullOrEmpty(request.Type))
-            {
-                query = query.Where(p => p.Type.ToLower().Contains(request.Type.ToLower()));
-            }
-
-            if (request.Status != null)
-            {
-                query = query.Where(p => p.Status.Equals(request.Status));
-            }
-
-            if (!string.IsNullOrEmpty(request.BusinessID))
-            {
-                query = query.Where(p => p.BusinessID.Contains(request.BusinessID));
-            }
-
-            if (!string.IsNullOrEmpty(request.BusinessName))
-            {
-                query = query.Where(p => p.Business.Name.Contains(request.BusinessName));
-            }
-            query = query.Where(p => p.NgayXoa == null);
-
-            // Pagination
-            var totalCount = await query.CountAsync(cancellationToken);
-            var items = await query.Skip((request.PageNumber - 1) * request.PageSize)
-                                   .Take(request.PageSize)
-                                   .ToListAsync(cancellationToken);
-            var pageCount = (int)Math.Ceiling((double)totalCount / request.PageSize);
-
-            var dtos = _mapper.Map<List<MenuDTO>>(items);
-
-            return new PagedResult<MenuDTO>
-            {
-                Data = dtos,
-                TotalCount = totalCount,
-                PageCount = pageCount,
-                PageNumber = request.PageNumber,
-                PageSize = request.PageSize
-            };
+            return cachedResult;
         }
     }
 }
