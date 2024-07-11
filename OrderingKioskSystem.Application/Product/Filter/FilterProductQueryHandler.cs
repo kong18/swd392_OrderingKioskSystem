@@ -93,9 +93,9 @@ namespace OrderingKioskSystem.Application.Product.Filter
                 var cacheEntryOptions = new MemoryCacheEntryOptions
                 {
                     // thời gian store cache trong memory 
-                    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(60),
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5),
                     //thời gian xóa kể từ lần truy cập cuối 
-                    SlidingExpiration = TimeSpan.FromMinutes(15)
+                    SlidingExpiration = TimeSpan.FromMinutes(2)
                 };
 
                 // Save data in cache

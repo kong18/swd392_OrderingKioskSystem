@@ -1,14 +1,12 @@
 ﻿using AutoMapper;
 using MediatR;
+using Microsoft.Extensions.Caching.Memory;
 using OrderingKioskSystem.Application.Common.Interfaces;
-using OrderingKioskSystem.Application.Menu.Delete;
+using OrderingKioskSystem.Domain.Common.Exceptions;
 using OrderingKioskSystem.Domain.Repositories;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
-using OrderingKioskSystem.Domain.Common.Exceptions;
 
 namespace OrderingKioskSystem.Application.Menu.GetById
 {
@@ -16,22 +14,40 @@ namespace OrderingKioskSystem.Application.Menu.GetById
     {
         private readonly IMenuRepository _menuRepository;
         private readonly IMapper _mapper;
-        public GetMenuByIdQueryHandler(IMenuRepository menuRepository, IMapper mapper)
+        private readonly IMemoryCache _cache;
+        private const string CachePrefix = "Menu_";
+
+        public GetMenuByIdQueryHandler(IMenuRepository menuRepository, IMapper mapper, IMemoryCache cache)
         {
             _menuRepository = menuRepository;
             _mapper = mapper;
+            _cache = cache;
         }
 
         public async Task<MenuDTO> Handle(GetMenuByIdQuery request, CancellationToken cancellationToken)
         {
-            var menuExist = await _menuRepository.FindAsync(x => x.ID == request.ID && !x.NgayXoa.HasValue, cancellationToken);
+            string cacheKey = $"{CachePrefix}{request.ID}";
 
-            if (menuExist == null)
+            if (!_cache.TryGetValue(cacheKey, out MenuDTO menuDto))
             {
-                throw new NotFoundException("Menu is not found or deleted");
+                var menuExist = await _menuRepository.FindAsync(x => x.ID == request.ID && !x.NgayXoa.HasValue, cancellationToken);
+
+                if (menuExist == null)
+                {
+                    throw new NotFoundException("Menu is not found or deleted");
+                }
+
+                menuDto = menuExist.MapToMenuDTO(_mapper);
+
+                var cacheOptions = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5),
+                    SlidingExpiration = TimeSpan.FromMinutes(2)
+                };
+                _cache.Set(cacheKey, menuDto, cacheOptions);
             }
 
-            return menuExist.MapToMenuDTO(_mapper);
+            return menuDto;
         }
     }
 }

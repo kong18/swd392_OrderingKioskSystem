@@ -1,12 +1,11 @@
 ﻿using MediatR;
+using Microsoft.Extensions.Caching.Memory;
 using OrderingKioskSystem.Application.Common.Interfaces;
 using OrderingKioskSystem.Domain.Common.Exceptions;
 using OrderingKioskSystem.Domain.Entities;
 using OrderingKioskSystem.Domain.Repositories;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OrderingKioskSystem.Application.Menu.Update
@@ -16,11 +15,18 @@ namespace OrderingKioskSystem.Application.Menu.Update
         private readonly IMenuRepository _menuRepository;
         private readonly IBusinessRepository _businessRepository;
         private readonly ICurrentUserService _currentUserService;
-        public UpdateMenuCommandHandler(IMenuRepository menuRepository, ICurrentUserService currentUserService, IBusinessRepository businessRepository)
+        private readonly IMemoryCache _cache;
+
+        public UpdateMenuCommandHandler(
+            IMenuRepository menuRepository,
+            ICurrentUserService currentUserService,
+            IBusinessRepository businessRepository,
+            IMemoryCache cache)
         {
             _menuRepository = menuRepository;
             _currentUserService = currentUserService;
             _businessRepository = businessRepository;
+            _cache = cache;
         }
 
         public async Task<string> Handle(UpdateMenuCommand request, CancellationToken cancellationToken)
@@ -36,7 +42,7 @@ namespace OrderingKioskSystem.Application.Menu.Update
 
             if (menuExistwithType)
             {
-                throw new DuplicationException("Business can't not update menu with Type already exist!");
+                throw new DuplicationException("Business can't update menu with Type already exist!");
             }
 
             menuExist.Name = request.Name ?? menuExist.Name;
@@ -49,7 +55,21 @@ namespace OrderingKioskSystem.Application.Menu.Update
 
             _menuRepository.Update(menuExist);
 
-            return await _menuRepository.UnitOfWork.SaveChangesAsync(cancellationToken) > 0 ? "Update Success!" : "Update Faile!";
+            if (await _menuRepository.UnitOfWork.SaveChangesAsync(cancellationToken) > 0)
+            {
+                // Update the cache
+                _cache.Set(menuExist.ID, menuExist, new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5),
+                    SlidingExpiration = TimeSpan.FromMinutes(2)
+                });
+
+                return "Update Success!";
+            }
+            else
+            {
+                return "Update Fail!";
+            }
         }
     }
 }
