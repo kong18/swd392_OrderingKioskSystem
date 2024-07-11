@@ -49,7 +49,7 @@ namespace OrderingKioskSystem.Application.FileUpload
             }
         }
 
-        private void CompressImage(Stream inputStream, Stream outputStream, int quality = 75)
+        private void CompressImage(Stream inputStream, Stream outputStream, int quality = 40)
         {
             using (var image = Image.Load(inputStream))
             {
